@@ -1,0 +1,477 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Contact Us - GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse styles from index.html */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header (Same as index.html) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Contact Page Specific Styles */
+        .contact-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1517430816045-df4b7de11d1d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .contact-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Contact Layout */
+        .contact-container {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 3rem;
+            margin: 3rem 0;
+        }
+        
+        /* Contact Form */
+        .contact-form {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .contact-form h2 {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .submit-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Contact Info */
+        .contact-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .contact-info h2 {
+            margin-bottom: 1.5rem;
+            color: var(--dark);
+        }
+        
+        .contact-method {
+            display: flex;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+        
+        .contact-icon {
+            background-color: var(--light);
+            color: var(--secondary);
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .contact-details h3 {
+            margin-bottom: 0.3rem;
+        }
+        
+        .contact-details p {
+            color: var(--gray);
+        }
+        
+        /* Map */
+        .contact-map {
+            height: 300px;
+            background-color: #eee;
+            border-radius: 8px;
+            overflow: hidden;
+            margin-top: 2rem;
+        }
+        
+        .contact-map iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+        }
+        
+        /* Business Hours */
+        .business-hours {
+            margin-top: 2rem;
+        }
+        
+        .business-hours h3 {
+            margin-bottom: 1rem;
+        }
+        
+        .hours-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        .hours-table tr {
+            border-bottom: 1px solid #eee;
+        }
+        
+        .hours-table tr:last-child {
+            border-bottom: none;
+        }
+        
+        .hours-table td {
+            padding: 0.8rem 0;
+        }
+        
+        .hours-table td:last-child {
+            text-align: right;
+            font-weight: 500;
+        }
+        
+        /* Footer (Same as index.html) */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        .footer-col a{
+         color: white;
+        }
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .contact-header h1 {
+                font-size: 2rem;
+            }
+            
+            .contact-container {
+                grid-template-columns: 1fr;
+            }
+            
+            .contact-form,
+            .contact-info {
+                padding: 1.5rem;
+            }
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Contact Header -->
+    <section class="contact-header">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p>Have questions? We're here to help!</p>
+        </div>
+    </section>
+
+    <!-- Contact Content -->
+    <div class="container">
+        <div class="contact-container">
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h2>Send Us a Message</h2>
+                <form id="contactForm" action="https://formsubmit.co/aryan.ali.king.master@gmail.com" method="POST">
+                    <input type="hidden" name="_next" value="http://127.0.0.1:5500/thank-you.html">
+                    <input type="hidden" name="_captcha" value="false">
+                    <input type="hidden" name="_subject" value="New Contact Form Submission">
+
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="" disabled selected>Select a subject</option>
+                            <option value="support">Technical Support</option>
+                            <option value="mod-issue">Mod Issue</option>
+                            <option value="partnership">Partnership Inquiry</option>
+                            <option value="copyright">Copyright/DMCA</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Send Message</button>
+                </form>
+            </div>
+            
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h2>Get In Touch</h2>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Email Us</h3>
+                        <p>support@gamemodhub.com</p>
+                        <p>dmca@gamemodhub.com</p>
+                    </div>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Live Chat</h3>
+                        <p>Available 9AM-5PM EST</p>
+                        <p>Look for the chat icon in the corner</p>
+                    </div>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Call Us</h3>
+                        <p>+1 (555) 123-4567</p>
+                        <p>Mon-Fri, 9AM-5PM EST</p>
+                    </div>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Discord</h3>
+                        <p>Join our community server</p>
+                        <p>discord.gg/gamemodhub</p>
+                    </div>
+                </div>
+                
+                <!-- Business Hours -->
+                <div class="business-hours">
+                    <h3>Business Hours</h3>
+                    <table class="hours-table">
+                        <tr>
+                            <td>Monday - Friday</td>
+                            <td>9:00 AM - 5:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td>Saturday</td>
+                            <td>10:00 AM - 2:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td>Sunday</td>
+                            <td>Closed</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Map -->
+                <div class="contact-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215256024286!2d-73.98887592426978!3d40.74844097138945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1690834532805!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Form submission handling
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
+            // Let the form submit naturally to FormSubmit
+            // You can add additional validation here if needed
+            
+            // Optional: Show loading spinner
+            const submitBtn = this.querySelector('.submit-btn');
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+        });
+
+        // Live chat simulation (would connect to actual chat service)
+        document.querySelector('.contact-method:nth-child(2)').addEventListener('click', function() {
+            alert('In a real implementation, this would open your live chat system.\n\nPopular options: Tawk.to, LiveChat, or Intercom.');
+        });
+    </script>
+</body>
+</html>

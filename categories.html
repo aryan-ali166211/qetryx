@@ -1,0 +1,572 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Mod Categories - GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse styles from index.html */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header (Same as index.html) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Categories Page Specific Styles */
+        .categories-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .categories-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Category Tabs */
+        .category-tabs {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+            border-bottom: 1px solid #ddd;
+        }
+        
+        .category-tab {
+            padding: 0.8rem 1.5rem;
+            margin: 0 0.5rem;
+            cursor: pointer;
+            border-bottom: 3px solid transparent;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+        
+        .category-tab.active {
+            border-bottom-color: var(--accent);
+            color: var(--accent);
+        }
+        
+        .category-tab:hover:not(.active) {
+            border-bottom-color: var(--secondary);
+        }
+        
+        /* Categories Grid */
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .category-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+            text-align: center;
+        }
+        
+        .category-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .category-card-img {
+            height: 120px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .category-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+        
+        .category-card-content {
+            padding: 1.5rem 1rem;
+        }
+        
+        .category-card-content h3 {
+            margin-bottom: 0.5rem;
+        }
+        
+        .category-card-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mod-count {
+            display: inline-block;
+            background-color: var(--light);
+            color: var(--dark);
+            padding: 3px 8px;
+            border-radius: 20px;
+            font-size: 0.8rem;
+        }
+        
+        /* Popular Games Section */
+        .popular-games {
+            margin: 4rem 0;
+        }
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+        
+        .game-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem 1rem;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .game-card i {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            color: var(--secondary);
+        }
+        
+        /* Footer (Same as index.html) */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        .footer-col a{
+            color: white;
+        }
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        a{
+            text-decoration: none;
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .categories-header h1 {
+                font-size: 2rem;
+            }
+            
+            .category-tabs {
+                flex-wrap: wrap;
+            }
+            
+            .category-tab {
+                margin-bottom: 0.5rem;
+            }
+            
+            .categories-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            
+            .games-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .categories-grid,
+            .games-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html" class="active">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Categories Header -->
+    <section class="categories-header">
+        <div class="container">
+            <h1>Browse Mod Categories</h1>
+            <p>Find mods by game, genre, or mod type</p>
+        </div>
+    </section>
+
+    <!-- Category Tabs -->
+    <div class="container">
+        <div class="category-tabs">
+            <div class="category-tab active" data-tab="mod-types">Mod Types</div>
+            <div class="category-tab" data-tab="game-genres">Game Genres</div>
+            <div class="category-tab" data-tab="popular-games">Popular Games</div>
+        </div>
+
+        <!-- Mod Types Section -->
+        <section id="mod-types" class="category-section active-section">
+            <h2 class="section-title">Types of Mods</h2>
+            <div class="categories-grid">
+                <!-- Category Card 1 -->
+                <a href="category-graphics.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Graphics Mods">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Graphics Mods</h3>
+                        <p>Enhance visuals with HD textures, shaders, and lighting</p>
+                        <span class="mod-count">248 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Category Card 2 -->
+                <a href="category-gameplay.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Gameplay Mods">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Gameplay Mods</h3>
+                        <p>Change mechanics, add new features and systems</p>
+                        <span class="mod-count">176 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Category Card 3 -->
+                <a href="category-vehicles.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Vehicle Mods">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Vehicle Mods</h3>
+                        <p>New cars, bikes, planes with realistic handling</p>
+                        <span class="mod-count">92 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Category Card 4 -->
+                <a href="category-characters.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Character Mods">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Character Mods</h3>
+                        <p>New skins, outfits, and character models</p>
+                        <span class="mod-count">134 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Category Card 5 -->
+                <a href="category-maps.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1627855437693-dcc7b0c4ba7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Map Mods">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Map Mods</h3>
+                        <p>New locations, worlds, and environments</p>
+                        <span class="mod-count">87 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Category Card 6 -->
+                <a href="category-cheats.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Cheat Mods">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Cheat Mods</h3>
+                        <p>Unlock features, get unlimited resources</p>
+                        <span class="mod-count">65 Mods</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Game Genres Section (Hidden by default) -->
+        <section id="game-genres" class="category-section">
+            <h2 class="section-title">Game Genres</h2>
+            <div class="categories-grid">
+                <!-- Genre Card 1 -->
+                <a href="genre-rpg.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="RPG Games">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>RPG Games</h3>
+                        <p>Mods for role-playing games</p>
+                        <span class="mod-count">312 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Genre Card 2 -->
+                <a href="genre-fps.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="FPS Games">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>FPS Games</h3>
+                        <p>Mods for first-person shooters</p>
+                        <span class="mod-count">198 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Genre Card 3 -->
+                <a href="genre-sandbox.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1627855437693-dcc7b0c4ba7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Sandbox Games">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Sandbox Games</h3>
+                        <p>Mods for open-world games</p>
+                        <span class="mod-count">245 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Genre Card 4 -->
+                <a href="genre-simulation.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Simulation Games">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Simulation Games</h3>
+                        <p>Mods for life and vehicle sims</p>
+                        <span class="mod-count">87 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Genre Card 5 -->
+                <a href="genre-sports.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1574629810360-7efbbe195018?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Sports Games">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Sports Games</h3>
+                        <p>Mods for sports and racing games</p>
+                        <span class="mod-count">76 Mods</span>
+                    </div>
+                </a>
+                
+                <!-- Genre Card 6 -->
+                <a href="genre-strategy.html" class="category-card">
+                    <div class="category-card-img">
+                        <img src="https://images.unsplash.com/photo-1589466725882-f47191476e8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Strategy Games">
+                    </div>
+                    <div class="category-card-content">
+                        <h3>Strategy Games</h3>
+                        <p>Mods for RTS and 4X games</p>
+                        <span class="mod-count">54 Mods</span>
+                    </div>
+                </a>
+            </div>
+        </section>
+
+        <!-- Popular Games Section (Hidden by default) -->
+        <section id="popular-games" class="category-section">
+            <h2 class="section-title">Popular Games</h2>
+            <div class="games-grid">
+                <!-- Game Card 1 -->
+                <a href="category-gta5.html" class="game-card">
+                    <i class="fas fa-car"></i>
+                    <h3>GTA V</h3>
+                    <span class="mod-count">128 Mods</span>
+                </a>
+                
+                <!-- Game Card 2 -->
+                <a href="category-minecraft.html" class="game-card">
+                    <i class="fas fa-cube"></i>
+                    <h3>Minecraft</h3>
+                    <span class="mod-count">215 Mods</span>
+                </a>
+                
+                <!-- Game Card 3 -->
+                <a href="category-cyberpunk.html" class="game-card">
+                    <i class="fas fa-robot"></i>
+                    <h3>Cyberpunk 2077</h3>
+                    <span class="mod-count">89 Mods</span>
+                </a>
+                
+                <!-- Game Card 4 -->
+                <a href="category-skyrim.html" class="game-card">
+                    <i class="fas fa-dragon"></i>
+                    <h3>Skyrim</h3>
+                    <span class="mod-count">176 Mods</span>
+                </a>
+                
+                <!-- Game Card 5 -->
+                <a href="category-rdr2.html" class="game-card">
+                    <i class="fas fa-horse"></i>
+                    <h3>Red Dead 2</h3>
+                    <span class="mod-count">64 Mods</span>
+                </a>
+                
+                <!-- Game Card 6 -->
+                <a href="category-fortnite.html" class="game-card">
+                    <i class="fas fa-gun"></i>
+                    <h3>Fortnite</h3>
+                    <span class="mod-count">42 Mods</span>
+                </a>
+                
+                <!-- Game Card 7 -->
+                <a href="category-fifa.html" class="game-card">
+                    <i class="fas fa-futbol"></i>
+                    <h3>FIFA 23</h3>
+                    <span class="mod-count">37 Mods</span>
+                </a>
+                
+                <!-- Game Card 8 -->
+                <a href="category-sims4.html" class="game-card">
+                    <i class="fas fa-home"></i>
+                    <h3>Sims 4</h3>
+                    <span class="mod-count">58 Mods</span>
+                </a>
+            </div>
+        </section>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="request.html">Request Mod</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Tab switching functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const tabs = document.querySelectorAll('.category-tab');
+            const sections = document.querySelectorAll('.category-section');
+            
+            tabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    // Remove active class from all tabs and sections
+                    tabs.forEach(t => t.classList.remove('active'));
+                    sections.forEach(s => s.classList.remove('active-section'));
+                    
+                    // Add active class to clicked tab
+                    this.classList.add('active');
+                    
+                    // Show corresponding section
+                    const tabId = this.getAttribute('data-tab');
+                    document.getElementById(tabId).classList.add('active-section');
+                });
+            });
+        });
+    </script>
+</body>
+</html>

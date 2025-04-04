@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Request a Mod - GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse styles from index.html */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header (Same as index.html) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Request Page Specific Styles */
+        .request-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .request-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Request Form */
+        .request-form-container {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            padding: 2rem;
+            margin: -2rem auto 3rem;
+            position: relative;
+            max-width: 800px;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+        }
+        
+        .form-group input,
+        .form-group select,
+        .form-group textarea {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .form-group textarea {
+            min-height: 150px;
+            resize: vertical;
+        }
+        
+        .form-row {
+            display: flex;
+            gap: 1.5rem;
+        }
+        .footer-col a{
+            color: white;
+        }
+        
+        .form-row .form-group {
+            flex: 1;
+        }
+        
+        .submit-btn {
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            font-size: 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .submit-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Request Guidelines */
+        .request-guidelines {
+            background-color: var(--light);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+        }
+        
+        .request-guidelines h3 {
+            margin-bottom: 1rem;
+            color: var(--dark);
+        }
+        
+        .request-guidelines ul {
+            list-style-position: inside;
+            margin-bottom: 1rem;
+        }
+        
+        .request-guidelines li {
+            margin-bottom: 0.5rem;
+        }
+        
+        /* Footer (Same as index.html) */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .request-header h1 {
+                font-size: 2rem;
+            }
+            
+            .form-row {
+                flex-direction: column;
+                gap: 0;
+            }
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html" class="active">Request Mod</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Request Header -->
+    <section class="request-header">
+        <div class="container">
+            <h1>Request a Mod</h1>
+            <p>Can't find what you're looking for? Tell us what mod you need!</p>
+        </div>
+    </section>
+
+    <!-- Request Form -->
+    <div class="container">
+        <div class="request-form-container">
+            <form id="modRequestForm">
+                <div class="form-row">
+                    <div class="form-group">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="game">Game</label>
+                    <select id="game" name="game" required>
+                        <option value="" disabled selected>Select a game</option>
+                        <option value="gta5">Grand Theft Auto V</option>
+                        <option value="minecraft">Minecraft</option>
+                        <option value="cyberpunk">Cyberpunk 2077</option>
+                        <option value="skyrim">The Elder Scrolls V: Skyrim</option>
+                        <option value="rdr2">Red Dead Redemption 2</option>
+                        <option value="other">Other (Specify below)</option>
+                    </select>
+                </div>
+                
+                <div class="form-group" id="otherGameGroup" style="display: none;">
+                    <label for="otherGame">Other Game Name</label>
+                    <input type="text" id="otherGame" name="otherGame">
+                </div>
+                
+                <div class="form-group">
+                    <label for="modType">Mod Type</label>
+                    <select id="modType" name="modType" required>
+                        <option value="" disabled selected>Select mod type</option>
+                        <option value="graphics">Graphics/Visuals</option>
+                        <option value="gameplay">Gameplay Change</option>
+                        <option value="character">Character/Skin</option>
+                        <option value="vehicle">Vehicle/Weapon</option>
+                        <option value="map">New Map/Location</option>
+                        <option value="cheat">Cheat/Mod Menu</option>
+                        <option value="other">Other Type</option>
+                    </select>
+                </div>
+                
+                <div class="form-group">
+                    <label for="modName">Mod Name/Title</label>
+                    <input type="text" id="modName" name="modName" placeholder="What would you call this mod?" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="modDescription">Detailed Description</label>
+                    <textarea id="modDescription" name="modDescription" placeholder="Describe exactly what you want the mod to do..." required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label for="reference">Reference (Optional)</label>
+                    <input type="url" id="reference" name="reference" placeholder="Link to similar mod or inspiration">
+                </div>
+                
+                <button type="submit" class="submit-btn">Submit Request</button>
+            </form>
+            
+            <div class="request-guidelines">
+                <h3><i class="fas fa-info-circle"></i> Request Guidelines</h3>
+                <ul>
+                    <li>Be as specific as possible about what you want</li>
+                    <li>Check if a similar mod already exists before requesting</li>
+                    <li>Complex mods may take longer to fulfill</li>
+                    <li>We'll email you when your request is fulfilled</li>
+                </ul>
+                <p><strong>Note:</strong> We can't guarantee all requests will be fulfilled, but popular requests get priority.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="request.html">Request Mod</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Show/hide "other game" field
+        document.getElementById('game').addEventListener('change', function() {
+            const otherGameGroup = document.getElementById('otherGameGroup');
+            if (this.value === 'other') {
+                otherGameGroup.style.display = 'block';
+                document.getElementById('otherGame').setAttribute('required', '');
+            } else {
+                otherGameGroup.style.display = 'none';
+                document.getElementById('otherGame').removeAttribute('required');
+            }
+        });
+        
+        // Form submission handling
+        document.getElementById('modRequestForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            // Basic validation
+            const form = e.target;
+            const formData = new FormData(form);
+            
+            // In a real implementation, you would send this to your server
+            console.log('Form data:', Object.fromEntries(formData.entries()));
+            
+            // Show success message (in real implementation, use AJAX)
+            alert('Thank you! Your mod request has been submitted. We\'ll notify you if it gets fulfilled.');
+            form.reset();
+            
+            // For a real site, you would use:
+            // fetch('/submit-request', {
+            //     method: 'POST',
+            //     body: formData
+            // })
+            // .then(response => response.json())
+            // .then(data => {
+            //     alert('Request submitted!');
+            //     form.reset();
+            // })
+            // .catch(error => {
+            //     console.error('Error:', error);
+            //     alert('There was an error submitting your request.');
+            // });
+        });
+    </script>
+</body>
+</html>

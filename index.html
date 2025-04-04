@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameModHub - Download Free Game Mods & Files</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Global Styles */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--secondary);
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        .btn {
+            display: inline-block;
+            padding: 10px 20px;
+            background-color: var(--secondary);
+            color: white;
+            border-radius: 5px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .btn:hover {
+            background-color: #2980b9;
+            transform: translateY(-2px);
+        }
+        
+        .btn-accent {
+            background-color: var(--accent);
+        }
+        
+        .btn-accent:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Header Styles */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        nav ul li a:hover {
+            color: var(--accent);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+        
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 5rem 0;
+            text-align: center;
+        }
+        
+        .hero h1 {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .hero p {
+            font-size: 1.2rem;
+            max-width: 700px;
+            margin: 0 auto 2rem;
+        }
+        
+        .search-bar {
+            max-width: 600px;
+            margin: 0 auto;
+            display: flex;
+        }
+        
+        .search-bar input {
+            flex: 1;
+            padding: 15px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+        
+        .search-bar button {
+            padding: 0 20px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .search-bar button:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Featured Mods Section */
+        .featured-mods {
+            padding: 4rem 0;
+        }
+        
+        .section-title {
+            text-align: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+        
+        .section-title h2 {
+            font-size: 2rem;
+            display: inline-block;
+            background-color: #f5f5f5;
+            padding: 0 20px;
+            position: relative;
+            z-index: 1;
+        }
+        
+        .section-title::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background-color: var(--gray);
+            z-index: 0;
+        }
+        
+        .mods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 1.5rem;
+        }
+        
+        .mod-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s ease;
+        }
+        
+        .mod-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .mod-card-img {
+            height: 150px;
+            overflow: hidden;
+        }
+        
+        .mod-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .mod-card:hover .mod-card-img img {
+            transform: scale(1.1);
+        }
+        
+        .mod-card-content {
+            padding: 1rem;
+        }
+        
+        .mod-card-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+        }
+        
+        .mod-card-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mod-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        /* Categories Section */
+        .categories {
+            padding: 3rem 0;
+            background-color: var(--light);
+        }
+        
+        .categories-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 1rem;
+        }
+        
+        .category-card {
+            background-color: white;
+            padding: 1.5rem 1rem;
+            border-radius: 5px;
+            text-align: center;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .category-card:hover {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        .category-card i {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+            display: block;
+        }
+        
+        /* Latest Mods Section */
+        .latest-mods {
+            padding: 4rem 0;
+        }
+        
+        /* Newsletter Section */
+        .newsletter {
+            background-color: var(--primary);
+            color: white;
+            padding: 3rem 0;
+            text-align: center;
+        }
+        
+        .newsletter h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .newsletter p {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+        }
+        
+        .newsletter-form {
+            max-width: 500px;
+            margin: 0 auto;
+            display: flex;
+        }
+        
+        .newsletter-form input {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            border-radius: 5px 0 0 5px;
+            font-size: 1rem;
+        }
+        
+        .newsletter-form button {
+            padding: 0 20px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 0 5px 5px 0;
+            cursor: pointer;
+            font-size: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .newsletter-form button:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Footer */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .footer-col h3 {
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+            position: relative;
+            padding-bottom: 0.5rem;
+        }
+        
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background-color: var(--accent);
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .footer-col ul li a {
+            color: var(--light);
+            transition: color 0.3s ease;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--accent);
+        }
+        
+        .social-links {
+            display: flex;
+            gap: 1rem;
+        }
+        
+        .social-links a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            background-color: rgba(255,255,255,0.1);
+            border-radius: 50%;
+            color: white;
+            transition: all 0.3s ease;
+        }
+        
+        .social-links a:hover {
+            background-color: var(--accent);
+            transform: translateY(-3px);
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive Styles */
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                text-align: center;
+            }
+            
+            nav ul {
+                margin-top: 1rem;
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            nav ul li {
+                margin: 0.5rem 0;
+            }
+            
+            .hero h1 {
+                font-size: 2.2rem;
+            }
+            
+            .search-bar {
+                flex-direction: column;
+            }
+            
+            .search-bar input {
+                border-radius: 5px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .search-bar button {
+                border-radius: 5px;
+                padding: 10px;
+            }
+            
+            .newsletter-form {
+                flex-direction: column;
+            }
+            
+            .newsletter-form input {
+                border-radius: 5px;
+                margin-bottom: 0.5rem;
+            }
+            
+            .newsletter-form button {
+                border-radius: 5px;
+                padding: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <h1>Download The Best Game Mods & Files</h1>
+            <p>Thousands of free mods, cheats, skins and more for your favorite games. Updated daily with new content.</p>
+            <div class="search-bar">
+                <input type="text" placeholder="Search for mods...">
+                <button type="submit"><i class="fas fa-search"></i></button>
+            </div>
+            <div style="margin-top: 2rem;">
+                <a href="mods.html" class="btn">Browse All Mods</a>
+                <a href="#featured" class="btn btn-accent">Featured Mods</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Featured Mods Section -->
+    <section class="featured-mods" id="featured">
+        <div class="container">
+            <div class="section-title">
+                <h2>Featured Mods</h2>
+            </div>
+            <div class="mods-grid">
+                <!-- Mod Card 1 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>GTA V: Realistic Graphics Overhaul</h3>
+                        <p>Complete graphics enhancement for GTA V with 4K textures</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 12.4K</span>
+                            <span>v2.5.1</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 2 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1586182987320-4f376d39d787?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Minecraft Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>Minecraft: Shader Pack Ultra</h3>
+                        <p>Beautiful shaders with realistic lighting and shadows</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 8.7K</span>
+                            <span>v1.3.2</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 3 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Cyberpunk Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>Cyberpunk 2077: Enhanced Gameplay</h3>
+                        <p>New weapons, vehicles and gameplay mechanics</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 15.2K</span>
+                            <span>v3.1.0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 4 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Skyrim Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>Skyrim: Immersive Quests</h3>
+                        <p>50+ new quests with full voice acting</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 9.8K</span>
+                            <span>v1.7.3</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div style="text-align: center; margin-top: 2rem;">
+                <a href="mods.html" class="btn">View All Mods</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Categories Section -->
+    <section class="categories">
+        <div class="container">
+            <div class="section-title">
+                <h2>Popular Categories</h2>
+            </div>
+            <div class="categories-grid">
+                <a href="category-gta.html" class="category-card">
+                    <i class="fas fa-car"></i>
+                    GTA Series
+                </a>
+                <a href="category-minecraft.html" class="category-card">
+                    <i class="fas fa-cube"></i>
+                    Minecraft
+                </a>
+                <a href="category-rpg.html" class="category-card">
+                    <i class="fas fa-dragon"></i>
+                    RPG Games
+                </a>
+                <a href="category-fps.html" class="category-card">
+                    <i class="fas fa-crosshairs"></i>
+                    FPS Games
+                </a>
+                <a href="category-sims.html" class="category-card">
+                    <i class="fas fa-home"></i>
+                    Simulation
+                </a>
+                <a href="category-sports.html" class="category-card">
+                    <i class="fas fa-running"></i>
+                    Sports
+                </a>
+                <a href="category-cheats.html" class="category-card">
+                    <i class="fas fa-user-secret"></i>
+                    Cheats
+                </a>
+                <a href="category-textures.html" class="category-card">
+                    <i class="fas fa-paint-brush"></i>
+                    Texture Packs
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Latest Mods Section -->
+    <section class="latest-mods">
+        <div class="container">
+            <div class="section-title">
+                <h2>Recently Added</h2>
+            </div>
+            <div class="mods-grid">
+                <!-- Mod Card 1 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1608889825205-eebdb9fc5806?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80" alt="RDR2 Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>RDR2: Hunting Expansion</h3>
+                        <p>New animals, weapons and hunting mechanics</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 3.2K</span>
+                            <span>v1.0.1</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 2 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1598550476439-6847785fcea6?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="FIFA Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>FIFA 23: Updated Rosters</h3>
+                        <p>All latest transfers and team updates</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 5.6K</span>
+                            <span>v2.0.4</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 3 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Sims Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>Sims 4: Modern Furniture Pack</h3>
+                        <p>200+ new furniture items for your homes</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 7.1K</span>
+                            <span>v1.2.0</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <!-- Mod Card 4 -->
+                <div class="mod-card">
+                    <div class="mod-card-img">
+                        <img src="https://images.unsplash.com/photo-1511512578047-dfb367046420?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1471&q=80" alt="Fortnite Mod">
+                    </div>
+                    <div class="mod-card-content">
+                        <h3>Fortnite: Custom Skins Pack</h3>
+                        <p>100+ unique character skins</p>
+                        <div class="mod-meta">
+                            <span><i class="fas fa-download"></i> 11.3K</span>
+                            <span>v4.2.1</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Newsletter Section -->
+    <section class="newsletter">
+        <div class="container">
+            <h2>Stay Updated</h2>
+            <p>Subscribe to our newsletter to get notified about new mods, updates and exclusive content.</p>
+            <form class="newsletter-form">
+                <input type="email" placeholder="Your email address" required>
+                <button type="submit">Subscribe</button>
+            </form>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                    <div class="social-links">
+                        <a href="#"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#"><i class="fab fa-twitter"></i></a>
+                        <a href="#"><i class="fab fa-discord"></i></a>
+                        <a href="#"><i class="fab fa-youtube"></i></a>
+                    </div>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="request.html">Request Mod</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Popular Games</h3>
+                    <ul>
+                        <li><a href="category-gta.html">GTA Series</a></li>
+                        <li><a href="category-minecraft.html">Minecraft</a></li>
+                        <li><a href="category-cyberpunk.html">Cyberpunk 2077</a></li>
+                        <li><a href="category-skyrim.html">Skyrim</a></li>
+                        <li><a href="category-fortnite.html">Fortnite</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                        <li><a href="contact.html">Contact Us</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('nav ul').classList.toggle('show');
+        });
+    </script>
+</body>
+</html>

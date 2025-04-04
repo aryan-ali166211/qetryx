@@ -1,0 +1,497 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minecraft: Shader Pack Ultra - GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse styles from GTA V page */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header (Same as index.html) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Mod Header */
+        .mod-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1586182987320-4f376d39d787?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .mod-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mod-badge {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin: 0 0.5rem 1rem;
+            font-weight: 600;
+        }
+        
+        /* Mod Content */
+        .mod-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        .mod-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mod-screenshots {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .mod-screenshot {
+            border-radius: 8px;
+            overflow: hidden;
+            height: 200px;
+        }
+        
+        .mod-screenshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .mod-screenshot:hover img {
+            transform: scale(1.05);
+        }
+        
+        .mod-description h2,
+        .mod-features h2,
+        .mod-requirements h2 {
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        /* Mod Sidebar */
+        .mod-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .mod-download-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .mod-download-card h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mod-version {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .mod-file-size {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .mod-file-size div {
+            background-color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        .download-btn {
+            display: block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .download-mirrors {
+            margin-top: 1rem;
+        }
+        
+        .download-mirrors a {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        .mod-stats {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mod-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--light);
+        }
+        
+        .mod-stat:last-child {
+            border-bottom: none;
+        }
+        
+        /* Mod Installation */
+        .mod-installation {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .mod-installation h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .installation-steps {
+            counter-reset: step;
+        }
+        
+        .installation-step {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .installation-step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--secondary);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Footer (Same as index.html) */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .mod-header h1 {
+                font-size: 2rem;
+            }
+            
+            .mod-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .mod-screenshots {
+                grid-template-columns: 1fr;
+            }
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mod Header -->
+    <section class="mod-header">
+        <div class="container">
+            <h1>Minecraft: Shader Pack Ultra</h1>
+            <span class="mod-badge">Version 1.3.2</span>
+            <span class="mod-badge">Updated: 2023-07-22</span>
+            <span class="mod-badge">Minecraft 1.20+</span>
+        </div>
+    </section>
+
+    <!-- Mod Content -->
+    <div class="container">
+        <div class="mod-content">
+            <!-- Main Mod Info -->
+            <div class="mod-info">
+                <div class="mod-description">
+                    <h2>Description</h2>
+                    <p>Transform your Minecraft world with this ultra-realistic shader pack featuring dynamic lighting, volumetric clouds, realistic water reflections, and stunning atmospheric effects. This shader pack pushes Minecraft's graphics to the limit while maintaining playable frame rates on mid-range systems.</p>
+                    <p>The pack includes 10 preset configurations ranging from "Lite" (for low-end PCs) to "Extreme" (for high-end gaming rigs). All settings can be customized in-game through the shader options menu.</p>
+                </div>
+                
+                <div class="mod-screenshots">
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1586182987320-4f376d39d787?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Minecraft Shader Screenshot 1">
+                    </div>
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1627855437693-dcc7b0c4ba7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Minecraft Shader Screenshot 2">
+                    </div>
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Minecraft Shader Screenshot 3">
+                    </div>
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Minecraft Shader Screenshot 4">
+                    </div>
+                </div>
+                
+                <div class="mod-features">
+                    <h2>Features</h2>
+                    <ul>
+                        <li>Dynamic per-pixel lighting with realistic shadows</li>
+                        <li>Volumetric clouds that react to weather and time</li>
+                        <li>Reflective water with waves and caustics</li>
+                        <li>Physically-based materials (PBR) for blocks</li>
+                        <li>Atmospheric scattering for realistic skies</li>
+                        <li>Dynamic foliage movement</li>
+                        <li>Adjustable depth of field</li>
+                        <li>10 performance presets</li>
+                        <li>Works with OptiFine and Iris</li>
+                    </ul>
+                </div>
+                
+                <div class="mod-requirements">
+                    <h2>Requirements</h2>
+                    <ul>
+                        <li><strong>Minecraft Version:</strong> 1.16.5 - 1.20.1</li>
+                        <li><strong>Mod Loader:</strong> OptiFine HD U H7 or Iris 1.6.0+</li>
+                        <li><strong>OS:</strong> Windows 10/11, macOS, Linux</li>
+                        <li><strong>CPU:</strong> Intel Core i5 or equivalent</li>
+                        <li><strong>RAM:</strong> 4GB allocated to Minecraft</li>
+                        <li><strong>GPU:</strong> NVIDIA GTX 1050 / AMD RX 560 or better</li>
+                        <li><strong>Storage:</strong> 500MB additional space</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Mod Sidebar -->
+            <div class="mod-sidebar">
+                <div class="mod-download-card">
+                    <h2>Download</h2>
+                    <div class="mod-version">Version 1.3.2</div>
+                    <div class="mod-file-size">
+                        <div><i class="fas fa-file-archive"></i> 156MB</div>
+                        <div><i class="fas fa-download"></i> 8.7K</div>
+                    </div>
+                    <a href="#" download class="download-btn">
+                        <i class="fas fa-download"></i> Download Now
+                    </a>
+                    <a href="#" class="download-btn" style="background-color: var(--secondary);"><i class="fas fa-bolt"></i> Fast Mirror</a>
+                    <div class="download-mirrors">
+                        <a href="#"><i class="fas fa-server"></i> More Download Mirrors</a>
+                    </div>
+                </div>
+                
+                <div class="mod-stats">
+                    <div class="mod-stat">
+                        <span>Downloads</span>
+                        <span>8,742</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Version</span>
+                        <span>1.3.2</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Released</span>
+                        <span>2023-07-22</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Compatibility</span>
+                        <span>MC 1.16.5-1.20.1</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Rating</span>
+                        <span>★★★★☆ (4.7/5)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Installation Instructions -->
+        <div class="mod-installation">
+            <h2>Installation Instructions</h2>
+            <div class="installation-steps">
+                <div class="installation-step">
+                    <h3>Install OptiFine or Iris</h3>
+                    <p>Download and install either OptiFine HD U H7 or Iris 1.6.0+ for your Minecraft version.</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Download the Shader Pack</h3>
+                    <p>Click the download button above to get the shader pack ZIP file.</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Install the Shaders</h3>
+                    <p>Launch Minecraft, go to Options > Video Settings > Shaders, and click "Shaders Folder". Place the downloaded ZIP file in this folder.</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Activate the Shaders</h3>
+                    <p>Back in Minecraft, select "Shader Pack Ultra" from the shaders list and click "Done".</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Adjust Settings</h3>
+                    <p>Use the in-game shader options to select a preset or customize individual settings for optimal performance and visuals.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+  
+</body>
+</html>

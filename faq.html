@@ -1,0 +1,557 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Frequently Asked Questions - GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse styles from index.html */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header (Same as index.html) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* FAQ Page Specific Styles */
+        .faq-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .faq-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* FAQ Search */
+        .faq-search {
+            max-width: 600px;
+            margin: -2rem auto 3rem;
+            position: relative;
+        }
+        
+        .faq-search input {
+            width: 100%;
+            padding: 15px 20px;
+            border: none;
+            border-radius: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            font-size: 1rem;
+            padding-right: 50px;
+        }
+        
+        .faq-search button {
+            position: absolute;
+            right: 5px;
+            top: 5px;
+            background-color: var(--accent);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+        
+        /* FAQ Categories */
+        .faq-categories {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 2rem;
+        }
+        
+        .faq-category {
+            background-color: white;
+            padding: 0.8rem 1.5rem;
+            border-radius: 50px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+        
+        .faq-category.active {
+            background-color: var(--accent);
+            color: white;
+        }
+        
+        .faq-category:hover:not(.active) {
+            background-color: var(--secondary);
+            color: white;
+        }
+        
+        /* FAQ Accordion */
+        .faq-section {
+            margin-bottom: 3rem;
+        }
+        
+        .faq-section h2 {
+            margin-bottom: 1.5rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+            color: var(--dark);
+        }
+        
+        .faq-item {
+            background-color: white;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 1rem;
+            overflow: hidden;
+        }
+        
+        .faq-question {
+            padding: 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .faq-question:hover {
+            background-color: var(--light);
+        }
+        
+        .faq-question i {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-question i {
+            transform: rotate(180deg);
+        }
+        
+        .faq-answer {
+            padding: 0 1.5rem;
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease, padding 0.3s ease;
+        }
+        
+        .faq-item.active .faq-answer {
+            padding: 0 1.5rem 1.5rem;
+            max-height: 500px;
+        }
+        
+        /* Contact Prompt */
+        .contact-prompt {
+            background-color: var(--primary);
+            color: white;
+            padding: 2rem;
+            border-radius: 8px;
+            text-align: center;
+            margin: 3rem 0;
+        }
+        
+        .contact-prompt h2 {
+            margin-bottom: 1rem;
+        }
+        
+        .contact-btn {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .contact-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        /* Footer (Same as index.html) */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        .footer-col a{
+          color: white;
+        }
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .faq-header h1 {
+                font-size: 2rem;
+            }
+            
+            .faq-question {
+                padding: 1rem;
+            }
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="faq.html" class="active">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- FAQ Header -->
+    <section class="faq-header">
+        <div class="container">
+            <h1>Frequently Asked Questions</h1>
+            <p>Find answers to common questions about modding and our website</p>
+        </div>
+    </section>
+
+    <!-- FAQ Search -->
+    <div class="container">
+        <div class="faq-search">
+            <input type="text" placeholder="Search FAQs...">
+            <button type="submit"><i class="fas fa-search"></i></button>
+        </div>
+        
+        <!-- FAQ Categories -->
+        <div class="faq-categories">
+            <div class="faq-category active" data-category="all">All Questions</div>
+            <div class="faq-category" data-category="installation">Installation</div>
+            <div class="faq-category" data-category="troubleshooting">Troubleshooting</div>
+            <div class="faq-category" data-category="account">Account</div>
+            <div class="faq-category" data-category="modding">Modding Basics</div>
+            <div class="faq-category" data-category="safety">Safety</div>
+        </div>
+        
+        <!-- FAQ Content -->
+        <div class="faq-section">
+            <h2><i class="fas fa-download"></i> Installation</h2>
+            
+            <div class="faq-item" data-categories="installation">
+                <div class="faq-question">
+                    <span>How do I install mods from GameModHub?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Most mods come with installation instructions, but generally:</p>
+                    <ol>
+                        <li>Download the mod file (usually a .zip or .rar)</li>
+                        <li>Extract the contents to your game's mod folder</li>
+                        <li>Some mods require additional tools like Script Hook or Mod Loader</li>
+                        <li>Launch the game and enjoy!</li>
+                    </ol>
+                    <p>Always check the mod's readme file for specific instructions.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item" data-categories="installation">
+                <div class="faq-question">
+                    <span>Where is the mods folder for my game?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Common mod folder locations:</p>
+                    <ul>
+                        <li><strong>GTA V:</strong> Grand Theft Auto V/mods/ (create if doesn't exist)</li>
+                        <li><strong>Minecraft:</strong> .minecraft/mods/</li>
+                        <li><strong>Skyrim:</strong> Steam/steamapps/common/Skyrim Special Edition/Data/</li>
+                        <li><strong>Cyberpunk 2077:</strong> Cyberpunk 2077/bin/x64/plugins/</li>
+                    </ul>
+                    <p>Some mod managers will handle this automatically.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item" data-categories="installation">
+                <div class="faq-question">
+                    <span>Do I need any special software to use mods?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Depending on the game and mod type, you might need:</p>
+                    <ul>
+                        <li><strong>Archive tool:</strong> 7-Zip or WinRAR to extract files</li>
+                        <li><strong>Mod managers:</strong> Vortex (Nexus), Mod Organizer 2</li>
+                        <li><strong>Game-specific tools:</strong> Script Hook V (GTA), SKSE (Skyrim)</li>
+                        <li><strong>Dependencies:</strong> .NET Framework, Visual C++ Redistributables</li>
+                    </ul>
+                    <p>Always check the mod requirements before downloading.</p>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-section">
+            <h2><i class="fas fa-tools"></i> Troubleshooting</h2>
+            
+            <div class="faq-item" data-categories="troubleshooting">
+                <div class="faq-question">
+                    <span>My game crashes after installing a mod. What should I do?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Try these steps:</p>
+                    <ol>
+                        <li>Remove the last mod you installed</li>
+                        <li>Verify game files through Steam/Epic/other launcher</li>
+                        <li>Check if you have all required dependencies</li>
+                        <li>Ensure the mod is compatible with your game version</li>
+                        <li>Check the mod's comments section for similar issues</li>
+                        <li>Try running the game as administrator</li>
+                    </ol>
+                    <p>If the problem persists, contact the mod creator or our support team.</p>
+                </div>
+            </div>
+            
+            <div class="faq-item" data-categories="troubleshooting">
+                <div class="faq-question">
+                    <span>Mods aren't showing up in my game. How to fix?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>Common solutions:</p>
+                    <ul>
+                        <li>Ensure you installed to the correct folder</li>
+                        <li>Some mods require enabling in game settings/mods menu</li>
+                        <li>Check if the mod needs a mod loader/script extender</li>
+                        <li>Make sure your game version matches the mod requirements</li>
+                        <li>Try reinstalling the mod</li>
+                        <li>Some anti-virus programs block mod files - check your AV logs</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        
+        <div class="faq-section">
+            <h2><i class="fas fa-shield-alt"></i> Safety & Security</h2>
+            
+            <div class="faq-item" data-categories="safety">
+                <div class="faq-question">
+                    <span>Are mods from GameModHub safe to use?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>We take safety seriously:</p>
+                    <ul>
+                        <li>All mods are scanned for viruses before being approved</li>
+                        <li>We verify uploader identities</li>
+                        <li>User ratings and comments help identify trustworthy mods</li>
+                        <li>We remove reported malicious content immediately</li>
+                    </ul>
+                    <p>However, always:</p>
+                    <ol>
+                        <li>Keep your antivirus active</li>
+                        <li>Backup your game saves</li>
+                        <li>Read mod comments before downloading</li>
+                        <li>Avoid mods from unverified sources</li>
+                    </ol>
+                </div>
+            </div>
+            
+            <div class="faq-item" data-categories="safety">
+                <div class="faq-question">
+                    <span>Can I get banned for using mods?</span>
+                    <i class="fas fa-chevron-down"></i>
+                </div>
+                <div class="faq-answer">
+                    <p>It depends on the game and how you use mods:</p>
+                    <ul>
+                        <li><strong>Single-player games:</strong> Generally safe (Skyrim, Witcher 3)</li>
+                        <li><strong>Multiplayer games:</strong> Often bannable (GTA Online, Fortnite)</li>
+                        <li><strong>Mixed games:</strong> May ban if detected online (Red Dead 2)</li>
+                    </ul>
+                    <p><strong>Golden rule:</strong> Never use mods in multiplayer modes unless the game explicitly allows it. When in doubt, check the game's EULA or play offline.</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Contact Prompt -->
+        <div class="contact-prompt">
+            <h2>Didn't find your answer?</h2>
+            <p>Our support team is ready to help with any questions you have about modding or our website.</p>
+            <a href="contact.html" class="contact-btn">Contact Support</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="faq.html">FAQ</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // FAQ Accordion Functionality
+        document.querySelectorAll('.faq-question').forEach(question => {
+            question.addEventListener('click', () => {
+                const item = question.parentNode;
+                item.classList.toggle('active');
+                
+                // Close other open items in the same section
+                const section = item.closest('.faq-section');
+                section.querySelectorAll('.faq-item').forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                    }
+                });
+            });
+        });
+        
+        // FAQ Category Filtering
+        document.querySelectorAll('.faq-category').forEach(category => {
+            category.addEventListener('click', () => {
+                // Update active category
+                document.querySelectorAll('.faq-category').forEach(c => c.classList.remove('active'));
+                category.classList.add('active');
+                
+                const categoryName = category.getAttribute('data-category');
+                const allItems = document.querySelectorAll('.faq-item');
+                
+                if (categoryName === 'all') {
+                    allItems.forEach(item => item.style.display = 'block');
+                } else {
+                    allItems.forEach(item => {
+                        const categories = item.getAttribute('data-categories').split(' ');
+                        if (categories.includes(categoryName)) {
+                            item.style.display = 'block';
+                        } else {
+                            item.style.display = 'none';
+                        }
+                    });
+                }
+            });
+        });
+        
+        // FAQ Search Functionality
+        const faqSearch = document.querySelector('.faq-search input');
+        faqSearch.addEventListener('input', () => {
+            const searchTerm = faqSearch.value.toLowerCase();
+            const allItems = document.querySelectorAll('.faq-item');
+            
+            allItems.forEach(item => {
+                const question = item.querySelector('.faq-question span').textContent.toLowerCase();
+                const answer = item.querySelector('.faq-answer').textContent.toLowerCase();
+                
+                if (question.includes(searchTerm) || answer.includes(searchTerm)) {
+                    item.style.display = 'block';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+    </script>
+</body>
+</html>

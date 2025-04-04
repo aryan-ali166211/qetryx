@@ -1,0 +1,614 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Browse All Mods - GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse styles from index.html */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header (Same as index.html) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+            text-decoration: none;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+            text-decoration: none;
+        }
+        
+        /* Mods Page Specific Styles */
+        .mods-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .mods-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        /* Filters & Sorting */
+        .mods-controls {
+            background-color: white;
+            padding: 1.5rem;
+            border-radius: 8px;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin: -2rem auto 2rem;
+            position: relative;
+            z-index: 1;
+            max-width: 1200px;
+        }
+        
+        .filters-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+        
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+        
+        .filter-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .filter-group select, 
+        .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1rem;
+        }
+        
+        .sorting {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding-top: 1rem;
+            border-top: 1px solid #eee;
+        }
+        
+        .sorting select {
+            padding: 8px 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+        }
+        
+        .total-mods {
+            color: var(--gray);
+            font-size: 0.9rem;
+        }
+        
+        /* Mods Grid (Enhanced) */
+        .mods-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+        
+        .mod-card {
+            background-color: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .mod-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+        
+        .mod-card-img {
+            height: 160px;
+            overflow: hidden;
+            position: relative;
+        }
+        
+        .mod-card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .mod-card:hover .mod-card-img img {
+            transform: scale(1.1);
+        }
+        
+        .mod-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            background-color: var(--accent);
+            color: white;
+            padding: 3px 8px;
+            border-radius: 3px;
+            font-size: 0.8rem;
+            font-weight: bold;
+        }
+        
+        .mod-card-content {
+            padding: 1.2rem;
+        }
+        
+        .mod-card-content h3 {
+            margin-bottom: 0.5rem;
+            font-size: 1.1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .mod-card-content p {
+            color: var(--gray);
+            font-size: 0.9rem;
+            margin-bottom: 1rem;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+        
+        .mod-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.8rem;
+            color: var(--gray);
+        }
+        
+        .mod-download-btn {
+            display: block;
+            text-align: center;
+            background-color: var(--secondary);
+            color: white;
+            padding: 8px;
+            border-radius: 5px;
+            margin-top: 1rem;
+            font-weight: 600;
+            transition: background-color 0.3s ease;
+        }
+        
+        .mod-download-btn:hover {
+            background-color: #2980b9;
+        }
+        
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin: 2rem 0;
+        }
+        
+        .pagination a {
+            display: inline-block;
+            padding: 8px 16px;
+            margin: 0 4px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            color: var(--secondary);
+        }
+        
+        .pagination a.active {
+            background-color: var(--secondary);
+            color: white;
+            border-color: var(--secondary);
+        }
+        
+        .pagination a:hover:not(.active) {
+            background-color: #f1f1f1;
+        }
+        
+        /* Footer (Same as index.html) */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .mods-header h1 {
+                font-size: 2rem;
+            }
+            
+            .filters-row {
+                flex-direction: column;
+            }
+            
+            .mods-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html" class="active">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mods Header -->
+    <section class="mods-header">
+        <div class="container">
+            <h1>Browse All Mods</h1>
+            <p>Thousands of free mods for your favorite games</p>
+        </div>
+    </section>
+
+    <!-- Filters & Sorting -->
+    <div class="container">
+        <div class="mods-controls">
+            <div class="filters-row">
+                <div class="filter-group">
+                    <label for="game-filter">Game</label>
+                    <select id="game-filter">
+                        <option value="all">All Games</option>
+                        <option value="gta5">GTA V</option>
+                        <option value="minecraft">Minecraft</option>
+                        <option value="cyberpunk">Cyberpunk 2077</option>
+                        <option value="skyrim">Skyrim</option>
+                        <option value="rdr2">Red Dead Redemption 2</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="category-filter">Category</label>
+                    <select id="category-filter">
+                        <option value="all">All Categories</option>
+                        <option value="graphics">Graphics</option>
+                        <option value="gameplay">Gameplay</option>
+                        <option value="vehicles">Vehicles</option>
+                        <option value="characters">Characters</option>
+                        <option value="maps">Maps</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="type-filter">Type</label>
+                    <select id="type-filter">
+                        <option value="all">All Types</option>
+                        <option value="mod">Mod</option>
+                        <option value="cheat">Cheat</option>
+                        <option value="skin">Skin</option>
+                        <option value="texture">Texture Pack</option>
+                    </select>
+                </div>
+                <div class="filter-group">
+                    <label for="search-filter">Search</label>
+                    <input type="text" id="search-filter" placeholder="Type mod name...">
+                </div>
+            </div>
+            <div class="sorting">
+                <div class="total-mods">Showing 1-12 of 248 mods</div>
+                <div>
+                    <label for="sort-by">Sort by: </label>
+                    <select id="sort-by">
+                        <option value="popular">Most Popular</option>
+                        <option value="newest">Newest</option>
+                        <option value="rating">Highest Rated</option>
+                        <option value="downloads">Most Downloads</option>
+                    </select>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mods Grid -->
+        <div class="mods-grid">
+            <!-- Mod Card 1 -->
+            <div class="mod-card" data-game="gta5" data-category="graphics" data-type="mod">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Mod">
+                    <span class="mod-badge">New</span>
+                </div>
+                <div class="mod-card-content">
+                    <h3>GTA V: Realistic Graphics Overhaul</h3>
+                    <p>Complete graphics enhancement for GTA V with 4K textures, ray tracing and improved lighting</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 12.4K</span>
+                        <span>v2.5.1</span>
+                    </div>
+                    <a href="mod-detail-gta5.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+            
+            <!-- Mod Card 2 -->
+            <div class="mod-card" data-game="minecraft" data-category="textures" data-type="texture">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1586182987320-4f376d39d787?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80" alt="Minecraft Mod">
+                    <span class="mod-badge">Popular</span>
+                </div>
+                <div class="mod-card-content">
+                    <h3>Minecraft: Shader Pack Ultra</h3>
+                    <p>Beautiful shaders with realistic lighting, shadows and water effects for Minecraft</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 8.7K</span>
+                        <span>v1.3.2</span>
+                    </div>
+                    <a href="mod-detail-minecraft.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+            
+            <!-- Mod Card 3 -->
+            <div class="mod-card" data-game="cyberpunk" data-category="gameplay" data-type="mod">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Cyberpunk Mod">
+                </div>
+                <div class="mod-card-content">
+                    <h3>Cyberpunk 2077: Enhanced Gameplay</h3>
+                    <p>New weapons, vehicles and gameplay mechanics for Cyberpunk 2077</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 15.2K</span>
+                        <span>v3.1.0</span>
+                    </div>
+                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+            
+            <!-- Mod Card 4 -->
+            <div class="mod-card" data-game="skyrim" data-category="gameplay" data-type="mod">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Skyrim Mod">
+                </div>
+                <div class="mod-card-content">
+                    <h3>Skyrim: Immersive Quests</h3>
+                    <p>50+ new quests with full voice acting and unique rewards</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 9.8K</span>
+                        <span>v1.7.3</span>
+                    </div>
+                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+            
+            <!-- Mod Card 5 -->
+            <div class="mod-card" data-game="rdr2" data-category="gameplay" data-type="mod">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1608889825205-eebdb9fc5806?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80" alt="RDR2 Mod">
+                    <span class="mod-badge">Updated</span>
+                </div>
+                <div class="mod-card-content">
+                    <h3>RDR2: Hunting Expansion</h3>
+                    <p>New animals, weapons and hunting mechanics for Red Dead Redemption 2</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 3.2K</span>
+                        <span>v1.0.1</span>
+                    </div>
+                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+            
+            <!-- Mod Card 6 -->
+            <div class="mod-card" data-game="gta5" data-category="vehicles" data-type="mod">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Cars">
+                </div>
+                <div class="mod-card-content">
+                    <h3>GTA V: Supercar Pack</h3>
+                    <p>Adds 25+ high-end sports cars to GTA V with realistic handling</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 7.5K</span>
+                        <span>v1.2.4</span>
+                    </div>
+                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+            
+            <!-- Mod Card 7 -->
+            <div class="mod-card" data-game="minecraft" data-category="maps" data-type="mod">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1627855437693-dcc7b0c4ba7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Minecraft Map">
+                </div>
+                <div class="mod-card-content">
+                    <h3>Minecraft: Fantasy Kingdom Map</h3>
+                    <p>Massive pre-built fantasy kingdom with castles, villages and dungeons</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 5.1K</span>
+                        <span>v1.0.0</span>
+                    </div>
+                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+            
+            <!-- Mod Card 8 -->
+            <div class="mod-card" data-game="cyberpunk" data-category="characters" data-type="skin">
+                <div class="mod-card-img">
+                    <img src="https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Cyberpunk Character">
+                    <span class="mod-badge">New</span>
+                </div>
+                <div class="mod-card-content">
+                    <h3>Cyberpunk: Custom Character Presets</h3>
+                    <p>50+ unique character presets for your Cyberpunk 2077 playthrough</p>
+                    <div class="mod-meta">
+                        <span><i class="fas fa-download"></i> 11.9K</span>
+                        <span>v2.0.3</span>
+                    </div>
+                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pagination -->
+        <div class="pagination">
+            <a href="#">&laquo;</a>
+            <a href="#" class="active">1</a>
+            <a href="#">2</a>
+            <a href="#">3</a>
+            <a href="#">4</a>
+            <a href="#">5</a>
+            <a href="#">&raquo;</a>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="request.html">Request Mod</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple filter functionality (can be enhanced with AJAX in real implementation)
+        document.addEventListener('DOMContentLoaded', function() {
+            const gameFilter = document.getElementById('game-filter');
+            const categoryFilter = document.getElementById('category-filter');
+            const typeFilter = document.getElementById('type-filter');
+            const searchFilter = document.getElementById('search-filter');
+            const modCards = document.querySelectorAll('.mod-card');
+            
+            function filterMods() {
+                const gameValue = gameFilter.value;
+                const categoryValue = categoryFilter.value;
+                const typeValue = typeFilter.value;
+                const searchValue = searchFilter.value.toLowerCase();
+                
+                modCards.forEach(card => {
+                    const gameMatch = gameValue === 'all' || card.dataset.game === gameValue;
+                    const categoryMatch = categoryValue === 'all' || card.dataset.category === categoryValue;
+                    const typeMatch = typeValue === 'all' || card.dataset.type === typeValue;
+                    const title = card.querySelector('h3').textContent.toLowerCase();
+                    const searchMatch = title.includes(searchValue);
+                    
+                    if (gameMatch && categoryMatch && typeMatch && searchMatch) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            }
+            
+            // Add event listeners to all filters
+            gameFilter.addEventListener('change', filterMods);
+            categoryFilter.addEventListener('change', filterMods);
+            typeFilter.addEventListener('change', filterMods);
+            searchFilter.addEventListener('input', filterMods);
+        });
+    </script>
+</body>
+</html>

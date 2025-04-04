@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GTA V Realistic Graphics Overhaul - GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        /* Reuse styles from index.html */
+        :root {
+            --primary: #2c3e50;
+            --secondary: #3498db;
+            --accent: #e74c3c;
+            --light: #ecf0f1;
+            --dark: #2c3e50;
+            --gray: #95a5a6;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+        
+        .container {
+            width: 90%;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+        
+        /* Header (Same as index.html) */
+        header {
+            background-color: var(--primary);
+            color: white;
+            padding: 1rem 0;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        
+        .header-container {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            color: white;
+        }
+        
+        .logo span {
+            color: var(--accent);
+        }
+        
+        nav ul {
+            display: flex;
+            list-style: none;
+        }
+        
+        nav ul li {
+            margin-left: 1.5rem;
+        }
+        
+        nav ul li a {
+            color: white;
+            font-weight: 500;
+        }
+        
+        /* Mod Detail Specific Styles */
+        .mod-header {
+            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
+            background-size: cover;
+            background-position: center;
+            color: white;
+            padding: 4rem 0;
+            text-align: center;
+        }
+        
+        .mod-header h1 {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mod-badge {
+            display: inline-block;
+            background-color: var(--accent);
+            color: white;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-size: 0.9rem;
+            margin: 0 0.5rem 1rem;
+            font-weight: 600;
+        }
+        
+        /* Mod Main Content */
+        .mod-content {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 2rem;
+            margin: 3rem 0;
+        }
+        
+        /* Mod Info Section */
+        .mod-info {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mod-screenshots {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+        
+        .mod-screenshot {
+            border-radius: 8px;
+            overflow: hidden;
+            height: 200px;
+        }
+        
+        .mod-screenshot img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: transform 0.5s ease;
+        }
+        
+        .mod-screenshot:hover img {
+            transform: scale(1.05);
+        }
+        
+        .mod-description h2,
+        .mod-features h2,
+        .mod-requirements h2 {
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 2px solid var(--light);
+        }
+        
+        /* Mod Sidebar */
+        .mod-sidebar {
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+        
+        .mod-download-card {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            text-align: center;
+        }
+        
+        .mod-download-card h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .mod-version {
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+        
+        .mod-file-size {
+            display: flex;
+            justify-content: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .mod-file-size div {
+            background-color: var(--light);
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+        }
+        
+        .download-btn {
+            display: block;
+            background-color: var(--accent);
+            color: white;
+            padding: 12px;
+            border-radius: 5px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            transition: background-color 0.3s ease;
+        }
+        
+        .download-btn:hover {
+            background-color: #c0392b;
+        }
+        
+        .download-mirrors {
+            margin-top: 1rem;
+        }
+        
+        .download-mirrors a {
+            color: var(--secondary);
+            font-size: 0.9rem;
+        }
+        
+        .mod-stats {
+            background-color: white;
+            border-radius: 8px;
+            padding: 1.5rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+        }
+        
+        .mod-stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.8rem 0;
+            border-bottom: 1px solid var(--light);
+        }
+        
+        .mod-stat:last-child {
+            border-bottom: none;
+        }
+        
+        /* Mod Installation */
+        .mod-installation {
+            background-color: white;
+            border-radius: 8px;
+            padding: 2rem;
+            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            margin-bottom: 3rem;
+        }
+        
+        .mod-installation h2 {
+            margin-bottom: 1.5rem;
+        }
+        
+        .installation-steps {
+            counter-reset: step;
+        }
+        
+        .installation-step {
+            position: relative;
+            padding-left: 3rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .installation-step::before {
+            counter-increment: step;
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            background-color: var(--secondary);
+            color: white;
+            width: 2rem;
+            height: 2rem;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+        }
+        
+        /* Footer (Same as index.html) */
+        footer {
+            background-color: var(--dark);
+            color: white;
+            padding: 3rem 0 1rem;
+        }
+        
+        .footer-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+        
+        .copyright {
+            text-align: center;
+            padding-top: 1.5rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+            font-size: 0.9rem;
+            color: var(--gray);
+        }
+        
+        /* Responsive Adjustments */
+        @media (max-width: 768px) {
+            .mod-header h1 {
+                font-size: 2rem;
+            }
+            
+            .mod-content {
+                grid-template-columns: 1fr;
+            }
+            
+            .mod-screenshots {
+                grid-template-columns: 1fr;
+            }
+        }
+        a{
+            text-decoration: none;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="contact.html">Contact</a></li>
+                </ul>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Mod Header -->
+    <section class="mod-header">
+        <div class="container">
+            <h1>GTA V: Realistic Graphics Overhaul</h1>
+            <span class="mod-badge">Version 2.5.1</span>
+            <span class="mod-badge">Updated: 2023-08-15</span>
+            <span class="mod-badge">GTA V</span>
+        </div>
+    </section>
+
+    <!-- Mod Content -->
+    <div class="container">
+        <div class="mod-content">
+            <!-- Main Mod Info -->
+            <div class="mod-info">
+                <div class="mod-description">
+                    <h2>Description</h2>
+                    <p>This comprehensive graphics overhaul mod transforms Grand Theft Auto V into a visually stunning masterpiece. The mod includes 4K textures, realistic lighting, improved weather effects, enhanced draw distances, and completely reworked post-processing effects.</p>
+                    <p>Experience Los Santos like never before with ray-traced reflections, volumetric clouds, and cinematic depth of field. The mod is performance-friendly with customizable settings to suit all PC configurations.</p>
+                </div>
+                
+                <div class="mod-screenshots">
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Mod Screenshot 1">
+                    </div>
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Mod Screenshot 2">
+                    </div>
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1551103782-8ab07afd45c1?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Mod Screenshot 3">
+                    </div>
+                    <div class="mod-screenshot">
+                        <img src="https://images.unsplash.com/photo-1589466725882-f47191476e8c?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Mod Screenshot 4">
+                    </div>
+                </div>
+                
+                <div class="mod-features">
+                    <h2>Features</h2>
+                    <ul>
+                        <li>4K textures for vehicles, buildings, and terrain</li>
+                        <li>Realistic ray-traced lighting and reflections</li>
+                        <li>Volumetric clouds and improved weather system</li>
+                        <li>Enhanced particle effects (fire, smoke, explosions)</li>
+                        <li>Improved water physics and visuals</li>
+                        <li>Customizable graphics settings</li>
+                        <li>Optimized for performance (FPS-friendly)</li>
+                        <li>Works with most other mods</li>
+                    </ul>
+                </div>
+                
+                <div class="mod-requirements">
+                    <h2>Requirements</h2>
+                    <ul>
+                        <li><strong>Game Version:</strong> GTA V 1.0.2699 (Latest)</li>
+                        <li><strong>Script Hook V:</strong> Required</li>
+                        <li><strong>OpenIV:</strong> Required for installation</li>
+                        <li><strong>OS:</strong> Windows 10/11 64-bit</li>
+                        <li><strong>CPU:</strong> Intel Core i5-4460 or AMD FX-8350</li>
+                        <li><strong>RAM:</strong> 8GB minimum, 16GB recommended</li>
+                        <li><strong>GPU:</strong> NVIDIA GTX 970 / AMD RX 470 (4GB VRAM)</li>
+                        <li><strong>Storage:</strong> 10GB additional space</li>
+                    </ul>
+                </div>
+            </div>
+            
+            <!-- Mod Sidebar -->
+            <div class="mod-sidebar">
+                <div class="mod-download-card">
+                    <h2>Download</h2>
+                    <div class="mod-version">Version 2.5.1</div>
+                    <div class="mod-file-size">
+                        <div><i class="fas fa-file-archive"></i> 1.8GB</div>
+                        <div><i class="fas fa-download"></i> 12.4K</div>
+                    </div>
+                    <a href="/GTA%20V/19a3e0-Awesomekills_Graphics_12.23.zip" download class="download-btn">
+                        <i class="fas fa-download"></i> Download Now
+                    </a>
+                    
+                    <a href="#" class="download-btn" style="background-color: var(--secondary);"><i class="fas fa-bolt"></i> Fast Mirror</a>
+                    <div class="download-mirrors">
+                        <a href="#"><i class="fas fa-server"></i> More Download Mirrors</a>
+                    </div>
+                </div>
+                
+                <div class="mod-stats">
+                    <div class="mod-stat">
+                        <span>Downloads</span>
+                        <span>12,478</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Version</span>
+                        <span>2.5.1</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Released</span>
+                        <span>2023-08-15</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Compatibility</span>
+                        <span>GTA V 1.0.2699</span>
+                    </div>
+                    <div class="mod-stat">
+                        <span>Rating</span>
+                        <span>★★★★★ (4.9/5)</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Installation Instructions -->
+        <div class="mod-installation">
+            <h2>Installation Instructions</h2>
+            <div class="installation-steps">
+                <div class="installation-step">
+                    <h3>Prerequisites</h3>
+                    <p>Make sure you have the latest version of GTA V (1.0.2699) and have installed Script Hook V and OpenIV.</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Backup Your Game</h3>
+                    <p>Always backup your original game files before installing any mods.</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Install the Mod</h3>
+                    <p>Extract the downloaded archive to your GTA V installation directory (usually <code>C:\Program Files\Rockstar Games\Grand Theft Auto V</code>). Overwrite files when prompted.</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Configure Settings</h3>
+                    <p>Run the <code>GraphicsConfig.exe</code> included in the mod to adjust settings based on your PC specs.</p>
+                </div>
+                <div class="installation-step">
+                    <h3>Launch the Game</h3>
+                    <p>Start GTA V as normal. The mod will load automatically. Press F8 in-game to open the mod menu.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
+
+  
+</body>
+</html>
