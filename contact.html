@@ -280,6 +280,22 @@
         a{
             text-decoration: none;
         }
+        .form-response {
+            margin-top: 1rem;
+            padding: 1rem;
+            border-radius: 5px;
+            display: none;
+        }
+        .form-response.success {
+            background-color: #d4edda;
+            color: #155724;
+            display: block;
+        }
+        .form-response.error {
+            background-color: #f8d7da;
+            color: #721c24;
+            display: block;
+        }
     </style>
 </head>
 <body>
@@ -297,7 +313,7 @@
                 </ul>
             </nav>
         </div>
-    </header>
+    </header> </header>
 
     <!-- Contact Header -->
     <section class="contact-header">
@@ -313,11 +329,7 @@
             <!-- Contact Form -->
             <div class="contact-form">
                 <h2>Send Us a Message</h2>
-                <form id="contactForm" action="https://formsubmit.co/aryan.ali.king.master@gmail.com" method="POST">
-                    <input type="hidden" name="_next" value="https://qetryx.pages.dev/thank-you.html">
-                    <input type="hidden" name="_captcha" value="false">
-                    <input type="hidden" name="_subject" value="New Contact Form Submission">
-
+                <form id="contactForm">
                     <div class="form-group">
                         <label for="name">Your Name</label>
                         <input type="text" id="name" name="name" required>
@@ -346,8 +358,11 @@
                     </div>
                     
                     <button type="submit" class="submit-btn">Send Message</button>
+                    <div id="formResponse" class="form-response"></div>
                 </form>
             </div>
+            
+
             
             <!-- Contact Information -->
             <div class="contact-info">
@@ -455,20 +470,78 @@
             </div>
         </div>
     </footer>
-
     <script>
-        // Form submission handling
         document.getElementById('contactForm').addEventListener('submit', function(e) {
-            // Let the form submit naturally to FormSubmit
-            // You can add additional validation here if needed
+            e.preventDefault();
             
-            // Optional: Show loading spinner
-            const submitBtn = this.querySelector('.submit-btn');
+            const form = e.target;
+            const submitBtn = form.querySelector('.submit-btn');
+            const responseEl = document.getElementById('formResponse');
+            
+            // Show loading state
             submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             submitBtn.disabled = true;
+            responseEl.className = 'form-response';
+            responseEl.innerHTML = ''; // Clear previous content
+            
+            // Use FormSubmit service
+            fetch('https://formsubmit.co/ajax/aryan.ali.king.master@gmail.com', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: form.name.value,
+                    email: form.email.value,
+                    subject: form.subject.value,
+                    message: form.message.value,
+                    _captcha: false,
+                    _template: 'table',
+                    _subject: 'New Contact Form Submission from GameModHub',
+                    _replyto: form.email.value // Auto-set reply-to address
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                responseEl.className = 'form-response success';
+                responseEl.innerHTML = `
+                    <div style="padding: 15px;">
+                        <i class="fas fa-check-circle" style="font-size: 2rem; color: #28a745; margin-bottom: 10px;"></i>
+                        <h3 style="margin-bottom: 10px; color: var(--dark);">Thank You, ${form.name.value}!</h3>
+                        <p>Your message has been sent successfully.</p>
+                        <p>We'll respond to you at <strong>${form.email.value}</strong> soon.</p>
+                    </div>
+                `;
+                form.reset();
+                
+                // Optional: Scroll to show the message
+                responseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            })
+            .catch(error => {
+                responseEl.className = 'form-response error';
+                responseEl.innerHTML = `
+                    <div style="padding: 15px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #dc3545; margin-bottom: 10px;"></i>
+                        <h3 style="margin-bottom: 10px; color: var(--dark);">Oops! Something went wrong</h3>
+                        <p>We couldn't send your message. Please try again.</p>
+                        <p>If the problem persists, email us directly at support@gamemodhub.com</p>
+                    </div>
+                `;
+                console.error('Form submission error:', error);
+            })
+            .finally(() => {
+                submitBtn.innerHTML = 'Send Message';
+                submitBtn.disabled = false;
+            });
         });
-
-        // Live chat simulation (would connect to actual chat service)
+    
+        // Keep your existing live chat simulation
         document.querySelector('.contact-method:nth-child(2)').addEventListener('click', function() {
             alert('In a real implementation, this would open your live chat system.\n\nPopular options: Tawk.to, LiveChat, or Intercom.');
         });
