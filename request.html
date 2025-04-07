@@ -6,13 +6,19 @@
     <title>Request a Mod - GameModHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-
-<!-- Your auth script -->
-<script src="auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <!-- Add EmailJS library -->
+    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
+    <script>
+        // Initialize EmailJS with your user ID
+        (function() {
+            emailjs.init("user_your_emailjs_user_id"); // You'll need to replace this with your actual EmailJS user ID
+        })();
+    </script>
+    <!-- Your auth script -->
+    <script src="auth.js"></script>
 
     <style>
-        
         /* Reuse styles from index.html */
         :root {
             --primary: #2c3e50;
@@ -218,6 +224,41 @@
         a{
             text-decoration: none;
         }
+        
+        /* Loading spinner */
+        .spinner {
+            display: none;
+            width: 40px;
+            height: 40px;
+            margin: 0 auto;
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        
+        .status-message {
+            display: none;
+            padding: 10px;
+            margin: 10px 0;
+            border-radius: 5px;
+            text-align: center;
+        }
+        
+        .success {
+            background-color: #d4edda;
+            color: #155724;
+        }
+        
+        .error {
+            background-color: #f8d7da;
+            color: #721c24;
+        }
     </style>
 </head>
 <body>
@@ -251,6 +292,9 @@
     <div class="container">
         <div class="request-form-container">
             <form id="modRequestForm">
+                <div id="statusMessage" class="status-message"></div>
+                <div id="loadingSpinner" class="spinner"></div>
+                
                 <div class="form-row">
                     <div class="form-group">
                         <label for="name">Your Name</label>
@@ -309,7 +353,7 @@
                     <input type="url" id="reference" name="reference" placeholder="Link to similar mod or inspiration">
                 </div>
                 
-                <button type="submit" class="submit-btn">Submit Request</button>
+                <button type="submit" class="submit-btn" id="submitBtn">Submit Request</button>
             </form>
             
             <div class="request-guidelines">
@@ -374,31 +418,46 @@
         document.getElementById('modRequestForm').addEventListener('submit', function(e) {
             e.preventDefault();
             
-            // Basic validation
             const form = e.target;
+            const submitBtn = document.getElementById('submitBtn');
+            const spinner = document.getElementById('loadingSpinner');
+            const statusMessage = document.getElementById('statusMessage');
+            
+            // Show loading spinner
+            submitBtn.disabled = true;
+            spinner.style.display = 'block';
+            statusMessage.style.display = 'none';
+            
+            // Prepare the email parameters
             const formData = new FormData(form);
+            const emailParams = {
+                from_name: formData.get('name'),
+                from_email: formData.get('email'),
+                game: formData.get('game') === 'other' ? formData.get('otherGame') : formData.get('game'),
+                mod_type: formData.get('modType'),
+                mod_name: formData.get('modName'),
+                description: formData.get('modDescription'),
+                reference: formData.get('reference') || 'No reference provided'
+            };
             
-            // In a real implementation, you would send this to your server
-            console.log('Form data:', Object.fromEntries(formData.entries()));
-            
-            // Show success message (in real implementation, use AJAX)
-            alert('Thank you! Your mod request has been submitted. We\'ll notify you if it gets fulfilled.');
-            form.reset();
-            
-            // For a real site, you would use:
-            // fetch('/submit-request', {
-            //     method: 'POST',
-            //     body: formData
-            // })
-            // .then(response => response.json())
-            // .then(data => {
-            //     alert('Request submitted!');
-            //     form.reset();
-            // })
-            // .catch(error => {
-            //     console.error('Error:', error);
-            //     alert('There was an error submitting your request.');
-            // });
+            // Send email using EmailJS
+            emailjs.send('aryan.ali.king.master@gmail.com', 'template_2teluh3', emailParams)
+                .then(function(response) {
+                    console.log('SUCCESS!', response.status, response.text);
+                    statusMessage.textContent = 'Thank you! Your mod request has been submitted. We\'ll notify you if it gets fulfilled.';
+                    statusMessage.className = 'status-message success';
+                    statusMessage.style.display = 'block';
+                    form.reset();
+                }, function(error) {
+                    console.log('FAILED...', error);
+                    statusMessage.textContent = 'There was an error submitting your request. Please try again later.';
+                    statusMessage.className = 'status-message error';
+                    statusMessage.style.display = 'block';
+                })
+                .finally(function() {
+                    spinner.style.display = 'none';
+                    submitBtn.disabled = false;
+                });
         });
     </script>
 </body>
