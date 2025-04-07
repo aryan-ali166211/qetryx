@@ -1,0 +1,934 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard | GameModHub</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0f1923;
+            --secondary: #ff4655;
+            --accent: #0f1923;
+            --dark: #0f1923;
+            --darker: #0a121a;
+            --neon: #00f5d4;
+            --text: #ece8e1;
+            --text-secondary: #b8b8b8;
+            --card-bg: rgba(15, 25, 35, 0.7);
+            --success: #2ecc71;
+            --warning: #f39c12;
+            --danger: #e74c3c;
+        }
+
+        /* Cyberpunk Animation */
+        @keyframes scanline {
+            0% { transform: translateY(-100%); }
+            100% { transform: translateY(100%); }
+        }
+
+        @keyframes flicker {
+            0%, 19%, 21%, 23%, 25%, 54%, 56%, 100% {
+                text-shadow: 0 0 5px var(--secondary),
+                             0 0 10px var(--secondary),
+                             0 0 20px var(--secondary);
+            }
+            20%, 24%, 55% {
+                text-shadow: none;
+            }
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Rajdhani', 'Arial Narrow', Arial, sans-serif;
+        }
+
+        body {
+            background-color: var(--dark);
+            color: var(--text);
+            line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(255,70,85,0.1) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0,245,212,0.1) 0%, transparent 50%);
+            position: relative;
+        }
+
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(
+                rgba(15, 25, 35, 0.2) 1px, 
+                transparent 1px
+            );
+            background-size: 100% 2px;
+            pointer-events: none;
+            animation: scanline 8s linear infinite;
+            z-index: 1000;
+        }
+
+        /* Cyberpunk scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--darker);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--secondary);
+            border-radius: 4px;
+        }
+
+        .container {
+            display: grid;
+            grid-template-columns: 250px 1fr;
+            min-height: 100vh;
+        }
+
+        /* Sidebar - Cyber Command Panel */
+        .sidebar {
+            background-color: var(--darker);
+            padding: 1.5rem;
+            border-right: 1px solid rgba(255, 70, 85, 0.2);
+            position: relative;
+            z-index: 10;
+            box-shadow: 5px 0 15px rgba(0, 0, 0, 0.5);
+        }
+
+        .logo {
+            font-size: 1.8rem;
+            font-weight: bold;
+            margin-bottom: 2rem;
+            display: flex;
+            align-items: center;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            animation: flicker 8s infinite;
+        }
+
+        .logo span {
+            color: var(--secondary);
+            text-shadow: 0 0 10px var(--secondary);
+        }
+
+        .logo i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+
+        .nav-menu {
+            list-style: none;
+            margin-top: 2rem;
+        }
+
+        .nav-item {
+            margin-bottom: 0.5rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-item::before {
+            content: "";
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 0;
+            height: 2px;
+            background: var(--secondary);
+            transition: width 0.3s ease;
+        }
+
+        .nav-item:hover::before {
+            width: 100%;
+        }
+
+        .nav-item a {
+            display: flex;
+            align-items: center;
+            padding: 0.75rem 1rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .nav-item a:hover, .nav-item a.active {
+            color: var(--text);
+            background-color: rgba(255, 70, 85, 0.1);
+        }
+
+        .nav-item i {
+            margin-right: 10px;
+            width: 20px;
+            text-align: center;
+            color: var(--secondary);
+        }
+
+        .user-profile {
+            position: absolute;
+            bottom: 20px;
+            left: 20px;
+            right: 20px;
+            display: flex;
+            align-items: center;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 5px;
+            border-left: 3px solid var(--secondary);
+            transition: all 0.3s ease;
+        }
+
+        .user-profile:hover {
+            background-color: rgba(255, 70, 85, 0.1);
+            transform: translateX(5px);
+        }
+
+        .user-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--secondary), var(--neon));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 10px;
+            color: var(--darker);
+            font-weight: bold;
+            box-shadow: 0 0 10px rgba(255, 70, 85, 0.5);
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-weight: 600;
+            margin-bottom: 2px;
+        }
+
+        .user-email {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .logout-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .logout-btn:hover {
+            color: var(--secondary);
+        }
+
+        /* Main Content - Battle Station */
+        .main-content {
+            padding: 2rem;
+            position: relative;
+            overflow-y: auto;
+        }
+
+        .header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 2rem;
+        }
+
+        .page-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            color: var(--text);
+            position: relative;
+            display: inline-block;
+        }
+
+        .page-title::after {
+            content: "";
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 50px;
+            height: 3px;
+            background: var(--secondary);
+        }
+
+        .settings-btn {
+            background-color: rgba(255, 70, 85, 0.2);
+            color: var(--text);
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            letter-spacing: 1px;
+        }
+
+        .settings-btn:hover {
+            background-color: var(--secondary);
+            box-shadow: 0 0 15px rgba(255, 70, 85, 0.5);
+        }
+
+        .settings-btn i {
+            margin-right: 8px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--card-bg);
+            border-radius: 10px;
+            padding: 1.5rem;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            border-top: 3px solid var(--secondary);
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            backdrop-filter: blur(5px);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
+        }
+
+        .stat-card h3 {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin-bottom: 0.5rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .stat-card .value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text);
+            margin-bottom: 0.5rem;
+            background: linear-gradient(to right, var(--text), var(--secondary));
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .stat-card .change {
+            display: flex;
+            align-items: center;
+            font-size: 0.9rem;
+        }
+
+        .stat-card .change.positive {
+            color: var(--success);
+        }
+
+        .stat-card .change.negative {
+            color: var(--danger);
+        }
+
+        /* Recent Activity */
+        .section-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--text);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+        }
+
+        .section-title i {
+            margin-right: 10px;
+            color: var(--secondary);
+        }
+
+        .activity-list {
+            background: var(--card-bg);
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            backdrop-filter: blur(5px);
+        }
+
+        .activity-item {
+            display: flex;
+            padding: 1rem;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: background-color 0.3s ease;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-item:hover {
+            background-color: rgba(255, 70, 85, 0.05);
+        }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: rgba(255, 70, 85, 0.1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 1rem;
+            color: var(--secondary);
+        }
+
+        .activity-details {
+            flex: 1;
+        }
+
+        .activity-title {
+            font-weight: 500;
+            margin-bottom: 0.25rem;
+        }
+
+        .activity-description {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+
+        .activity-time {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+            text-align: right;
+        }
+
+        /* Settings Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.8);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--darker);
+            border-radius: 10px;
+            width: 90%;
+            max-width: 500px;
+            border: 1px solid var(--secondary);
+            box-shadow: 0 0 30px rgba(255, 70, 85, 0.3);
+            overflow: hidden;
+            animation: modalFadeIn 0.3s ease;
+        }
+
+        @keyframes modalFadeIn {
+            from { opacity: 0; transform: translateY(-20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .modal-header {
+            padding: 1rem 1.5rem;
+            background: rgba(255, 70, 85, 0.1);
+            border-bottom: 1px solid rgba(255, 70, 85, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: var(--text);
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: var(--text-secondary);
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: color 0.3s ease;
+        }
+
+        .close-btn:hover {
+            color: var(--secondary);
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        .setting-item {
+            margin-bottom: 1.5rem;
+        }
+
+        .setting-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--text);
+        }
+
+        .toggle-switch {
+            position: relative;
+            display: inline-block;
+            width: 50px;
+            height: 24px;
+        }
+
+        .toggle-switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 16px;
+            width: 16px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--secondary);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(26px);
+        }
+
+        .theme-selector {
+            display: flex;
+            gap: 10px;
+            margin-top: 1rem;
+        }
+
+        .theme-option {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: transform 0.3s ease, border-color 0.3s ease;
+        }
+
+        .theme-option:hover {
+            transform: scale(1.1);
+        }
+
+        .theme-option.selected {
+            border-color: var(--secondary);
+            transform: scale(1.1);
+        }
+
+        .update-password-form {
+            margin-top: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: var(--text);
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            border-radius: 5px;
+            color: var(--text);
+        }
+
+        .save-btn {
+            background-color: var(--secondary);
+            color: var(--text);
+            border: none;
+            padding: 0.75rem 1.5rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: 500;
+            transition: background-color 0.3s ease;
+            margin-top: 1rem;
+        }
+
+        .save-btn:hover {
+            background-color: #e63946;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                grid-template-columns: 1fr;
+            }
+
+            .sidebar {
+                display: none;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Glitch Effect */
+        .glitch {
+            position: relative;
+        }
+
+        .glitch::before, .glitch::after {
+            content: attr(data-text);
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            opacity: 0.8;
+        }
+
+        .glitch::before {
+            color: #0ff;
+            z-index: -1;
+            animation: glitch-effect 3s infinite;
+        }
+
+        .glitch::after {
+            color: #f0f;
+            z-index: -2;
+            animation: glitch-effect 2s infinite reverse;
+        }
+
+        @keyframes glitch-effect {
+            0% { transform: translate(0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(-3px, -3px); }
+            60% { transform: translate(3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0); }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- Cyber Command Sidebar -->
+        <div class="sidebar">
+            <div class="logo">
+                <i class="fas fa-gamepad"></i>
+                <span>GM</span>H
+            </div>
+
+            <ul class="nav-menu">
+                <li class="nav-item">
+                    <a href="#" class="active">
+                        <i class="fas fa-tachometer-alt"></i>
+                        Dashboard
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">
+                        <i class="fas fa-download"></i>
+                        My Mods
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">
+                        <i class="fas fa-upload"></i>
+                        Upload Mod
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">
+                        <i class="fas fa-heart"></i>
+                        Favorites
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">
+                        <i class="fas fa-history"></i>
+                        History
+                    </a>
+                </li>
+                <li class="nav-item">
+                    <a href="#">
+                        <i class="fas fa-cog"></i>
+                        Settings
+                    </a>
+                </li>
+            </ul>
+
+            <div class="user-profile">
+                <div class="user-avatar" id="userAvatar">U</div>
+                <div class="user-info">
+                    <div class="user-name" id="username">User</div>
+                    <div class="user-email" id="userEmail">user@example.com</div>
+                </div>
+                <button class="logout-btn" id="logoutBtn">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+
+        <!-- Main Battle Station -->
+        <div class="main-content">
+            <div class="header">
+                <h1 class="page-title">Command Center</h1>
+                <button class="settings-btn" id="settingsBtn">
+                    <i class="fas fa-cog"></i> Settings
+                </button>
+            </div>
+
+            <!-- Stats Overview -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <h3>Total Mods Downloaded</h3>
+                    <div class="value" id="totalDownloads">147</div>
+                    <div class="change positive">
+                        <i class="fas fa-arrow-up"></i> 12% from last week
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Mods Uploaded</h3>
+                    <div class="value" id="totalUploads">23</div>
+                    <div class="change positive">
+                        <i class="fas fa-arrow-up"></i> 3 new this month
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Favorites</h3>
+                    <div class="value" id="totalFavorites">18</div>
+                    <div class="change negative">
+                        <i class="fas fa-arrow-down"></i> 2 removed
+                    </div>
+                </div>
+
+                <div class="stat-card">
+                    <h3>Community Rank</h3>
+                    <div class="value" id="userRank">#42</div>
+                    <div class="change positive">
+                        <i class="fas fa-arrow-up"></i> Up 5 places
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Activity -->
+            <h2 class="section-title">
+                <i class="fas fa-bolt"></i> Recent Activity
+            </h2>
+
+            <div class="activity-list">
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-download"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">Downloaded "Cyberpunk HD Texture Pack"</div>
+                        <div class="activity-description">Version 2.1 by ModderPro</div>
+                    </div>
+                    <div class="activity-time">2 hours ago</div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">Favorited "Realistic Weather Mod"</div>
+                        <div class="activity-description">For Grand Theft Auto VI</div>
+                    </div>
+                    <div class="activity-time">1 day ago</div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-upload"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">Uploaded "Zombie Survival Mode"</div>
+                        <div class="activity-description">New version 1.2 released</div>
+                    </div>
+                    <div class="activity-time">3 days ago</div>
+                </div>
+
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-comment"></i>
+                    </div>
+                    <div class="activity-details">
+                        <div class="activity-title">Commented on "4K Character Models"</div>
+                        <div class="activity-description">"Works great with my setup!"</div>
+                    </div>
+                    <div class="activity-time">1 week ago</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Settings Modal -->
+    <div class="modal" id="settingsModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title">Settings</h3>
+                <button class="close-btn" id="closeModal">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div class="setting-item">
+                    <label class="setting-label">Dark Mode</label>
+                    <label class="toggle-switch">
+                        <input type="checkbox" checked>
+                        <span class="slider"></span>
+                    </label>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Theme Color</label>
+                    <div class="theme-selector">
+                        <div class="theme-option selected" style="background: #ff4655;" data-theme="red"></div>
+                        <div class="theme-option" style="background: #00f5d4;" data-theme="teal"></div>
+                        <div class="theme-option" style="background: #f5a623;" data-theme="orange"></div>
+                        <div class="theme-option" style="background: #7e5bef;" data-theme="purple"></div>
+                    </div>
+                </div>
+
+                <div class="setting-item">
+                    <label class="setting-label">Update Password</label>
+                    <div class="update-password-form">
+                        <div class="form-group">
+                            <label>Current Password</label>
+                            <input type="password" placeholder="Enter current password">
+                        </div>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" placeholder="Enter new password">
+                        </div>
+                        <div class="form-group">
+                            <label>Confirm New Password</label>
+                            <input type="password" placeholder="Confirm new password">
+                        </div>
+                        <button class="save-btn">Save Changes</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // DOM Elements
+        const settingsBtn = document.getElementById('settingsBtn');
+        const closeModal = document.getElementById('closeModal');
+        const settingsModal = document.getElementById('settingsModal');
+        const logoutBtn = document.getElementById('logoutBtn');
+        const themeOptions = document.querySelectorAll('.theme-option');
+
+        // Get user data from localStorage
+        const userData = JSON.parse(localStorage.getItem('user')) || {
+            name: 'ModMaster',
+            email: 'modder@example.com',
+            stats: {
+                downloads: 147,
+                uploads: 23,
+                favorites: 18,
+                rank: 42
+            }
+        };
+
+        // Set user data on page load
+        document.addEventListener('DOMContentLoaded', () => {
+            document.getElementById('username').textContent = userData.name;
+            document.getElementById('userEmail').textContent = userData.email;
+            document.getElementById('userAvatar').textContent = userData.name.charAt(0).toUpperCase();
+            
+            document.getElementById('totalDownloads').textContent = userData.stats.downloads;
+            document.getElementById('totalUploads').textContent = userData.stats.uploads;
+            document.getElementById('totalFavorites').textContent = userData.stats.favorites;
+            document.getElementById('userRank').textContent = `#${userData.stats.rank}`;
+        });
+
+        // Settings Modal
+        settingsBtn.addEventListener('click', () => {
+            settingsModal.style.display = 'flex';
+        });
+
+        closeModal.addEventListener('click', () => {
+            settingsModal.style.display = 'none';
+        });
+
+        window.addEventListener('click', (e) => {
+            if (e.target === settingsModal) {
+                settingsModal.style.display = 'none';
+            }
+        });
+
+        // Theme Selection
+        themeOptions.forEach(option => {
+            option.addEventListener('click', () => {
+                themeOptions.forEach(opt => opt.classList.remove('selected'));
+                option.classList.add('selected');
+                // In a real app, you would change the theme here
+            });
+        });
+
+        // Logout
+        logoutBtn.addEventListener('click', () => {
+            if (confirm('Are you sure you want to log out?')) {
+                // In a real app, you would clear session and redirect
+                window.location.href = 'index.html';
+            }
+        });
+
+        // Glitch effect on hover for logo
+        const logo = document.querySelector('.logo');
+        logo.addEventListener('mouseenter', () => {
+            logo.classList.add('glitch');
+            logo.setAttribute('data-text', logo.textContent);
+        });
+
+        logo.addEventListener('mouseleave', () => {
+            logo.classList.remove('glitch');
+        });
+    </script>
+</body>
+</html>
