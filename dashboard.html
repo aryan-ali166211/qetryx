@@ -3,365 +3,282 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard - GameModHub</title>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Game Portal - Dashboard</title>
     <style>
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --dark: #1a1a2e;
-            --neon: #00f7ff;
-            --matrix: #00ff41;
+            --primary: #6c5ce7;
+            --secondary: #a29bfe;
+            --dark: #2d3436;
+            --light: #f5f6fa;
+            --accent: #00cec9;
+            --danger: #d63031;
         }
-
+        
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Rajdhani', 'Segoe UI', sans-serif;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
-
-        @import url('https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;700&display=swap');
-
+        
         body {
-            background: url('https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80') no-repeat center center fixed;
+            background: url('https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80') no-repeat center center fixed;
             background-size: cover;
-            color: white;
             min-height: 100vh;
+            color: var(--light);
+            position: relative;
         }
-
-        .game-dashboard {
-            display: flex;
-            min-height: 100vh;
-            backdrop-filter: blur(5px);
+        
+        body::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
             background: rgba(0, 0, 0, 0.7);
+            z-index: -1;
         }
-
-        .sidebar {
-            width: 250px;
-            background: rgba(26, 26, 46, 0.9);
-            border-right: 1px solid var(--neon);
-            box-shadow: 0 0 20px rgba(0, 247, 255, 0.3);
-            padding: 2rem 1rem;
-        }
-
-        .sidebar-header {
-            text-align: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(0, 247, 255, 0.3);
-        }
-
-        .sidebar-header h2 {
-            background: linear-gradient(to right, var(--neon), var(--matrix));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-            font-size: 1.5rem;
-        }
-
-        .user-profile {
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            margin-bottom: 2rem;
-            padding: 10px;
-            border-radius: 5px;
-            background: rgba(255, 255, 255, 0.05);
-        }
-
-        .user-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: var(--secondary);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-        }
-
-        .user-info h4 {
-            font-size: 1rem;
-            margin-bottom: 3px;
-        }
-
-        .user-info p {
-            font-size: 0.8rem;
-            color: #aaa;
-        }
-
-        .nav-menu {
-            list-style: none;
-        }
-
-        .nav-item {
-            margin-bottom: 5px;
-        }
-
-        .nav-link {
-            display: block;
-            padding: 12px 15px;
-            color: white;
-            text-decoration: none;
-            border-radius: 5px;
-            transition: all 0.3s;
-        }
-
-        .nav-link:hover, .nav-link.active {
-            background: rgba(0, 247, 255, 0.1);
-            color: var(--neon);
-        }
-
-        .nav-link i {
-            width: 25px;
-            text-align: center;
-            margin-right: 10px;
-        }
-
-        .main-content {
-            flex: 1;
-            padding: 2rem;
-        }
-
-        .dashboard-header {
+        
+        .navbar {
+            background: rgba(45, 52, 54, 0.9);
+            padding: 1rem 2rem;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 2rem;
-            padding-bottom: 1rem;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            border-bottom: 2px solid var(--primary);
         }
-
-        .dashboard-header h1 {
-            font-size: 2rem;
-            background: linear-gradient(to right, var(--neon), var(--matrix));
+        
+        .logo {
+            font-size: 1.5rem;
+            font-weight: bold;
+            background: linear-gradient(to right, var(--primary), var(--accent));
             -webkit-background-clip: text;
             background-clip: text;
             color: transparent;
         }
-
+        
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .user-email {
+            color: var(--secondary);
+        }
+        
         .logout-btn {
-            padding: 10px 20px;
-            background: var(--accent);
+            background: var(--danger);
             color: white;
             border: none;
+            padding: 0.5rem 1rem;
             border-radius: 5px;
             cursor: pointer;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            transition: all 0.3s ease;
         }
-
+        
         .logout-btn:hover {
-            background: #c0392b;
+            background: #ff7675;
             transform: translateY(-2px);
         }
-
-        .stats-cards {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 20px;
+        
+        .container {
+            max-width: 1200px;
+            margin: 2rem auto;
+            padding: 0 2rem;
+        }
+        
+        .welcome-message {
+            background: rgba(45, 52, 54, 0.8);
+            padding: 2rem;
+            border-radius: 10px;
             margin-bottom: 2rem;
+            border: 2px solid var(--primary);
+            box-shadow: 0 0 20px rgba(108, 92, 231, 0.3);
         }
-
-        .stat-card {
-            background: rgba(26, 26, 46, 0.7);
-            border-radius: 10px;
-            padding: 1.5rem;
-            border: 1px solid rgba(0, 247, 255, 0.3);
-            transition: all 0.3s;
-        }
-
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0, 247, 255, 0.1);
-            border-color: var(--neon);
-        }
-
-        .stat-card h3 {
-            color: #aaa;
-            font-size: 1rem;
-            margin-bottom: 10px;
-        }
-
-        .stat-card .value {
+        
+        .welcome-title {
             font-size: 2rem;
-            font-weight: bold;
-            background: linear-gradient(to right, var(--neon), var(--matrix));
-            -webkit-background-clip: text;
-            background-clip: text;
-            color: transparent;
-        }
-
-        .recent-activity {
-            background: rgba(26, 26, 46, 0.7);
-            border-radius: 10px;
-            padding: 1.5rem;
-            border: 1px solid rgba(0, 247, 255, 0.3);
-        }
-
-        .recent-activity h2 {
             margin-bottom: 1rem;
-            padding-bottom: 10px;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+            color: var(--accent);
         }
-
-        .activity-item {
-            display: flex;
-            align-items: center;
-            padding: 10px 0;
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        
+        .welcome-text {
+            line-height: 1.6;
+            color: var(--secondary);
         }
-
-        .activity-item:last-child {
-            border-bottom: none;
+        
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
         }
-
-        .activity-icon {
-            width: 40px;
-            height: 40px;
+        
+        .game-card {
+            background: rgba(45, 52, 54, 0.8);
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid var(--primary);
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        }
+        
+        .game-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 30px rgba(108, 92, 231, 0.4);
+        }
+        
+        .game-image {
+            width: 100%;
+            height: 180px;
+            object-fit: cover;
+        }
+        
+        .game-info {
+            padding: 1.5rem;
+        }
+        
+        .game-title {
+            font-size: 1.3rem;
+            margin-bottom: 0.5rem;
+            color: white;
+        }
+        
+        .game-description {
+            color: var(--secondary);
+            margin-bottom: 1rem;
+            font-size: 0.9rem;
+        }
+        
+        .play-btn {
+            background: linear-gradient(to right, var(--primary), var(--accent));
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            width: 100%;
+            font-weight: bold;
+        }
+        
+        .play-btn:hover {
+            opacity: 0.9;
+        }
+        
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+        }
+        
+        .particle {
+            position: absolute;
+            background: var(--primary);
             border-radius: 50%;
-            background: rgba(0, 247, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-right: 15px;
-            color: var(--neon);
+            opacity: 0.5;
+            animation: float linear infinite;
         }
-
-        .activity-details h4 {
-            margin-bottom: 5px;
-        }
-
-        .activity-details p {
-            color: #aaa;
-            font-size: 0.8rem;
-        }
-
-        .activity-time {
-            margin-left: auto;
-            color: #777;
-            font-size: 0.8rem;
+        
+        @keyframes float {
+            0% { transform: translateY(0) rotate(0deg); }
+            100% { transform: translateY(-100vh) rotate(360deg); }
         }
     </style>
 </head>
 <body>
-    <div class="game-dashboard">
-        <!-- Sidebar -->
-        <div class="sidebar">
-            <div class="sidebar-header">
-                <h2><i class="fas fa-gamepad"></i> GameModHub</h2>
-            </div>
-
-            <div class="user-profile">
-                <div class="user-avatar" id="user-avatar">GM</div>
-                <div class="user-info">
-                    <h4 id="username">Gamer</h4>
-                    <p id="user-email">gamer@example.com</p>
-                </div>
-            </div>
-
-            <ul class="nav-menu">
-                <li class="nav-item"><a href="#" class="nav-link active"><i class="fas fa-home"></i> Dashboard</a></li>
-                <li class="nav-item"><a href="mods.html" class="nav-link"><i class="fas fa-cubes"></i> My Mods</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-heart"></i> Favorites</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-cog"></i> Settings</a></li>
-                <li class="nav-item"><a href="#" class="nav-link"><i class="fas fa-question-circle"></i> Help</a></li>
-            </ul>
+    <div class="particles" id="particles"></div>
+    
+    <nav class="navbar">
+        <div class="logo">Epic Game Portal</div>
+        <div class="user-menu">
+            <span class="user-email" id="user-email"></span>
+            <button class="logout-btn" id="logout-btn">Logout</button>
         </div>
-
-        <!-- Main Content -->
-        <div class="main-content">
-            <div class="dashboard-header">
-                <h1>Player Dashboard</h1>
-                <button class="logout-btn" onclick="logout()">
-                    <i class="fas fa-sign-out-alt"></i> Logout
-                </button>
-            </div>
-
-            <div class="stats-cards">
-                <div class="stat-card">
-                    <h3>Total Mods Downloaded</h3>
-                    <div class="value">47</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Mods Created</h3>
-                    <div class="value">12</div>
-                </div>
-                <div class="stat-card">
-                    <h3>Community Rank</h3>
-                    <div class="value">#56</div>
-                </div>
-                <div class="stat-card">
-                    <h3>XP Points</h3>
-                    <div class="value">1,240</div>
+    </nav>
+    
+    <div class="container">
+        <div class="welcome-message">
+            <h1 class="welcome-title">Welcome to the Game Portal!</h1>
+            <p class="welcome-text">
+                Ready to dive into epic gaming adventures? Browse our collection of games below and start playing.
+                Your progress and achievements will be saved to your account. Game on!
+            </p>
+        </div>
+        
+        <div class="games-grid">
+            <div class="game-card">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Space Adventure" class="game-image">
+                <div class="game-info">
+                    <h3 class="game-title">Space Adventure</h3>
+                    <p class="game-description">Explore the galaxy, battle alien forces, and uncover ancient secrets in this epic space odyssey.</p>
+                    <button class="play-btn">Play Now</button>
                 </div>
             </div>
-
-            <div class="recent-activity">
-                <h2><i class="fas fa-history"></i> Recent Activity</h2>
-                
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-download"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4>Downloaded GTA V Mod</h4>
-                        <p>Super Cars Pack v3.2</p>
-                    </div>
-                    <div class="activity-time">2 hours ago</div>
+            
+            <div class="game-card">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Dragon Quest" class="game-image">
+                <div class="game-info">
+                    <h3 class="game-title">Dragon Quest</h3>
+                    <p class="game-description">Become a legendary dragon rider and save the kingdom from the dark sorcerer's curse.</p>
+                    <button class="play-btn">Play Now</button>
                 </div>
-                
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-upload"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4>Uploaded Minecraft Mod</h4>
-                        <p>Epic Dungeons v1.5</p>
-                    </div>
-                    <div class="activity-time">1 day ago</div>
-                </div>
-                
-                <div class="activity-item">
-                    <div class="activity-icon">
-                        <i class="fas fa-comment"></i>
-                    </div>
-                    <div class="activity-details">
-                        <h4>Posted Comment</h4>
-                        <p>"This mod is amazing!"</p>
-                    </div>
-                    <div class="activity-time">2 days ago</div>
+            </div>
+            
+            <div class="game-card">
+                <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-1.2.1&auto=format&fit=crop&w=1350&q=80" alt="Zombie Survival" class="game-image">
+                <div class="game-info">
+                    <h3 class="game-title">Zombie Survival</h3>
+                    <p class="game-description">Gather resources, build defenses, and survive the zombie apocalypse in this intense survival game.</p>
+                    <button class="play-btn">Play Now</button>
                 </div>
             </div>
         </div>
     </div>
 
-    <script src="auth.js"></script>
     <script>
-        // Display user info when page loads
-        auth.onAuthStateChanged(user => {
-            if (user) {
-                document.getElementById('username').textContent = user.displayName || 'Gamer';
-                document.getElementById('user-email').textContent = user.email;
-                
-                // Set avatar initials
-                const name = user.displayName || 'GM';
-                document.getElementById('user-avatar').textContent = 
-                    name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
-            } else {
-                window.location.href = 'login.html';
-            }
-        });
-
-        function logout() {
-            auth.signOut().then(() => {
-                window.location.href = 'login.html';
-            });
+        // Create particles
+        const particlesContainer = document.getElementById('particles');
+        for (let i = 0; i < 50; i++) {
+            const particle = document.createElement('div');
+            particle.classList.add('particle');
+            
+            const size = Math.random() * 10 + 5;
+            const posX = Math.random() * 100;
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            
+            particle.style.width = `${size}px`;
+            particle.style.height = `${size}px`;
+            particle.style.left = `${posX}%`;
+            particle.style.animationDuration = `${duration}s`;
+            particle.style.animationDelay = `${delay}s`;
+            
+            // Random color between primary and accent
+            const colors = ['#6c5ce7', '#a29bfe', '#00cec9'];
+            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+            
+            particlesContainer.appendChild(particle);
         }
+        
+        // Check if user is logged in
+        const currentUser = sessionStorage.getItem('currentUser');
+        if (!currentUser) {
+            window.location.href = 'login.html';
+        }
+        
+        // Display user email
+        document.getElementById('user-email').textContent = currentUser;
+        
+        // Logout button
+        document.getElementById('logout-btn').addEventListener('click', () => {
+            sessionStorage.removeItem('currentUser');
+            window.location.href = 'login.html';
+        });
     </script>
 </body>
 </html>
