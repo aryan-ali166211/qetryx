@@ -5,21 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Request a Mod - GameModHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-    <!-- Add EmailJS library -->
-    <script src="https://cdn.jsdelivr.net/npm/emailjs-com@3.2.0/dist/email.min.js"></script>
-    <script>
-        // Initialize EmailJS with your user ID
-        (function() {
-            emailjs.init("user_your_emailjs_user_id"); // You'll need to replace this with your actual EmailJS user ID
-        })();
-    </script>
-    <!-- Your auth script -->
-    <script src="auth.js"></script>
-
     <style>
-        /* Reuse styles from index.html */
         :root {
             --primary: #2c3e50;
             --secondary: #3498db;
@@ -49,7 +35,6 @@
             padding: 0 15px;
         }
         
-        /* Header (Same as index.html) */
         header {
             background-color: var(--primary);
             color: white;
@@ -87,7 +72,6 @@
             font-weight: 500;
         }
         
-        /* Request Page Specific Styles */
         .request-header {
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
             background-size: cover;
@@ -102,7 +86,6 @@
             margin-bottom: 1rem;
         }
         
-        /* Request Form */
         .request-form-container {
             background-color: white;
             border-radius: 8px;
@@ -142,9 +125,6 @@
             display: flex;
             gap: 1.5rem;
         }
-        .footer-col a{
-            color: white;
-        }
         
         .form-row .form-group {
             flex: 1;
@@ -166,7 +146,6 @@
             background-color: #c0392b;
         }
         
-        /* Request Guidelines */
         .request-guidelines {
             background-color: var(--light);
             border-radius: 8px;
@@ -188,7 +167,6 @@
             margin-bottom: 0.5rem;
         }
         
-        /* Footer (Same as index.html) */
         footer {
             background-color: var(--dark);
             color: white;
@@ -210,7 +188,6 @@
             color: var(--gray);
         }
         
-        /* Responsive Adjustments */
         @media (max-width: 768px) {
             .request-header h1 {
                 font-size: 2rem;
@@ -221,43 +198,29 @@
                 gap: 0;
             }
         }
-        a{
+        
+        a {
             text-decoration: none;
+            color: white;
         }
         
-        /* Loading spinner */
-        .spinner {
-            display: none;
-            width: 40px;
-            height: 40px;
-            margin: 0 auto;
-            border: 4px solid #f3f3f3;
-            border-top: 4px solid var(--accent);
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-        
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-        
-        .status-message {
-            display: none;
-            padding: 10px;
-            margin: 10px 0;
+        .form-response {
+            margin-top: 1rem;
+            padding: 1rem;
             border-radius: 5px;
-            text-align: center;
+            display: none;
         }
         
-        .success {
+        .form-response.success {
             background-color: #d4edda;
             color: #155724;
+            display: block;
         }
         
-        .error {
+        .form-response.error {
             background-color: #f8d7da;
             color: #721c24;
+            display: block;
         }
     </style>
 </head>
@@ -274,7 +237,7 @@
                     <li><a href="request.html" class="active">Request Mod</a></li>
                     <li><a href="faq.html">FAQ</a></li>
                     <li><a href="contact.html">Contact</a></li>
-                    <li><a href="login.html" id="auth-link">Login</a></li>
+                    <li><a href="login.html">Login</a></li>
                 </ul>
             </nav>
         </div>
@@ -291,9 +254,12 @@
     <!-- Request Form -->
     <div class="container">
         <div class="request-form-container">
-            <form id="modRequestForm">
-                <div id="statusMessage" class="status-message"></div>
-                <div id="loadingSpinner" class="spinner"></div>
+            <form id="modRequestForm" action="https://formsubmit.co/aryan.ali.king.master@gmail.com" method="POST">
+                <input type="hidden" name="_subject" value="New Mod Request from GameModHub">
+                <input type="hidden" name="_template" value="table">
+                <input type="hidden" name="_captcha" value="false">
+                
+                <div id="formResponse" class="form-response"></div>
                 
                 <div class="form-row">
                     <div class="form-group">
@@ -420,44 +386,74 @@
             
             const form = e.target;
             const submitBtn = document.getElementById('submitBtn');
-            const spinner = document.getElementById('loadingSpinner');
-            const statusMessage = document.getElementById('statusMessage');
+            const responseEl = document.getElementById('formResponse');
             
-            // Show loading spinner
+            // Show loading state
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
             submitBtn.disabled = true;
-            spinner.style.display = 'block';
-            statusMessage.style.display = 'none';
+            responseEl.className = 'form-response';
+            responseEl.innerHTML = '';
             
-            // Prepare the email parameters
+            // Get form data
             const formData = new FormData(form);
-            const emailParams = {
-                from_name: formData.get('name'),
-                from_email: formData.get('email'),
-                game: formData.get('game') === 'other' ? formData.get('otherGame') : formData.get('game'),
-                mod_type: formData.get('modType'),
-                mod_name: formData.get('modName'),
-                description: formData.get('modDescription'),
-                reference: formData.get('reference') || 'No reference provided'
-            };
+            const gameValue = formData.get('game') === 'other' ? formData.get('otherGame') : formData.get('game');
             
-            // Send email using EmailJS
-            emailjs.send('aryan.ali.king.master@gmail.com', 'template_2teluh3', emailParams)
-                .then(function(response) {
-                    console.log('SUCCESS!', response.status, response.text);
-                    statusMessage.textContent = 'Thank you! Your mod request has been submitted. We\'ll notify you if it gets fulfilled.';
-                    statusMessage.className = 'status-message success';
-                    statusMessage.style.display = 'block';
-                    form.reset();
-                }, function(error) {
-                    console.log('FAILED...', error);
-                    statusMessage.textContent = 'There was an error submitting your request. Please try again later.';
-                    statusMessage.className = 'status-message error';
-                    statusMessage.style.display = 'block';
+            // Use FormSubmit service
+            fetch('https://formsubmit.co/ajax/aryan.ali.king.master@gmail.com', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: formData.get('name'),
+                    email: formData.get('email'),
+                    game: gameValue,
+                    mod_type: formData.get('modType'),
+                    mod_name: formData.get('modName'),
+                    description: formData.get('modDescription'),
+                    reference: formData.get('reference') || 'No reference provided',
+                    _subject: 'New Mod Request from GameModHub',
+                    _template: 'table',
+                    _captcha: 'false'
                 })
-                .finally(function() {
-                    spinner.style.display = 'none';
-                    submitBtn.disabled = false;
-                });
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with error');
+                }
+                return response.json();
+            })
+            .then(data => {
+                responseEl.className = 'form-response success';
+                responseEl.innerHTML = `
+                    <div style="padding: 15px;">
+                        <i class="fas fa-check-circle" style="font-size: 2rem; color: #28a745; margin-bottom: 10px;"></i>
+                        <h3 style="margin-bottom: 10px; color: var(--dark);">Thank You, ${formData.get('name')}!</h3>
+                        <p>Your mod request has been submitted successfully.</p>
+                        <p>We'll notify you at <strong>${formData.get('email')}</strong> if your request gets fulfilled.</p>
+                    </div>
+                `;
+                form.reset();
+                
+                // Scroll to show the message
+                responseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            })
+            .catch(error => {
+                responseEl.className = 'form-response error';
+                responseEl.innerHTML = `
+                    <div style="padding: 15px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #dc3545; margin-bottom: 10px;"></i>
+                        <h3 style="margin-bottom: 10px; color: var(--dark);">Oops! Something went wrong</h3>
+                        <p>We couldn't submit your request. Please try again.</p>
+                    </div>
+                `;
+                console.error('Form submission error:', error);
+            })
+            .finally(() => {
+                submitBtn.innerHTML = 'Submit Request';
+                submitBtn.disabled = false;
+            });
         });
     </script>
 </body>
