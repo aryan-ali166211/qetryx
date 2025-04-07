@@ -1,4 +1,4 @@
-<!----> <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -272,178 +272,225 @@
     </div>
 
     <script>
-        // Create particles
-        const particlesContainer = document.getElementById('particles');
-        for (let i = 0; i < 50; i++) {
-            const particle = document.createElement('div');
-            particle.classList.add('particle');
-            
-            const size = Math.random() * 10 + 5;
-            const posX = Math.random() * 100;
-            const duration = Math.random() * 20 + 10;
-            const delay = Math.random() * 5;
-            
-            particle.style.width = `${size}px`;
-            particle.style.height = `${size}px`;
-            particle.style.left = `${posX}%`;
-            particle.style.animationDuration = `${duration}s`;
-            particle.style.animationDelay = `${delay}s`;
-            
-            // Random color between primary and accent
-            const colors = ['#6c5ce7', '#a29bfe', '#00cec9'];
-            particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
-            
-            particlesContainer.appendChild(particle);
-        }
-        
-        // DOM elements
-        // Initialize DOM elements
-        const loginSection = document.getElementById('login-section');
-        const verificationSection = document.getElementById('verification-section');
-        const loginBtn = document.getElementById('login-btn');
-        const signupBtn = document.getElementById('signup-btn');
-        const verifyBtn = document.getElementById('verify-btn');
-        const cancelVerify = document.getElementById('cancel-verify');
-        const emailInput = document.getElementById('email');
-        const passwordInput = document.getElementById('password');
-        const verificationCodeInput = document.getElementById('verification-code');
-        const errorMessage = document.getElementById('error-message');
-        const verificationMessage = document.getElementById('verification-message');
-        
-        // Initialize users storage if not exists
-        if (!localStorage.getItem('gamePortalUsers')) {
-            localStorage.setItem('gamePortalUsers', JSON.stringify({}));
-        }
-        
-        // Create particles (same as before)
-        
-        // Event listeners - fixed version
-        signupBtn.addEventListener('click', function() {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            
-            if (!email || !password) {
-                showError('Please enter both email and password');
-                return;
+        // Wait for DOM to be fully loaded before executing
+        document.addEventListener('DOMContentLoaded', function() {
+            // Create particles
+            const particlesContainer = document.getElementById('particles');
+            if (particlesContainer) {
+                for (let i = 0; i < 50; i++) {
+                    const particle = document.createElement('div');
+                    particle.classList.add('particle');
+                    
+                    const size = Math.random() * 10 + 5;
+                    const posX = Math.random() * 100;
+                    const duration = Math.random() * 20 + 10;
+                    const delay = Math.random() * 5;
+                    
+                    particle.style.width = `${size}px`;
+                    particle.style.height = `${size}px`;
+                    particle.style.left = `${posX}%`;
+                    particle.style.animationDuration = `${duration}s`;
+                    particle.style.animationDelay = `${delay}s`;
+                    
+                    const colors = ['#6c5ce7', '#a29bfe', '#00cec9'];
+                    particle.style.backgroundColor = colors[Math.floor(Math.random() * colors.length)];
+                    
+                    particlesContainer.appendChild(particle);
+                }
             }
-            
-            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
-                showError('Please enter a valid email address');
-                return;
+    
+            // DOM elements
+            const loginSection = document.getElementById('login-section');
+            const verificationSection = document.getElementById('verification-section');
+            const loginBtn = document.getElementById('login-btn');
+            const signupBtn = document.getElementById('signup-btn');
+            const verifyBtn = document.getElementById('verify-btn');
+            const cancelVerify = document.getElementById('cancel-verify');
+            const emailInput = document.getElementById('email');
+            const passwordInput = document.getElementById('password');
+            const verificationCodeInput = document.getElementById('verification-code');
+            const errorMessage = document.getElementById('error-message');
+            const verificationMessage = document.getElementById('verification-message');
+    
+            // Initialize users storage if not exists
+            if (!localStorage.getItem('gamePortalUsers')) {
+                localStorage.setItem('gamePortalUsers', JSON.stringify({}));
             }
-            
-            if (password.length < 6) {
-                showError('Password must be at least 6 characters');
-                return;
+    
+            // Helper functions
+            function showError(message) {
+                if (errorMessage) {
+                    errorMessage.textContent = message;
+                    errorMessage.style.display = 'block';
+                    setTimeout(() => {
+                        errorMessage.style.display = 'none';
+                    }, 5000);
+                }
             }
-            
-            const users = JSON.parse(localStorage.getItem('gamePortalUsers'));
-            
-            if (users[email]) {
-                showError('Account already exists. Please login instead.');
-                return;
+    
+            function showVerificationError(message) {
+                if (verificationMessage) {
+                    verificationMessage.textContent = message;
+                    verificationMessage.style.color = '#d63031';
+                    verificationMessage.style.display = 'block';
+                    setTimeout(() => {
+                        verificationMessage.style.display = 'none';
+                    }, 5000);
+                }
             }
-            
-            // Generate verification code
-            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            // Store temporarily
-            sessionStorage.setItem('tempVerification', JSON.stringify({
-                email: email,
-                password: password,
-                code: verificationCode
-            }));
-            
-            // Show verification section
-            loginSection.style.display = 'none';
-            verificationSection.style.display = 'block';
-            
-            // For demo purposes - show code in console
-            console.log('Verification code (demo):', verificationCode);
-            verificationMessage.textContent = `Demo: Verification code is ${verificationCode}`;
-            verificationMessage.style.display = 'block';
+    
+            function showVerificationSuccess(message) {
+                if (verificationMessage) {
+                    verificationMessage.textContent = message;
+                    verificationMessage.style.color = '#00cec9';
+                    verificationMessage.style.display = 'block';
+                }
+            }
+    
+            // Event listeners with proper null checks
+            if (signupBtn) {
+                signupBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const email = emailInput ? emailInput.value.trim() : '';
+                    const password = passwordInput ? passwordInput.value.trim() : '';
+                    
+                    if (!email || !password) {
+                        showError('Please enter both email and password');
+                        return;
+                    }
+                    
+                    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                        showError('Please enter a valid email address');
+                        return;
+                    }
+                    
+                    if (password.length < 6) {
+                        showError('Password must be at least 6 characters');
+                        return;
+                    }
+                    
+                    try {
+                        const users = JSON.parse(localStorage.getItem('gamePortalUsers') || '{}');
+                        
+                        if (users[email]) {
+                            showError('Account already exists. Please login instead.');
+                            return;
+                        }
+                        
+                        // Generate verification code
+                        const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
+                        
+                        // Store temporarily
+                        sessionStorage.setItem('tempVerification', JSON.stringify({
+                            email: email,
+                            password: password,
+                            code: verificationCode
+                        }));
+                        
+                        // Show verification section
+                        if (loginSection) loginSection.style.display = 'none';
+                        if (verificationSection) verificationSection.style.display = 'block';
+                        
+                        // For demo purposes - show code in console and on screen
+                        console.log('Verification code (demo):', verificationCode);
+                        showVerificationSuccess(`Demo: Your verification code is ${verificationCode}`);
+                    } catch (error) {
+                        console.error('Error during signup:', error);
+                        showError('An error occurred. Please try again.');
+                    }
+                });
+            }
+    
+            if (loginBtn) {
+                loginBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const email = emailInput ? emailInput.value.trim() : '';
+                    const password = passwordInput ? passwordInput.value.trim() : '';
+                    
+                    if (!email || !password) {
+                        showError('Please enter both email and password');
+                        return;
+                    }
+                    
+                    try {
+                        const users = JSON.parse(localStorage.getItem('gamePortalUsers') || '{}');
+                        
+                        if (!users[email]) {
+                            showError('No account found with this email');
+                            return;
+                        }
+                        
+                        if (users[email].password !== password) {
+                            showError('Incorrect password');
+                            return;
+                        }
+                        
+                        // Login successful
+                        sessionStorage.setItem('currentUser', email);
+                        window.location.href = 'dashboard.html';
+                    } catch (error) {
+                        console.error('Error during login:', error);
+                        showError('An error occurred. Please try again.');
+                    }
+                });
+            }
+    
+            if (verifyBtn) {
+                verifyBtn.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const code = verificationCodeInput ? verificationCodeInput.value.trim() : '';
+                    let tempData;
+                    
+                    try {
+                        tempData = JSON.parse(sessionStorage.getItem('tempVerification') || 'null');
+                    } catch (error) {
+                        console.error('Error parsing temp verification data:', error);
+                        tempData = null;
+                    }
+                    
+                    if (!tempData) {
+                        showVerificationError('Session expired. Please try again.');
+                        return;
+                    }
+                    
+                    if (code !== tempData.code) {
+                        showVerificationError('Invalid verification code');
+                        return;
+                    }
+                    
+                    try {
+                        // Create account
+                        const users = JSON.parse(localStorage.getItem('gamePortalUsers') || '{}');
+                        users[tempData.email] = {
+                            password: tempData.password,
+                            verified: true,
+                            createdAt: new Date().toISOString()
+                        };
+                        localStorage.setItem('gamePortalUsers', JSON.stringify(users));
+                        
+                        // Clear temp data and redirect
+                        sessionStorage.removeItem('tempVerification');
+                        sessionStorage.setItem('currentUser', tempData.email);
+                        window.location.href = 'dashboard.html';
+                    } catch (error) {
+                        console.error('Error during verification:', error);
+                        showVerificationError('An error occurred. Please try again.');
+                    }
+                });
+            }
+    
+            if (cancelVerify) {
+                cancelVerify.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    sessionStorage.removeItem('tempVerification');
+                    if (loginSection) loginSection.style.display = 'block';
+                    if (verificationSection) verificationSection.style.display = 'none';
+                    if (errorMessage) errorMessage.style.display = 'none';
+                    if (verificationMessage) verificationMessage.style.display = 'none';
+                    if (verificationCodeInput) verificationCodeInput.value = '';
+                });
+            }
         });
-        
-        loginBtn.addEventListener('click', function() {
-            const email = emailInput.value.trim();
-            const password = passwordInput.value.trim();
-            
-            if (!email || !password) {
-                showError('Please enter both email and password');
-                return;
-            }
-            
-            const users = JSON.parse(localStorage.getItem('gamePortalUsers'));
-            
-            if (!users[email]) {
-                showError('No account found with this email');
-                return;
-            }
-            
-            if (users[email].password !== password) {
-                showError('Incorrect password');
-                return;
-            }
-            
-            // Login successful
-            sessionStorage.setItem('currentUser', email);
-            window.location.href = 'dashboard.html';
-        });
-        
-        verifyBtn.addEventListener('click', function() {
-            const code = verificationCodeInput.value.trim();
-            const tempData = JSON.parse(sessionStorage.getItem('tempVerification'));
-            
-            if (!tempData) {
-                showVerificationError('Session expired. Please try again.');
-                return;
-            }
-            
-            if (code !== tempData.code) {
-                showVerificationError('Invalid verification code');
-                return;
-            }
-            
-            // Create account
-            const users = JSON.parse(localStorage.getItem('gamePortalUsers'));
-            users[tempData.email] = {
-                password: tempData.password,
-                verified: true,
-                createdAt: new Date().toISOString()
-            };
-            localStorage.setItem('gamePortalUsers', JSON.stringify(users));
-            
-            // Clear temp data and redirect
-            sessionStorage.removeItem('tempVerification');
-            sessionStorage.setItem('currentUser', tempData.email);
-            window.location.href = 'dashboard.html';
-        });
-        
-        cancelVerify.addEventListener('click', function() {
-            sessionStorage.removeItem('tempVerification');
-            verificationSection.style.display = 'none';
-            loginSection.style.display = 'block';
-            errorMessage.style.display = 'none';
-            verificationMessage.style.display = 'none';
-            verificationCodeInput.value = '';
-        });
-        
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.style.display = 'block';
-            setTimeout(() => {
-                errorMessage.style.display = 'none';
-            }, 5000);
-        }
-        
-        function showVerificationError(message) {
-            verificationMessage.textContent = message;
-            verificationMessage.style.color = '#d63031';
-            verificationMessage.style.display = 'block';
-            setTimeout(() => {
-                verificationMessage.style.display = 'none';
-            }, 5000);
-        }
     </script>
 </body>
-</html> -->
+</html> 
