@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!-- <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
@@ -297,6 +297,7 @@
         }
         
         // DOM elements
+        // Initialize DOM elements
         const loginSection = document.getElementById('login-section');
         const verificationSection = document.getElementById('verification-section');
         const loginBtn = document.getElementById('login-btn');
@@ -309,22 +310,25 @@
         const errorMessage = document.getElementById('error-message');
         const verificationMessage = document.getElementById('verification-message');
         
-        // Current user state
-        let currentUserEmail = '';
-        let isSignupFlow = false;
-        
-        // Check if users exist in localStorage
+        // Initialize users storage if not exists
         if (!localStorage.getItem('gamePortalUsers')) {
             localStorage.setItem('gamePortalUsers', JSON.stringify({}));
         }
         
-        // Event listeners
-        signupBtn.addEventListener('click', () => {
+        // Create particles (same as before)
+        
+        // Event listeners - fixed version
+        signupBtn.addEventListener('click', function() {
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
             
             if (!email || !password) {
                 showError('Please enter both email and password');
+                return;
+            }
+            
+            if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+                showError('Please enter a valid email address');
                 return;
             }
             
@@ -340,17 +344,13 @@
                 return;
             }
             
-            // Start signup flow
-            isSignupFlow = true;
-            currentUserEmail = email;
-            
-            // Generate verification code (in a real app, this would be sent via email)
+            // Generate verification code
             const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
             
-            // Store temporarily (for demo purposes)
+            // Store temporarily
             sessionStorage.setItem('tempVerification', JSON.stringify({
-                email,
-                password,
+                email: email,
+                password: password,
                 code: verificationCode
             }));
             
@@ -358,13 +358,13 @@
             loginSection.style.display = 'none';
             verificationSection.style.display = 'block';
             
-            // In a real app, you would send this code to the user's email
-            console.log(`Verification code for ${email}: ${verificationCode}`);
-            verificationMessage.textContent = `A verification code has been sent to ${email}`;
+            // For demo purposes - show code in console
+            console.log('Verification code (demo):', verificationCode);
+            verificationMessage.textContent = `Demo: Verification code is ${verificationCode}`;
             verificationMessage.style.display = 'block';
         });
         
-        loginBtn.addEventListener('click', () => {
+        loginBtn.addEventListener('click', function() {
             const email = emailInput.value.trim();
             const password = passwordInput.value.trim();
             
@@ -390,7 +390,7 @@
             window.location.href = 'dashboard.html';
         });
         
-        verifyBtn.addEventListener('click', () => {
+        verifyBtn.addEventListener('click', function() {
             const code = verificationCodeInput.value.trim();
             const tempData = JSON.parse(sessionStorage.getItem('tempVerification'));
             
@@ -404,31 +404,22 @@
                 return;
             }
             
-            // Verification successful - create account
+            // Create account
             const users = JSON.parse(localStorage.getItem('gamePortalUsers'));
             users[tempData.email] = {
                 password: tempData.password,
                 verified: true,
                 createdAt: new Date().toISOString()
             };
-            
             localStorage.setItem('gamePortalUsers', JSON.stringify(users));
             
-            // Clear temp data
+            // Clear temp data and redirect
             sessionStorage.removeItem('tempVerification');
-            
-            // Show success message
-            verificationMessage.textContent = 'Account created successfully! Redirecting...';
-            verificationMessage.style.color = '#00cec9';
-            
-            // Login the user automatically
             sessionStorage.setItem('currentUser', tempData.email);
-            setTimeout(() => {
-                window.location.href = 'dashboard.html';
-            }, 1500);
+            window.location.href = 'dashboard.html';
         });
         
-        cancelVerify.addEventListener('click', () => {
+        cancelVerify.addEventListener('click', function() {
             sessionStorage.removeItem('tempVerification');
             verificationSection.style.display = 'none';
             loginSection.style.display = 'block';
@@ -440,7 +431,6 @@
         function showError(message) {
             errorMessage.textContent = message;
             errorMessage.style.display = 'block';
-            
             setTimeout(() => {
                 errorMessage.style.display = 'none';
             }, 5000);
@@ -450,11 +440,10 @@
             verificationMessage.textContent = message;
             verificationMessage.style.color = '#d63031';
             verificationMessage.style.display = 'block';
-            
             setTimeout(() => {
                 verificationMessage.style.display = 'none';
             }, 5000);
         }
     </script>
 </body>
-</html>
+</html> -->
