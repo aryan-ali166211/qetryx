@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Accounts | GameModHub</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap');
+
+    body {
+      margin: 0;
+      padding: 0;
+      background: radial-gradient(circle at center, #0f0c29, #302b63, #24243e);
+      font-family: 'Orbitron', sans-serif;
+      color: #00ffea;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      min-height: 100vh;
+      padding: 2rem;
+    }
+
+    h1 {
+      color: #00ffe1;
+      font-size: 2.5rem;
+      text-shadow: 0 0 10px #00ffe1;
+      margin-bottom: 1rem;
+    }
+
+    #searchBar {
+      width: 80%;
+      max-width: 500px;
+      padding: 10px 15px;
+      font-size: 1rem;
+      border-radius: 8px;
+      border: none;
+      margin-bottom: 2rem;
+      background: #1e1e2f;
+      color: #00ffea;
+      outline: none;
+      box-shadow: 0 0 10px #00ffe1;
+    }
+
+    .account-table {
+      width: 90%;
+      max-width: 900px;
+      border-collapse: collapse;
+      background-color: rgba(0, 0, 0, 0.5);
+      box-shadow: 0 0 20px #0ff;
+      border: 1px solid #0ff;
+      border-radius: 10px;
+      overflow: hidden;
+    }
+
+    .account-table th, .account-table td {
+      padding: 1rem;
+      text-align: left;
+      border-bottom: 1px solid #0ff;
+    }
+
+    .account-table th {
+      background-color: #0f0c29;
+      color: #00ffe1;
+    }
+
+    .account-table tr:hover {
+      background-color: rgba(0, 255, 234, 0.1);
+    }
+
+    .account-table td {
+      color: #fff;
+    }
+
+    .action-btn {
+      background: #7a00ff;
+      border: none;
+      color: white;
+      padding: 6px 12px;
+      margin-right: 5px;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background 0.3s;
+      font-family: 'Orbitron', sans-serif;
+    }
+
+    .action-btn:hover {
+      background: #9c27b0;
+    }
+
+    .delete-btn {
+      background: #ff0057;
+    }
+
+    .delete-btn:hover {
+      background: #ff3366;
+    }
+
+    .back-btn {
+      margin-top: 2rem;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      background: linear-gradient(45deg, #ff0057, #7a00ff);
+      border: none;
+      border-radius: 5px;
+      color: white;
+      cursor: pointer;
+      transition: transform 0.2s ease;
+    }
+
+    .back-btn:hover {
+      transform: scale(1.05);
+    }
+
+    input.editable {
+      background: #1e1e2f;
+      color: #00ffea;
+      border: 1px solid #0ff;
+      border-radius: 4px;
+      padding: 5px;
+      font-family: 'Orbitron', sans-serif;
+    }
+  </style>
+</head>
+<body>
+  <h1><i class="fas fa-user-secret"></i> Created Accounts</h1>
+
+  <input type="text" id="searchBar" placeholder="🔍 Search email or password...">
+
+  <table class="account-table" id="accountsTable">
+    <thead>
+      <tr>
+        <th>Email</th>
+        <th>Password</th>
+        <th>Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      <!-- Accounts will load here -->
+    </tbody>
+  </table>
+
+  <button class="back-btn" onclick="window.location.href='index.html'">← Back to Login</button>
+
+  <script>
+    const tableBody = document.querySelector('#accountsTable tbody');
+    const searchBar = document.getElementById('searchBar');
+    let accounts = JSON.parse(localStorage.getItem('accounts')) || {};
+
+    function renderAccounts(filter = '') {
+      tableBody.innerHTML = '';
+
+      Object.entries(accounts).forEach(([email, details]) => {
+        if (!details.verified) return;
+
+        if (
+          email.toLowerCase().includes(filter.toLowerCase()) ||
+          details.password.toLowerCase().includes(filter.toLowerCase())
+        ) {
+          const row = document.createElement('tr');
+          row.innerHTML = `
+            <td><input class="editable" type="text" value="${email}" disabled></td>
+            <td><input class="editable" type="text" value="${details.password}" disabled></td>
+            <td>
+              <button class="action-btn edit-btn">Edit</button>
+              <button class="action-btn delete-btn">Delete</button>
+            </td>
+          `;
+
+          const editBtn = row.querySelector('.edit-btn');
+          const deleteBtn = row.querySelector('.delete-btn');
+          const emailInput = row.children[0].querySelector('input');
+          const passInput = row.children[1].querySelector('input');
+
+          editBtn.addEventListener('click', () => {
+            if (editBtn.textContent === 'Edit') {
+              emailInput.disabled = false;
+              passInput.disabled = false;
+              emailInput.focus();
+              editBtn.textContent = 'Save';
+            } else {
+              const newEmail = emailInput.value.trim();
+              const newPassword = passInput.value.trim();
+
+              if (!newEmail || !newPassword) {
+                alert('Email and password cannot be empty.');
+                return;
+              }
+
+              // Update in localStorage
+              if (newEmail !== email) {
+                delete accounts[email];
+              }
+
+              accounts[newEmail] = {
+                password: newPassword,
+                verified: true
+              };
+
+              localStorage.setItem('accounts', JSON.stringify(accounts));
+              renderAccounts(searchBar.value);
+            }
+          });
+
+          deleteBtn.addEventListener('click', () => {
+            if (confirm(`Delete account for ${email}?`)) {
+              delete accounts[email];
+              localStorage.setItem('accounts', JSON.stringify(accounts));
+              renderAccounts(searchBar.value);
+            }
+          });
+
+          tableBody.appendChild(row);
+        }
+      });
+    }
+
+    searchBar.addEventListener('input', () => {
+      renderAccounts(searchBar.value);
+    });
+
+    renderAccounts();
+  </script>
+</body>
+</html>
+a
