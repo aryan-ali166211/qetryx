@@ -224,41 +224,6 @@
     });
 
     renderAccounts();
-    // Export accounts
-document.getElementById('exportBtn').addEventListener('click', () => {
-  const data = JSON.stringify(accounts);
-  const blob = new Blob([data], {type: 'application/json'});
-  const url = URL.createObjectURL(blob);
-  
-  const a = document.createElement('a');
-  a.href = url;
-  a.download = 'gamemodhub-accounts.json';
-  a.click();
-});
-
-// Import accounts
-document.getElementById('importBtn').addEventListener('click', () => {
-  document.getElementById('importFile').click();
-});
-
-document.getElementById('importFile').addEventListener('change', (e) => {
-  const file = e.target.files[0];
-  const reader = new FileReader();
-  
-  reader.onload = (event) => {
-    try {
-      const importedAccounts = JSON.parse(event.target.result);
-      accounts = {...accounts, ...importedAccounts};
-      localStorage.setItem('accounts', JSON.stringify(accounts));
-      renderAccounts();
-      alert('Accounts imported successfully!');
-    } catch (error) {
-      alert('Error importing accounts: ' + error.message);
-    }
-  };
-  
-  reader.readAsText(file);
-});
   </script>
 </body>
 </html>
