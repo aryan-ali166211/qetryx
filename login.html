@@ -294,7 +294,7 @@
             
             try {
                 // Send verification email using FormSubmit.co
-                const response = await fetch('https://formsubmit.co/ajax/aryan.ali.king.master@gmail.com', {
+                const response = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
                     method: 'POST',
                     headers: { 
                         'Content-Type': 'application/json',
@@ -302,7 +302,7 @@
                     },
                     body: JSON.stringify({
                         _subject: 'GameModHub Verification Code',
-                        email: email,
+                        _replyto: email,
                         message: `Your verification code is: ${verificationCode}`,
                         _template: 'table',
                         _captcha: 'false'
