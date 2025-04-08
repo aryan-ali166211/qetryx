@@ -5,34 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frequently Asked Questions - GameModHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-
-<!-- Your auth script -->
-<script src="auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <!-- Your auth script -->
+    <script src="auth.js"></script>
 
     <style>
-        /* Reuse styles from index.html */
+        /* Cyberpunk Global Styles */
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --gray: #95a5a6;
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-green: #00ff9d;
+            --dark-bg: #0d0221;
+            --darker-bg: #05010e;
+            --dark-accent: #1a0933;
+            --light-text: #d1f7ff;
+            --glow-blue: rgba(5, 217, 232, 0.4);
+            --glow-pink: rgba(255, 42, 109, 0.4);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
             line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(5, 217, 232, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        h1, h2, h3, h4, .logo, .btn {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--neon-blue);
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--neon-pink);
+            text-shadow: 0 0 5px var(--glow-pink);
         }
         
         .container {
@@ -42,12 +68,17 @@
             padding: 0 15px;
         }
         
-        /* Header (Same as index.html) */
+        /* Cyberpunk Header (Same as homepage) */
         header {
-            background-color: var(--primary);
+            background-color: rgba(13, 2, 33, 0.9);
             color: white;
             padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--neon-purple);
+            box-shadow: 0 0 15px rgba(211, 0, 197, 0.3);
+            backdrop-filter: blur(5px);
         }
         
         .header-container {
@@ -60,10 +91,23 @@
             font-size: 1.8rem;
             font-weight: bold;
             color: white;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
+            position: relative;
         }
         
         .logo span {
-            color: var(--accent);
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--glow-pink);
+        }
+        
+        .logo::after {
+            content: '_';
+            animation: blink 1s infinite step-end;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         
         nav ul {
@@ -73,105 +117,234 @@
         
         nav ul li {
             margin-left: 1.5rem;
+            position: relative;
         }
         
         nav ul li a {
             color: white;
             font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 5px 0;
         }
         
-        /* FAQ Page Specific Styles */
+        nav ul li a:hover {
+            color: var(--neon-pink);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--neon-blue);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        nav ul li a.active {
+            color: var(--neon-pink);
+        }
+        
+        nav ul li a.active::after {
+            width: 100%;
+            background-color: var(--neon-pink);
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            color: var(--neon-pink);
+            transform: scale(1.1);
+        }
+        
+        /* Cyberpunk FAQ Header */
         .faq-header {
-            background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
+            background: linear-gradient(rgba(5, 1, 14, 0.9), rgba(13, 2, 33, 0.7)), 
+                        url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
             background-size: cover;
             background-position: center;
             color: white;
-            padding: 4rem 0;
+            padding: 6rem 0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .faq-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                        transparent 65%, 
+                        rgba(255, 42, 109, 0.1) 65%, 
+                        rgba(255, 42, 109, 0.1) 70%, 
+                        transparent 70%),
+                    linear-gradient(-45deg, 
+                        transparent 65%, 
+                        rgba(5, 217, 232, 0.1) 65%, 
+                        rgba(5, 217, 232, 0.1) 70%, 
+                        transparent 70%);
+            background-size: 30px 30px;
+            pointer-events: none;
         }
         
         .faq-header h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
+            font-size: 3rem;
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
+            animation: glitch 2s infinite alternate;
         }
         
-        /* FAQ Search */
+        .faq-header p {
+            font-size: 1.3rem;
+            max-width: 700px;
+            margin: 0 auto;
+            font-weight: 300;
+            letter-spacing: 0.5px;
+        }
+        
+        /* Cyberpunk FAQ Search */
         .faq-search {
             max-width: 600px;
             margin: -2rem auto 3rem;
             position: relative;
         }
         
+        .faq-search::before {
+            content: 'SEARCH_';
+            position: absolute;
+            top: -20px;
+            left: 20px;
+            font-size: 0.8rem;
+            color: var(--neon-green);
+            font-family: 'Orbitron', sans-serif;
+        }
+        
         .faq-search input {
             width: 100%;
             padding: 15px 20px;
-            border: none;
-            border-radius: 50px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            border-radius: 0;
             font-size: 1rem;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: white;
             padding-right: 50px;
+            box-shadow: 0 0 10px var(--glow-blue);
+        }
+        
+        .faq-search input::placeholder {
+            color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .faq-search input:focus {
+            outline: none;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 15px var(--glow-pink);
         }
         
         .faq-search button {
             position: absolute;
             right: 5px;
             top: 5px;
-            background-color: var(--accent);
-            color: white;
+            background-color: var(--neon-pink);
+            color: var(--dark-bg);
             border: none;
-            border-radius: 50%;
+            border-radius: 0;
             width: 40px;
             height: 40px;
             cursor: pointer;
+            transition: all 0.3s ease;
         }
         
-        /* FAQ Categories */
+        .faq-search button:hover {
+            background-color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--glow-blue);
+        }
+        
+        /* Cyberpunk FAQ Categories */
         .faq-categories {
             display: flex;
             justify-content: center;
             flex-wrap: wrap;
             gap: 1rem;
-            margin-bottom: 2rem;
+            margin-bottom: 2.5rem;
         }
         
         .faq-category {
-            background-color: white;
-            padding: 0.8rem 1.5rem;
-            border-radius: 50px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            background-color: var(--dark-accent);
+            padding: 0.8rem 1.8rem;
+            border-radius: 0;
             cursor: pointer;
             transition: all 0.3s ease;
             font-weight: 500;
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
         }
         
         .faq-category.active {
-            background-color: var(--accent);
-            color: white;
+            background-color: var(--neon-pink);
+            color: var(--dark-bg);
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--glow-pink);
         }
         
         .faq-category:hover:not(.active) {
-            background-color: var(--secondary);
-            color: white;
+            background-color: rgba(5, 217, 232, 0.1);
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
         }
         
-        /* FAQ Accordion */
+        /* Cyberpunk FAQ Accordion */
         .faq-section {
-            margin-bottom: 3rem;
+            margin-bottom: 3.5rem;
         }
         
         .faq-section h2 {
-            margin-bottom: 1.5rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--light);
-            color: var(--dark);
+            margin-bottom: 1.8rem;
+            padding-bottom: 0.8rem;
+            border-bottom: 1px solid rgba(5, 217, 232, 0.3);
+            color: var(--neon-blue);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .faq-section h2 i {
+            color: var(--neon-green);
         }
         
         .faq-item {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            margin-bottom: 1rem;
+            background-color: var(--dark-accent);
+            border-radius: 0;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+            margin-bottom: 1.2rem;
             overflow: hidden;
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            transition: all 0.3s ease;
+        }
+        
+        .faq-item:hover {
+            border-color: var(--neon-blue);
         }
         
         .faq-question {
@@ -181,15 +354,17 @@
             align-items: center;
             cursor: pointer;
             font-weight: 600;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            background-color: rgba(5, 217, 232, 0.05);
         }
         
         .faq-question:hover {
-            background-color: var(--light);
+            background-color: rgba(5, 217, 232, 0.1);
         }
         
         .faq-question i {
             transition: transform 0.3s ease;
+            color: var(--neon-green);
         }
         
         .faq-item.active .faq-question i {
@@ -201,78 +376,298 @@
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.3s ease, padding 0.3s ease;
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .faq-item.active .faq-answer {
             padding: 0 1.5rem 1.5rem;
-            max-height: 500px;
+            max-height: 1000px;
         }
         
-        /* Contact Prompt */
+        .faq-answer p, .faq-answer ol, .faq-answer ul {
+            margin-bottom: 1rem;
+        }
+        
+        .faq-answer ol, .faq-answer ul {
+            padding-left: 1.5rem;
+        }
+        
+        .faq-answer li {
+            margin-bottom: 0.5rem;
+        }
+        
+        .faq-answer strong {
+            color: var(--neon-green);
+        }
+        
+        /* Cyberpunk Contact Prompt */
         .contact-prompt {
-            background-color: var(--primary);
+            background-color: var(--dark-accent);
             color: white;
-            padding: 2rem;
-            border-radius: 8px;
+            padding: 2.5rem;
+            border-radius: 0;
             text-align: center;
-            margin: 3rem 0;
+            margin: 4rem 0;
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            position: relative;
+        }
+        
+        .contact-prompt::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, 
+                        transparent 65%, 
+                        rgba(255, 42, 109, 0.05) 65%, 
+                        rgba(255, 42, 109, 0.05) 70%, 
+                        transparent 70%),
+                    linear-gradient(-45deg, 
+                        transparent 65%, 
+                        rgba(5, 217, 232, 0.05) 65%, 
+                        rgba(5, 217, 232, 0.05) 70%, 
+                        transparent 70%);
+            background-size: 30px 30px;
+            pointer-events: none;
         }
         
         .contact-prompt h2 {
-            margin-bottom: 1rem;
+            margin-bottom: 1.2rem;
+            color: var(--neon-blue);
+            position: relative;
+        }
+        
+        .contact-prompt p {
+            max-width: 600px;
+            margin: 0 auto 1.5rem;
+            position: relative;
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .contact-btn {
             display: inline-block;
-            background-color: var(--accent);
-            color: white;
-            padding: 10px 25px;
-            border-radius: 5px;
+            background-color: transparent;
+            color: var(--neon-pink);
+            padding: 12px 30px;
+            border-radius: 0;
             margin-top: 1rem;
             font-weight: 600;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-pink);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            box-shadow: 0 0 10px var(--glow-pink);
+            position: relative;
+            overflow: hidden;
         }
         
         .contact-btn:hover {
-            background-color: #c0392b;
+            background-color: var(--neon-pink);
+            color: var(--dark-bg);
+            box-shadow: 0 0 20px var(--glow-pink);
         }
         
-        /* Footer (Same as index.html) */
+        .contact-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                        transparent, 
+                        rgba(255, 42, 109, 0.4), 
+                        transparent);
+            transition: 0.5s;
+        }
+        
+        .contact-btn:hover::before {
+            left: 100%;
+        }
+        
+        /* Cyberpunk Footer (Same as homepage) */
         footer {
-            background-color: var(--dark);
+            background-color: var(--darker-bg);
             color: white;
-            padding: 3rem 0 1rem;
+            padding: 4rem 0 1.5rem;
+            position: relative;
         }
-        .footer-col a{
-          color: white;
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                        transparent, 
+                        var(--neon-purple), 
+                        transparent);
+            box-shadow: 0 0 10px rgba(211, 0, 197, 0.3);
         }
+        
         .footer-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-col h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+            color: var(--neon-blue);
+        }
+        
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+        }
+        
+        .footer-col p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .footer-col ul li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--neon-green);
+        }
+        
+        .footer-col ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--neon-pink);
+            transform: translateX(5px);
         }
         
         .copyright {
             text-align: center;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 0.9rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.5);
         }
         
-        /* Responsive Adjustments */
+        /* Cyberpunk Glitch Effect */
+        @keyframes glitch {
+            0% { text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue); }
+            25% { text-shadow: 2px 2px 10px var(--neon-pink), -2px -2px 20px var(--glow-pink); }
+            50% { text-shadow: -2px -2px 10px var(--neon-green), 2px 2px 20px rgba(0, 255, 157, 0.4); }
+            75% { text-shadow: 3px -3px 10px var(--neon-purple), -3px 3px 20px rgba(211, 0, 197, 0.4); }
+            100% { text-shadow: -3px 3px 10px var(--neon-blue), 3px -3px 20px var(--glow-blue); }
+        }
+        
+        /* Cyberpunk Responsive Styles */
+        @media (max-width: 992px) {
+            .faq-header h1 {
+                font-size: 2.5rem;
+            }
+        }
+        
         @media (max-width: 768px) {
+            .header-container {
+                flex-direction: row;
+                text-align: left;
+            }
+            
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: var(--darker-bg);
+                z-index: 1000;
+                transition: right 0.3s ease;
+                border-left: 1px solid var(--neon-purple);
+                box-shadow: -5px 0 15px rgba(211, 0, 197, 0.3);
+            }
+            
+            nav.show {
+                right: 0;
+            }
+            
+            nav ul {
+                margin-top: 4rem;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 2rem;
+            }
+            
+            nav ul li {
+                margin: 1rem 0;
+                width: 100%;
+            }
+            
+            nav ul li a {
+                font-size: 1.2rem;
+                display: block;
+                padding: 0.5rem 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                z-index: 1001;
+            }
+            
+            .faq-header {
+                padding: 4rem 0;
+            }
+            
             .faq-header h1 {
                 font-size: 2rem;
             }
             
+            .faq-header p {
+                font-size: 1.1rem;
+            }
+            
             .faq-question {
-                padding: 1rem;
+                padding: 1.2rem;
+            }
+            
+            .faq-categories {
+                justify-content: flex-start;
             }
         }
-        a{
-            text-decoration: none;
+        
+        @media (max-width: 480px) {
+            .faq-header h1 {
+                font-size: 1.8rem;
+            }
+            
+            .faq-category {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.8rem;
+            }
         }
     </style>
 </head>
@@ -281,6 +676,9 @@
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -290,7 +688,6 @@
                     <li><a href="faq.html" class="active">FAQ</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="login.html">Login</a></li>
-
                 </ul>
             </nav>
         </div>
@@ -313,17 +710,17 @@
         
         <!-- FAQ Categories -->
         <div class="faq-categories">
-            <div class="faq-category active" data-category="all">All Questions</div>
-            <div class="faq-category" data-category="installation">Installation</div>
-            <div class="faq-category" data-category="troubleshooting">Troubleshooting</div>
-            <div class="faq-category" data-category="account">Account</div>
-            <div class="faq-category" data-category="modding">Modding Basics</div>
-            <div class="faq-category" data-category="safety">Safety</div>
+            <div class="faq-category active" data-category="all">ALL QUESTIONS</div>
+            <div class="faq-category" data-category="installation">INSTALLATION</div>
+            <div class="faq-category" data-category="troubleshooting">TROUBLESHOOTING</div>
+            <div class="faq-category" data-category="account">ACCOUNT</div>
+            <div class="faq-category" data-category="modding">MODDING BASICS</div>
+            <div class="faq-category" data-category="safety">SAFETY</div>
         </div>
         
         <!-- FAQ Content -->
         <div class="faq-section">
-            <h2><i class="fas fa-download"></i> Installation</h2>
+            <h2><i class="fas fa-download"></i> INSTALLATION</h2>
             
             <div class="faq-item" data-categories="installation">
                 <div class="faq-question">
@@ -378,7 +775,7 @@
         </div>
         
         <div class="faq-section">
-            <h2><i class="fas fa-tools"></i> Troubleshooting</h2>
+            <h2><i class="fas fa-tools"></i> TROUBLESHOOTING</h2>
             
             <div class="faq-item" data-categories="troubleshooting">
                 <div class="faq-question">
@@ -419,7 +816,7 @@
         </div>
         
         <div class="faq-section">
-            <h2><i class="fas fa-shield-alt"></i> Safety & Security</h2>
+            <h2><i class="fas fa-shield-alt"></i> SAFETY & SECURITY</h2>
             
             <div class="faq-item" data-categories="safety">
                 <div class="faq-question">
@@ -463,9 +860,9 @@
         
         <!-- Contact Prompt -->
         <div class="contact-prompt">
-            <h2>Didn't find your answer?</h2>
+            <h2>DIDN'T FIND YOUR ANSWER?</h2>
             <p>Our support team is ready to help with any questions you have about modding or our website.</p>
-            <a href="contact.html" class="contact-btn">Contact Support</a>
+            <a href="contact.html" class="contact-btn">CONTACT SUPPORT</a>
         </div>
     </div>
 
@@ -559,6 +956,11 @@
                     item.style.display = 'none';
                 }
             });
+        });
+        
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('show');
         });
     </script>
 </body>
