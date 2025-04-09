@@ -5,34 +5,60 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GTA V Realistic Graphics Overhaul - GameModHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
-
-<!-- Your auth script -->
-<script src="auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
+    <!-- Your auth script -->
+    <script src="auth.js"></script>
 
     <style>
-        /* Reuse styles from index.html */
+        /* Cyberpunk Global Styles */
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --gray: #95a5a6;
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-green: #00ff9d;
+            --dark-bg: #0d0221;
+            --darker-bg: #05010e;
+            --dark-accent: #1a0933;
+            --light-text: #d1f7ff;
+            --glow-blue: rgba(5, 217, 232, 0.4);
+            --glow-pink: rgba(255, 42, 109, 0.4);
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
         }
         
         body {
-            background-color: #f5f5f5;
-            color: #333;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
             line-height: 1.6;
+            overflow-x: hidden;
+            background-image: 
+                linear-gradient(rgba(5, 217, 232, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
+        }
+        
+        h1, h2, h3, h4, .logo, .btn {
+            font-family: 'Orbitron', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        a {
+            text-decoration: none;
+            color: var(--neon-blue);
+            transition: all 0.3s ease;
+        }
+        
+        a:hover {
+            color: var(--neon-pink);
+            text-shadow: 0 0 5px var(--glow-pink);
         }
         
         .container {
@@ -42,12 +68,17 @@
             padding: 0 15px;
         }
         
-        /* Header (Same as index.html) */
+        /* Cyberpunk Header */
         header {
-            background-color: var(--primary);
+            background-color: rgba(13, 2, 33, 0.9);
             color: white;
             padding: 1rem 0;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            border-bottom: 1px solid var(--neon-purple);
+            box-shadow: 0 0 15px rgba(211, 0, 197, 0.3);
+            backdrop-filter: blur(5px);
         }
         
         .header-container {
@@ -60,10 +91,23 @@
             font-size: 1.8rem;
             font-weight: bold;
             color: white;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
+            position: relative;
         }
         
         .logo span {
-            color: var(--accent);
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--glow-pink);
+        }
+        
+        .logo::after {
+            content: '_';
+            animation: blink 1s infinite step-end;
+        }
+        
+        @keyframes blink {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0; }
         }
         
         nav ul {
@@ -73,14 +117,52 @@
         
         nav ul li {
             margin-left: 1.5rem;
+            position: relative;
         }
         
         nav ul li a {
             color: white;
             font-weight: 500;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            padding: 5px 0;
         }
         
-        /* Mod Detail Specific Styles */
+        nav ul li a:hover {
+            color: var(--neon-pink);
+        }
+        
+        nav ul li a::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background-color: var(--neon-blue);
+            transition: width 0.3s ease;
+        }
+        
+        nav ul li a:hover::after {
+            width: 100%;
+        }
+        
+        .mobile-menu-btn {
+            display: none;
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+        
+        .mobile-menu-btn:hover {
+            color: var(--neon-pink);
+            transform: scale(1.1);
+        }
+        
+        /* Mod Header */
         .mod-header {
             background: linear-gradient(rgba(0,0,0,0.7), rgba(0,0,0,0.7)), url('https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80');
             background-size: cover;
@@ -88,22 +170,27 @@
             color: white;
             padding: 4rem 0;
             text-align: center;
+            border-bottom: 1px solid var(--neon-purple);
         }
         
         .mod-header h1 {
             font-size: 2.5rem;
             margin-bottom: 1rem;
+            text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
         }
         
         .mod-badge {
             display: inline-block;
-            background-color: var(--accent);
-            color: white;
+            background-color: var(--dark-accent);
+            color: var(--neon-green);
             padding: 5px 15px;
-            border-radius: 50px;
+            border-radius: 0;
             font-size: 0.9rem;
             margin: 0 0.5rem 1rem;
             font-weight: 600;
+            border: 1px solid var(--neon-green);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
         }
         
         /* Mod Main Content */
@@ -116,10 +203,33 @@
         
         /* Mod Info Section */
         .mod-info {
-            background-color: white;
-            border-radius: 8px;
+            background-color: var(--dark-accent);
+            border-radius: 0;
             padding: 2rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(5, 217, 232, 0.3);
+        }
+        
+        .mod-info h2 {
+            color: var(--neon-blue);
+            margin: 2rem 0 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid rgba(5, 217, 232, 0.3);
+        }
+        
+        .mod-info p {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 1rem;
+        }
+        
+        .mod-info ul {
+            padding-left: 1.5rem;
+            margin-bottom: 1rem;
+        }
+        
+        .mod-info li {
+            color: rgba(255, 255, 255, 0.8);
+            margin-bottom: 0.5rem;
         }
         
         .mod-screenshots {
@@ -130,9 +240,10 @@
         }
         
         .mod-screenshot {
-            border-radius: 8px;
+            border-radius: 0;
             overflow: hidden;
             height: 200px;
+            border: 1px solid rgba(5, 217, 232, 0.3);
         }
         
         .mod-screenshot img {
@@ -146,14 +257,6 @@
             transform: scale(1.05);
         }
         
-        .mod-description h2,
-        .mod-features h2,
-        .mod-requirements h2 {
-            margin: 2rem 0 1rem;
-            padding-bottom: 0.5rem;
-            border-bottom: 2px solid var(--light);
-        }
-        
         /* Mod Sidebar */
         .mod-sidebar {
             display: flex;
@@ -162,19 +265,21 @@
         }
         
         .mod-download-card {
-            background-color: white;
-            border-radius: 8px;
+            background-color: var(--dark-accent);
+            border-radius: 0;
             padding: 2rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             text-align: center;
+            border: 1px solid rgba(5, 217, 232, 0.3);
         }
         
         .mod-download-card h2 {
             margin-bottom: 1.5rem;
+            color: var(--neon-blue);
         }
         
         .mod-version {
-            color: var(--gray);
+            color: var(--neon-green);
             margin-bottom: 1rem;
         }
         
@@ -186,24 +291,40 @@
         }
         
         .mod-file-size div {
-            background-color: var(--light);
+            background-color: rgba(5, 217, 232, 0.1);
             padding: 0.5rem 1rem;
-            border-radius: 5px;
+            border-radius: 0;
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            color: var(--neon-blue);
         }
         
         .download-btn {
             display: block;
-            background-color: var(--accent);
-            color: white;
+            background-color: transparent;
+            color: var(--neon-pink);
             padding: 12px;
-            border-radius: 5px;
+            border-radius: 0;
             font-weight: 600;
             margin-bottom: 1rem;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            border: 2px solid var(--neon-pink);
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
         }
         
         .download-btn:hover {
-            background-color: #c0392b;
+            background-color: var(--neon-pink);
+            color: var(--dark-bg);
+        }
+        
+        .download-btn.secondary {
+            border-color: var(--neon-blue);
+            color: var(--neon-blue);
+        }
+        
+        .download-btn.secondary:hover {
+            background-color: var(--neon-blue);
+            color: var(--dark-bg);
         }
         
         .download-mirrors {
@@ -211,22 +332,24 @@
         }
         
         .download-mirrors a {
-            color: var(--secondary);
+            color: var(--neon-blue);
             font-size: 0.9rem;
         }
         
         .mod-stats {
-            background-color: white;
-            border-radius: 8px;
+            background-color: var(--dark-accent);
+            border-radius: 0;
             padding: 1.5rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(5, 217, 232, 0.3);
         }
         
         .mod-stat {
             display: flex;
             justify-content: space-between;
             padding: 0.8rem 0;
-            border-bottom: 1px solid var(--light);
+            border-bottom: 1px solid rgba(5, 217, 232, 0.3);
+            color: rgba(255, 255, 255, 0.8);
         }
         
         .mod-stat:last-child {
@@ -235,15 +358,17 @@
         
         /* Mod Installation */
         .mod-installation {
-            background-color: white;
-            border-radius: 8px;
+            background-color: var(--dark-accent);
+            border-radius: 0;
             padding: 2rem;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             margin-bottom: 3rem;
+            border: 1px solid rgba(5, 217, 232, 0.3);
         }
         
         .mod-installation h2 {
             margin-bottom: 1.5rem;
+            color: var(--neon-blue);
         }
         
         .installation-steps {
@@ -254,6 +379,12 @@
             position: relative;
             padding-left: 3rem;
             margin-bottom: 1.5rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+        
+        .installation-step h3 {
+            color: var(--neon-green);
+            margin-bottom: 0.5rem;
         }
         
         .installation-step::before {
@@ -262,37 +393,112 @@
             position: absolute;
             left: 0;
             top: 0;
-            background-color: var(--secondary);
-            color: white;
+            background-color: var(--neon-blue);
+            color: var(--dark-bg);
             width: 2rem;
             height: 2rem;
-            border-radius: 50%;
+            border-radius: 0;
             display: flex;
             align-items: center;
             justify-content: center;
             font-weight: bold;
+            font-family: 'Orbitron', sans-serif;
         }
         
-        /* Footer (Same as index.html) */
+        .installation-step code {
+            background-color: rgba(0, 0, 0, 0.3);
+            padding: 2px 5px;
+            color: var(--neon-green);
+            font-family: monospace;
+        }
+        
+        /* Footer */
         footer {
-            background-color: var(--dark);
+            background-color: var(--darker-bg);
             color: white;
-            padding: 3rem 0 1rem;
+            padding: 4rem 0 1.5rem;
+            position: relative;
+        }
+        
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, 
+                        transparent, 
+                        var(--neon-purple), 
+                        transparent);
+            box-shadow: 0 0 10px rgba(211, 0, 197, 0.3);
         }
         
         .footer-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
+            grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+            gap: 2.5rem;
+            margin-bottom: 3rem;
+        }
+        
+        .footer-col h3 {
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            position: relative;
+            padding-bottom: 0.8rem;
+            color: var(--neon-blue);
+        }
+        
+        .footer-col h3::after {
+            content: '';
+            position: absolute;
+            left: 0;
+            bottom: 0;
+            width: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+        }
+        
+        .footer-col p {
+            margin-bottom: 1.5rem;
+            line-height: 1.6;
+            color: rgba(255, 255, 255, 0.7);
+        }
+        
+        .footer-col ul {
+            list-style: none;
+        }
+        
+        .footer-col ul li {
+            margin-bottom: 0.8rem;
+            position: relative;
+            padding-left: 15px;
+        }
+        
+        .footer-col ul li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--neon-green);
+        }
+        
+        .footer-col ul li a {
+            color: rgba(255, 255, 255, 0.7);
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        
+        .footer-col ul li a:hover {
+            color: var(--neon-pink);
+            transform: translateX(5px);
         }
         
         .copyright {
             text-align: center;
-            padding-top: 1.5rem;
-            border-top: 1px solid rgba(255,255,255,0.1);
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255, 255, 255, 0.1);
             font-size: 0.9rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.5);
         }
         
         /* Responsive Adjustments */
@@ -308,9 +514,46 @@
             .mod-screenshots {
                 grid-template-columns: 1fr;
             }
-        }
-        a{
-            text-decoration: none;
+            
+            nav {
+                position: fixed;
+                top: 0;
+                right: -100%;
+                width: 70%;
+                height: 100vh;
+                background-color: var(--darker-bg);
+                z-index: 1000;
+                transition: right 0.3s ease;
+                border-left: 1px solid var(--neon-purple);
+                box-shadow: -5px 0 15px rgba(211, 0, 197, 0.3);
+            }
+            
+            nav.show {
+                right: 0;
+            }
+            
+            nav ul {
+                margin-top: 4rem;
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 0 2rem;
+            }
+            
+            nav ul li {
+                margin: 1rem 0;
+                width: 100%;
+            }
+            
+            nav ul li a {
+                font-size: 1.2rem;
+                display: block;
+                padding: 0.5rem 0;
+            }
+            
+            .mobile-menu-btn {
+                display: block;
+                z-index: 1001;
+            }
         }
     </style>
 </head>
@@ -319,6 +562,9 @@
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <button class="mobile-menu-btn">
+                <i class="fas fa-bars"></i>
+            </button>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
@@ -327,7 +573,6 @@
                     <li><a href="request.html">Request Mod</a></li>
                     <li><a href="contact.html">Contact</a></li>
                     <li><a href="login.html">Login</a></li>
-
                 </ul>
             </nav>
         </div>
@@ -411,7 +656,7 @@
                         <i class="fas fa-download"></i> Download Now
                     </a>
                     
-                    <a href="#" class="download-btn" style="background-color: var(--secondary);"><i class="fas fa-bolt"></i> Fast Mirror</a>
+                    <a href="#" class="download-btn secondary"><i class="fas fa-bolt"></i> Fast Mirror</a>
                     <div class="download-mirrors">
                         <a href="#"><i class="fas fa-server"></i> More Download Mirrors</a>
                     </div>
@@ -502,6 +747,11 @@
         </div>
     </footer>
 
-  
+    <script>
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            document.querySelector('nav').classList.toggle('show');
+        });
+    </script>
 </body>
 </html>
