@@ -5,11 +5,14 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Frequently Asked Questions - GameModHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="Favicon/GMH.png">
+
     <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     <!-- Your auth script -->
     <script src="auth.js"></script>
+    <link rel="stylesheet" href="styles.css">
 
     <style>
         /* Cyberpunk Global Styles */
@@ -98,6 +101,7 @@
         .logo span {
             color: var(--neon-pink);
             text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--glow-pink);
+            
         }
         
         .logo::after {
@@ -109,53 +113,42 @@
             0%, 100% { opacity: 1; }
             50% { opacity: 0; }
         }
-        
-        nav ul {
-            display: flex;
-            list-style: none;
-        }
-        
-        nav ul li {
-            margin-left: 1.5rem;
-            position: relative;
-        }
-        
-        nav ul li a {
-            color: white;
-            font-weight: 500;
-            font-size: 1.1rem;
-            transition: all 0.3s ease;
-            padding: 5px 0;
-        }
-        
-        nav ul li a:hover {
-            color: var(--neon-pink);
-        }
-        
-        nav ul li a::after {
-            content: '';
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 0;
-            height: 2px;
-            background-color: var(--neon-blue);
-            transition: width 0.3s ease;
-        }
-        
-        nav ul li a:hover::after {
-            width: 100%;
-        }
-        
-        nav ul li a.active {
-            color: var(--neon-pink);
-        }
-        
-        nav ul li a.active::after {
-            width: 100%;
-            background-color: var(--neon-pink);
-        }
-        
+        /* nav ul {
+        display: flex;
+        list-style: none;
+    }
+    
+    nav ul li {
+        margin-left: 1.5rem;
+        position: relative;
+    }
+    
+    nav ul li a {
+        color: white;
+        font-weight: 500;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        padding: 5px 0;
+    }
+    
+    nav ul li a:hover {
+        color: var(--neon-pink);
+    }
+    
+    nav ul li a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--neon-blue);
+        transition: width 0.3s ease;
+    }
+    
+    nav ul li a:hover::after {
+        width: 100%;
+    } */
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -598,7 +591,7 @@
                 text-align: left;
             }
             
-            nav {
+            /* nav {
                 position: fixed;
                 top: 0;
                 right: -100%;
@@ -631,7 +624,7 @@
                 font-size: 1.2rem;
                 display: block;
                 padding: 0.5rem 0;
-            }
+            } */
             
             .mobile-menu-btn {
                 display: block;
@@ -676,22 +669,21 @@
     <header>
         <div class="container header-container">
             <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
-            <button class="mobile-menu-btn">
-                <i class="fas fa-bars"></i>
-            </button>
             <nav>
                 <ul>
                     <li><a href="index.html">Home</a></li>
                     <li><a href="mods.html">Mods</a></li>
                     <li><a href="categories.html">Categories</a></li>
                     <li><a href="request.html">Request Mod</a></li>
-                    <li><a href="faq.html" class="active">FAQ</a></li>
-                    <li><a href="contact.html">Contact</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
                     <li><a href="login.html">Login</a></li>
+
                 </ul>
             </nav>
         </div>
     </header>
+
 
     <!-- FAQ Header -->
     <section class="faq-header">
