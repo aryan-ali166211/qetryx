@@ -7,132 +7,224 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="Favicon/GMH.png">
 
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
+        /* Cyberpunk Theme */
         :root {
-            --primary: #2c3e50;
-            --secondary: #3498db;
-            --accent: #e74c3c;
-            --light: #ecf0f1;
-            --dark: #2c3e50;
-            --gray: #95a5a6;
+            --neon-pink: #ff2a6d;
+            --neon-blue: #05d9e8;
+            --neon-purple: #d300c5;
+            --neon-green: #00ff9d;
+            --dark-bg: #0d0221;
+            --darker-bg: #05010e;
+            --dark-accent: #1a0933;
+            --light-text: #d1f7ff;
+            --glow-blue: rgba(5, 217, 232, 0.4);
+            --glow-pink: rgba(255, 42, 109, 0.4);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            font-family: 'Rajdhani', sans-serif;
         }
-        
+
         body {
-            background-color: #f5f5f5;
+            background-color: var(--dark-bg);
+            color: var(--light-text);
             display: flex;
-            justify-content: center;
-            align-items: center;
             min-height: 100vh;
-            color: #333;
             line-height: 1.6;
+            background-image: 
+                linear-gradient(rgba(5, 217, 232, 0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
+            background-size: 40px 40px;
         }
-        
-        .login-container {
-            background-color: white;
-            border-radius: 8px;
-            box-shadow: 0 3px 10px rgba(0,0,0,0.1);
-            width: 90%;
-            max-width: 400px;
+
+        .login-wrapper {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            margin: 0 auto;
             padding: 2rem;
         }
-        
+
+        .login-info {
+            flex: 1;
+            padding: 2rem;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .login-info h1 {
+            font-family: 'Orbitron', sans-serif;
+            font-size: 2.5rem;
+            color: var(--neon-blue);
+            margin-bottom: 1.5rem;
+            text-shadow: 0 0 10px var(--glow-blue);
+        }
+
+        .login-info p {
+            margin-bottom: 1.5rem;
+            font-size: 1.1rem;
+            color: rgba(255, 255, 255, 0.8);
+        }
+
+        .features-list {
+            margin: 2rem 0;
+        }
+
+        .features-list li {
+            margin-bottom: 1rem;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .features-list li::before {
+            content: '>';
+            position: absolute;
+            left: 0;
+            color: var(--neon-green);
+        }
+
+        .login-container {
+            background-color: var(--dark-accent);
+            border-radius: 0;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 400px;
+            padding: 2rem;
+            border: 1px solid var(--neon-blue);
+            margin-left: auto;
+        }
+
         .logo {
             text-align: center;
             margin-bottom: 1.5rem;
             font-size: 1.8rem;
             font-weight: bold;
-            color: var(--primary);
+            color: var(--neon-blue);
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px var(--glow-blue);
         }
-        
+
         .logo span {
-            color: var(--accent);
+            color: var(--neon-pink);
+            text-shadow: 0 0 10px var(--glow-pink);
         }
-        
+
         .form-group {
             margin-bottom: 1.5rem;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 600;
+            color: var(--neon-green);
         }
-        
+
         .form-group input {
             width: 100%;
             padding: 12px;
-            border: 1px solid #ddd;
-            border-radius: 5px;
+            border: 1px solid rgba(5, 217, 232, 0.3);
+            background-color: rgba(255, 255, 255, 0.05);
+            color: var(--light-text);
             font-size: 1rem;
         }
-        
+
+        .form-group input:focus {
+            outline: none;
+            border-color: var(--neon-pink);
+            box-shadow: 0 0 10px var(--glow-pink);
+        }
+
         .submit-btn {
-            background-color: var(--accent);
-            color: white;
-            border: none;
+            background-color: transparent;
+            color: var(--neon-pink);
+            border: 2px solid var(--neon-pink);
             padding: 12px;
             font-size: 1rem;
-            border-radius: 5px;
             cursor: pointer;
             font-weight: 600;
             width: 100%;
-            transition: background-color 0.3s ease;
+            transition: all 0.3s ease;
+            font-family: 'Orbitron', sans-serif;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
-        
+
         .submit-btn:hover {
-            background-color: #c0392b;
+            background-color: var(--neon-pink);
+            color: var(--dark-bg);
+            box-shadow: 0 0 15px var(--glow-pink);
         }
-        
+
+        .submit-btn::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 42, 109, 0.4), transparent);
+            transition: 0.5s;
+        }
+
+        .submit-btn:hover::before {
+            left: 100%;
+        }
+
         .switch-mode {
             text-align: center;
             margin-top: 1rem;
-            color: var(--gray);
+            color: rgba(255, 255, 255, 0.7);
         }
-        
+
         .switch-mode a {
-            color: var(--secondary);
+            color: var(--neon-blue);
             text-decoration: none;
             font-weight: 500;
         }
-        
+
         .verification-section {
             display: none;
             margin-top: 1rem;
         }
-        
+
         .message {
             padding: 10px;
-            border-radius: 5px;
+            border-radius: 0;
             margin-bottom: 1rem;
             text-align: center;
             display: none;
+            border: 1px solid;
         }
-        
+
         .success {
-            background-color: #d4edda;
-            color: #155724;
+            background-color: rgba(40, 167, 69, 0.1);
+            color: #d4edda;
+            border-color: #28a745;
             display: block;
         }
-        
+
         .warning {
-            background-color: #fff3cd;
-            color: #856404;
+            background-color: rgba(255, 193, 7, 0.1);
+            color: #fff3cd;
+            border-color: #ffc107;
             display: block;
         }
-        
+
         .error {
-            background-color: #f8d7da;
-            color: #721c24;
+            background-color: rgba(220, 53, 69, 0.1);
+            color: #f8d7da;
+            border-color: #dc3545;
             display: block;
         }
-        
+
         .spinner {
             display: none;
             width: 20px;
@@ -143,79 +235,119 @@
             animation: spin 1s ease-in-out infinite;
             margin: 0 auto;
         }
-        
+
         @keyframes spin {
             to { transform: rotate(360deg); }
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .login-wrapper {
+                flex-direction: column;
+                padding: 1rem;
+            }
+            
+            .login-info {
+                padding: 1rem;
+                text-align: center;
+            }
+            
+            .login-container {
+                margin: 2rem auto 0;
+                max-width: 100%;
+            }
         }
     </style>
 </head>
 <body>
-    <div class="login-container">
-        <div class="logo">Game<span>Mod</span>Hub</div>
-        
-        <div id="message" class="message"></div>
-        
-        <!-- Login Form -->
-        <form id="loginForm">
-            <div class="form-group">
-                <label for="loginEmail">Email Address</label>
-                <input type="email" id="loginEmail" required>
+    <div class="login-wrapper">
+        <!-- Left side with description -->
+        <div class="login-info">
+            <h1>Welcome Back, Modder!</h1>
+            <p>Join our community of passionate gamers and mod creators. Access exclusive content, share your creations, and connect with like-minded enthusiasts.</p>
+            
+            <div class="features-list">
+                <h3>Why join GameModHub?</h3>
+                <ul>
+                    <li>Access to thousands of high-quality game mods</li>
+                    <li>Upload and share your own creations with the community</li>
+                    <li>Get early access to beta mods and tools</li>
+                    <li>Participate in modding contests with prizes</li>
+                    <li>Connect with other modders in our Discord community</li>
+                </ul>
             </div>
             
-            <div class="form-group">
-                <label for="loginPassword">Password</label>
-                <input type="password" id="loginPassword" required>
-            </div>
+            <p>Not a member yet? Click "Sign up" to create your free account and start your modding journey today!</p>
+        </div>
+
+        <!-- Right side with login form -->
+        <div class="login-container">
+            <div class="logo">Game<span>Mod</span>Hub</div>
             
-            <button type="submit" class="submit-btn" id="loginBtn">
-                <span id="loginText">Log In</span>
-                <span id="loginSpinner" class="spinner"></span>
-            </button>
+            <div id="message" class="message"></div>
             
-            <div class="switch-mode">
-                Don't have an account? <a href="#" id="switchToSignup">Sign up</a>
-            </div>
-        </form>
-        
-        <!-- Signup Form -->
-        <form id="signupForm" style="display: none;">
-            <div class="form-group">
-                <label for="signupEmail">Email Address</label>
-                <input type="email" id="signupEmail" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="signupPassword">Password</label>
-                <input type="password" id="signupPassword" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="confirmPassword">Confirm Password</label>
-                <input type="password" id="confirmPassword" required>
-            </div>
-            
-            <button type="submit" class="submit-btn" id="signupBtn">
-                <span id="signupText">Sign Up</span>
-                <span id="signupSpinner" class="spinner"></span>
-            </button>
-            
-            <div class="switch-mode">
-                Already have an account? <a href="#" id="switchToLogin">Log in</a>
-            </div>
-            
-            <!-- Verification Section (hidden initially) -->
-            <div class="verification-section" id="verificationSection">
+            <!-- Login Form -->
+            <form id="loginForm">
                 <div class="form-group">
-                    <label for="verificationCode">Verification Code</label>
-                    <input type="text" id="verificationCode" placeholder="Enter code sent to your email">
+                    <label for="loginEmail">Email Address</label>
+                    <input type="email" id="loginEmail" required>
                 </div>
                 
-                <button type="button" class="submit-btn" id="verifyBtn">
-                    <span id="verifyText">Verify</span>
-                    <span id="verifySpinner" class="spinner"></span>
+                <div class="form-group">
+                    <label for="loginPassword">Password</label>
+                    <input type="password" id="loginPassword" required>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="loginBtn">
+                    <span id="loginText">Log In</span>
+                    <span id="loginSpinner" class="spinner"></span>
                 </button>
-            </div>
-        </form>
+                
+                <div class="switch-mode">
+                    Don't have an account? <a href="#" id="switchToSignup">Sign up</a>
+                </div>
+            </form>
+            
+            <!-- Signup Form -->
+            <form id="signupForm" style="display: none;">
+                <div class="form-group">
+                    <label for="signupEmail">Email Address</label>
+                    <input type="email" id="signupEmail" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="signupPassword">Password</label>
+                    <input type="password" id="signupPassword" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Confirm Password</label>
+                    <input type="password" id="confirmPassword" required>
+                </div>
+                
+                <button type="submit" class="submit-btn" id="signupBtn">
+                    <span id="signupText">Sign Up</span>
+                    <span id="signupSpinner" class="spinner"></span>
+                </button>
+                
+                <div class="switch-mode">
+                    Already have an account? <a href="#" id="switchToLogin">Log in</a>
+                </div>
+                
+                <!-- Verification Section (hidden initially) -->
+                <div class="verification-section" id="verificationSection">
+                    <div class="form-group">
+                        <label for="verificationCode">Verification Code</label>
+                        <input type="text" id="verificationCode" placeholder="Enter code sent to your email">
+                    </div>
+                    
+                    <button type="button" class="submit-btn" id="verifyBtn">
+                        <span id="verifyText">Verify</span>
+                        <span id="verifySpinner" class="spinner"></span>
+                    </button>
+                </div>
+            </form>
+        </div>
     </div>
 
     <script>

@@ -3,517 +3,970 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | GameModHub</title>
+    <meta http-equiv="Content-Security-Policy" content="upgrade-insecure-requests">
+    <title>Contact Us - GameModHub</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <link rel="icon" type="image/png" href="Favicon/GMH.png">
+    <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
 
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <style>
-        /* Cyberpunk Theme */
-        :root {
-            --neon-pink: #ff2a6d;
-            --neon-blue: #05d9e8;
-            --neon-purple: #d300c5;
-            --neon-green: #00ff9d;
-            --dark-bg: #0d0221;
-            --darker-bg: #05010e;
-            --dark-accent: #1a0933;
-            --light-text: #d1f7ff;
-            --glow-blue: rgba(5, 217, 232, 0.4);
-            --glow-pink: rgba(255, 42, 109, 0.4);
-        }
+<!-- Your auth script -->
+<script src="auth.js"></script>
 
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-            font-family: 'Rajdhani', sans-serif;
-        }
-
-        body {
-            background-color: var(--dark-bg);
-            color: var(--light-text);
-            display: flex;
-            min-height: 100vh;
-            line-height: 1.6;
-            background-image: 
-                linear-gradient(rgba(5, 217, 232, 0.03) 1px, transparent 1px),
-                linear-gradient(90deg, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
-            background-size: 40px 40px;
-        }
-
-        .login-wrapper {
-            display: flex;
-            width: 100%;
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-        }
-
-        .login-info {
-            flex: 1;
-            padding: 2rem;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .login-info h1 {
-            font-family: 'Orbitron', sans-serif;
+<style>
+    /* Cyberpunk Global Styles */
+    :root {
+        --neon-pink: #ff2a6d;
+        --neon-blue: #05d9e8;
+        --neon-purple: #d300c5;
+        --neon-green: #00ff9d;
+        --dark-bg: #0d0221;
+        --darker-bg: #05010e;
+        --dark-accent: #1a0933;
+        --light-text: #d1f7ff;
+        --glow-blue: rgba(5, 217, 232, 0.4);
+        --glow-pink: rgba(255, 42, 109, 0.4);
+    }
+    
+    * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+        font-family: 'Rajdhani', sans-serif;
+    }
+    
+    body {
+        background-color: var(--dark-bg);
+        color: var(--light-text);
+        line-height: 1.6;
+        overflow-x: hidden;
+        background-image: 
+            linear-gradient(rgba(5, 217, 232, 0.03) 1px, transparent 1px),
+            linear-gradient(90deg, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
+        background-size: 40px 40px;
+    }
+    
+    h1, h2, h3, h4, .logo, .btn {
+        font-family: 'Orbitron', sans-serif;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+    }
+    
+    a {
+        text-decoration: none;
+        color: var(--neon-blue);
+        transition: all 0.3s ease;
+    }
+    
+    a:hover {
+        color: var(--neon-pink);
+        text-shadow: 0 0 5px var(--glow-pink);
+    }
+    
+    .container {
+        width: 90%;
+        max-width: 1200px;
+        margin: 0 auto;
+        padding: 0 15px;
+    }
+    
+    /* Cyberpunk Header */
+    header {
+        background-color: rgba(13, 2, 33, 0.9);
+        color: white;
+        padding: 1rem 0;
+        position: sticky;
+        top: 0;
+        z-index: 100;
+        border-bottom: 1px solid var(--neon-purple);
+        box-shadow: 0 0 15px rgba(211, 0, 197, 0.3);
+        backdrop-filter: blur(5px);
+    }
+    
+    .header-container {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .logo {
+        font-size: 1.8rem;
+        font-weight: bold;
+        color: white;
+        text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
+        position: relative;
+    }
+    
+    .logo span {
+        color: var(--neon-pink);
+        text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--glow-pink);
+    }
+    
+    .logo::after {
+        content: '_';
+        animation: blink 1s infinite step-end;
+    }
+    
+    @keyframes blink {
+        0%, 100% { opacity: 1; }
+        50% { opacity: 0; }
+    }
+    
+    nav ul {
+        display: flex;
+        list-style: none;
+    }
+    
+    nav ul li {
+        margin-left: 1.5rem;
+        position: relative;
+    }
+    
+    nav ul li a {
+        color: white;
+        font-weight: 500;
+        font-size: 1.1rem;
+        transition: all 0.3s ease;
+        padding: 5px 0;
+    }
+    
+    nav ul li a:hover {
+        color: var(--neon-pink);
+    }
+    
+    nav ul li a::after {
+        content: '';
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 0;
+        height: 2px;
+        background-color: var(--neon-blue);
+        transition: width 0.3s ease;
+    }
+    
+    nav ul li a:hover::after {
+        width: 100%;
+    }
+    
+    .mobile-menu-btn {
+        display: none;
+        background: none;
+        border: none;
+        color: white;
+        font-size: 1.5rem;
+        cursor: pointer;
+        transition: all 0.3s ease;
+    }
+    
+    .mobile-menu-btn:hover {
+        color: var(--neon-pink);
+        transform: scale(1.1);
+    }
+    
+    /* Cyberpunk Contact Header */
+    .contact-header {
+        background: linear-gradient(rgba(5, 1, 14, 0.9), rgba(13, 2, 33, 0.7)), 
+                    url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
+        background-size: cover;
+        background-position: center;
+        color: white;
+        padding: 6rem 0;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .contact-header::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, 
+                    transparent 65%, 
+                    rgba(255, 42, 109, 0.1) 65%, 
+                    rgba(255, 42, 109, 0.1) 70%, 
+                    transparent 70%),
+                linear-gradient(-45deg, 
+                    transparent 65%, 
+                    rgba(5, 217, 232, 0.1) 65%, 
+                    rgba(5, 217, 232, 0.1) 70%, 
+                    transparent 70%);
+        background-size: 30px 30px;
+        pointer-events: none;
+    }
+    
+    .contact-header h1 {
+        font-size: 3rem;
+        margin-bottom: 1.5rem;
+        text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
+        animation: glitch 2s infinite alternate;
+    }
+    
+    .contact-header p {
+        font-size: 1.3rem;
+        max-width: 700px;
+        margin: 0 auto;
+        font-weight: 300;
+        letter-spacing: 0.5px;
+    }
+    
+    /* Cyberpunk Contact Layout */
+    .contact-container {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 3rem;
+        margin: 3rem 0;
+    }
+    
+    /* Cyberpunk Contact Form */
+    .contact-form {
+        background-color: var(--dark-accent);
+        border-radius: 0;
+        padding: 2rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(5, 217, 232, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .contact-form::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, 
+                    transparent 65%, 
+                    rgba(255, 42, 109, 0.05) 65%, 
+                    rgba(255, 42, 109, 0.05) 70%, 
+                    transparent 70%),
+                linear-gradient(-45deg, 
+                    transparent 65%, 
+                    rgba(5, 217, 232, 0.05) 65%, 
+                    rgba(5, 217, 232, 0.05) 70%, 
+                    transparent 70%);
+        background-size: 30px 30px;
+        pointer-events: none;
+    }
+    
+    .contact-form h2 {
+        margin-bottom: 1.5rem;
+        color: var(--neon-blue);
+        position: relative;
+        padding-bottom: 0.8rem;
+    }
+    
+    .contact-form h2::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+    }
+    
+    .form-group {
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 0.5rem;
+        font-weight: 600;
+        color: var(--neon-green);
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 12px;
+        border: 1px solid rgba(5, 217, 232, 0.3);
+        border-radius: 0;
+        font-size: 1rem;
+        background-color: rgba(255, 255, 255, 0.1);
+        color: white;
+        transition: all 0.3s ease;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: var(--neon-pink);
+        box-shadow: 0 0 15px var(--glow-pink);
+    }
+    
+    .form-group textarea {
+        min-height: 150px;
+        resize: vertical;
+    }
+    
+    .submit-btn {
+        background-color: transparent;
+        color: var(--neon-pink);
+        padding: 12px 30px;
+        border-radius: 0;
+        font-weight: 600;
+        transition: all 0.3s ease;
+        border: 2px solid var(--neon-pink);
+        font-family: 'Orbitron', sans-serif;
+        letter-spacing: 1px;
+        box-shadow: 0 0 10px var(--glow-pink);
+        position: relative;
+        overflow: hidden;
+        cursor: pointer;
+        text-transform: uppercase;
+    }
+    
+    .submit-btn:hover {
+        background-color: var(--neon-pink);
+        color: var(--dark-bg);
+        box-shadow: 0 0 20px var(--glow-pink);
+    }
+    
+    .submit-btn::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, 
+                    transparent, 
+                    rgba(255, 42, 109, 0.4), 
+                    transparent);
+        transition: 0.5s;
+    }
+    
+    .submit-btn:hover::before {
+        left: 100%;
+    }
+    
+    /* Cyberpunk Contact Info */
+    .contact-info {
+        background-color: var(--dark-accent);
+        border-radius: 0;
+        padding: 2rem;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
+        border: 1px solid rgba(5, 217, 232, 0.3);
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .contact-info::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, 
+                    transparent 65%, 
+                    rgba(255, 42, 109, 0.05) 65%, 
+                    rgba(255, 42, 109, 0.05) 70%, 
+                    transparent 70%),
+                linear-gradient(-45deg, 
+                    transparent 65%, 
+                    rgba(5, 217, 232, 0.05) 65%, 
+                    rgba(5, 217, 232, 0.05) 70%, 
+                    transparent 70%);
+        background-size: 30px 30px;
+        pointer-events: none;
+    }
+    
+    .contact-info h2 {
+        margin-bottom: 1.5rem;
+        color: var(--neon-blue);
+        position: relative;
+        padding-bottom: 0.8rem;
+    }
+    
+    .contact-info h2::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+    }
+    
+    .contact-method {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 1.5rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .contact-icon {
+        background-color: rgba(5, 217, 232, 0.1);
+        color: var(--neon-blue);
+        width: 50px;
+        height: 50px;
+        border-radius: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-right: 1rem;
+        font-size: 1.2rem;
+        border: 1px solid rgba(5, 217, 232, 0.3);
+        transition: all 0.3s ease;
+    }
+    
+    .contact-method:hover .contact-icon {
+        background-color: var(--neon-pink);
+        color: var(--dark-bg);
+        border-color: var(--neon-pink);
+        box-shadow: 0 0 10px var(--glow-pink);
+    }
+    
+    .contact-details h3 {
+        margin-bottom: 0.3rem;
+        color: var(--neon-green);
+    }
+    
+    .contact-details p {
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    /* Cyberpunk Map */
+    .contact-map {
+        height: 300px;
+        background-color: var(--dark-bg);
+        border-radius: 0;
+        overflow: hidden;
+        margin-top: 2rem;
+        border: 1px solid rgba(5, 217, 232, 0.3);
+        box-shadow: 0 0 10px var(--glow-blue);
+    }
+    
+    .contact-map iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        filter: grayscale(50%) contrast(120%) brightness(0.8);
+    }
+    
+    /* Cyberpunk Business Hours */
+    .business-hours {
+        margin-top: 2rem;
+        position: relative;
+        z-index: 1;
+    }
+    
+    .business-hours h3 {
+        margin-bottom: 1rem;
+        color: var(--neon-green);
+    }
+    
+    .hours-table {
+        width: 100%;
+        border-collapse: collapse;
+    }
+    
+    .hours-table tr {
+        border-bottom: 1px solid rgba(5, 217, 232, 0.2);
+    }
+    
+    .hours-table tr:last-child {
+        border-bottom: none;
+    }
+    
+    .hours-table td {
+        padding: 0.8rem 0;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .hours-table td:last-child {
+        text-align: right;
+        font-weight: 500;
+        color: var(--neon-blue);
+    }
+    
+    /* Cyberpunk Footer */
+    footer {
+        background-color: var(--darker-bg);
+        color: white;
+        padding: 4rem 0 1.5rem;
+        position: relative;
+    }
+    
+    footer::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 1px;
+        background: linear-gradient(90deg, 
+                    transparent, 
+                    var(--neon-purple), 
+                    transparent);
+        box-shadow: 0 0 10px rgba(211, 0, 197, 0.3);
+    }
+    
+    .footer-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+        gap: 2.5rem;
+        margin-bottom: 3rem;
+    }
+    
+    .footer-col h3 {
+        margin-bottom: 1.5rem;
+        font-size: 1.3rem;
+        position: relative;
+        padding-bottom: 0.8rem;
+        color: var(--neon-blue);
+    }
+    
+    .footer-col h3::after {
+        content: '';
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 50px;
+        height: 2px;
+        background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
+    }
+    
+    .footer-col p {
+        margin-bottom: 1.5rem;
+        line-height: 1.6;
+        color: rgba(255, 255, 255, 0.7);
+    }
+    
+    .footer-col ul {
+        list-style: none;
+    }
+    
+    .footer-col ul li {
+        margin-bottom: 0.8rem;
+        position: relative;
+        padding-left: 15px;
+    }
+    
+    .footer-col ul li::before {
+        content: '>';
+        position: absolute;
+        left: 0;
+        color: var(--neon-green);
+    }
+    
+    .footer-col ul li a {
+        color: rgba(255, 255, 255, 0.7);
+        transition: all 0.3s ease;
+        display: inline-block;
+    }
+    
+    .footer-col ul li a:hover {
+        color: var(--neon-pink);
+        transform: translateX(5px);
+    }
+    
+    .copyright {
+        text-align: center;
+        padding-top: 2rem;
+        border-top: 1px solid rgba(255, 255, 255, 0.1);
+        font-size: 0.9rem;
+        color: rgba(255, 255, 255, 0.5);
+    }
+    
+    /* Cyberpunk Form Response */
+    .form-response {
+        margin-top: 1rem;
+        padding: 1rem;
+        border-radius: 0;
+        display: none;
+        border: 1px solid;
+        position: relative;
+        overflow: hidden;
+    }
+    
+    .form-response::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(45deg, 
+                    transparent 65%, 
+                    rgba(255, 255, 255, 0.05) 65%, 
+                    rgba(255, 255, 255, 0.05) 70%, 
+                    transparent 70%),
+                linear-gradient(-45deg, 
+                    transparent 65%, 
+                    rgba(255, 255, 255, 0.05) 65%, 
+                    rgba(255, 255, 255, 0.05) 70%, 
+                    transparent 70%);
+        background-size: 30px 30px;
+        pointer-events: none;
+    }
+    
+    .form-response.success {
+        background-color: rgba(40, 167, 69, 0.1);
+        color: #d4edda;
+        display: block;
+        border-color: #28a745;
+    }
+    
+    .form-response.error {
+        background-color: rgba(220, 53, 69, 0.1);
+        color: #f8d7da;
+        display: block;
+        border-color: #dc3545;
+    }
+    
+    /* Cyberpunk Glitch Effect */
+    @keyframes glitch {
+        0% { text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue); }
+        25% { text-shadow: 2px 2px 10px var(--neon-pink), -2px -2px 20px var(--glow-pink); }
+        50% { text-shadow: -2px -2px 10px var(--neon-green), 2px 2px 20px rgba(0, 255, 157, 0.4); }
+        75% { text-shadow: 3px -3px 10px var(--neon-purple), -3px 3px 20px rgba(211, 0, 197, 0.4); }
+        100% { text-shadow: -3px 3px 10px var(--neon-blue), 3px -3px 20px var(--glow-blue); }
+    }
+    
+    /* Cyberpunk Responsive Styles */
+    @media (max-width: 992px) {
+        .contact-header h1 {
             font-size: 2.5rem;
-            color: var(--neon-blue);
-            margin-bottom: 1.5rem;
-            text-shadow: 0 0 10px var(--glow-blue);
         }
-
-        .login-info p {
-            margin-bottom: 1.5rem;
-            font-size: 1.1rem;
-            color: rgba(255, 255, 255, 0.8);
+    }
+    
+    @media (max-width: 768px) {
+        .header-container {
+            flex-direction: row;
+            text-align: left;
         }
-
-        .features-list {
-            margin: 2rem 0;
-        }
-
-        .features-list li {
-            margin-bottom: 1rem;
-            position: relative;
-            padding-left: 1.5rem;
-        }
-
-        .features-list li::before {
-            content: '>';
-            position: absolute;
-            left: 0;
-            color: var(--neon-green);
-        }
-
-        .login-container {
-            background-color: var(--dark-accent);
-            border-radius: 0;
-            box-shadow: 0 0 20px rgba(0, 0, 0, 0.5);
-            width: 100%;
-            max-width: 400px;
-            padding: 2rem;
-            border: 1px solid var(--neon-blue);
-            margin-left: auto;
-        }
-
-        .logo {
-            text-align: center;
-            margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            font-weight: bold;
-            color: var(--neon-blue);
-            font-family: 'Orbitron', sans-serif;
-            text-shadow: 0 0 10px var(--glow-blue);
-        }
-
-        .logo span {
-            color: var(--neon-pink);
-            text-shadow: 0 0 10px var(--glow-pink);
-        }
-
-        .form-group {
-            margin-bottom: 1.5rem;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 0.5rem;
-            font-weight: 600;
-            color: var(--neon-green);
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 12px;
-            border: 1px solid rgba(5, 217, 232, 0.3);
-            background-color: rgba(255, 255, 255, 0.05);
-            color: var(--light-text);
-            font-size: 1rem;
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: var(--neon-pink);
-            box-shadow: 0 0 10px var(--glow-pink);
-        }
-
-        .submit-btn {
-            background-color: transparent;
-            color: var(--neon-pink);
-            border: 2px solid var(--neon-pink);
-            padding: 12px;
-            font-size: 1rem;
-            cursor: pointer;
-            font-weight: 600;
-            width: 100%;
-            transition: all 0.3s ease;
-            font-family: 'Orbitron', sans-serif;
-            letter-spacing: 1px;
-            position: relative;
-            overflow: hidden;
-        }
-
-        .submit-btn:hover {
-            background-color: var(--neon-pink);
-            color: var(--dark-bg);
-            box-shadow: 0 0 15px var(--glow-pink);
-        }
-
-        .submit-btn::before {
-            content: '';
-            position: absolute;
+        
+        nav {
+            position: fixed;
             top: 0;
-            left: -100%;
+            right: -100%;
+            width: 70%;
+            height: 100vh;
+            background-color: var(--darker-bg);
+            z-index: 1000;
+            transition: right 0.3s ease;
+            border-left: 1px solid var(--neon-purple);
+            box-shadow: -5px 0 15px rgba(211, 0, 197, 0.3);
+        }
+        
+        nav.show {
+            right: 0;
+        }
+        
+        nav ul {
+            margin-top: 4rem;
+            flex-direction: column;
+            align-items: flex-start;
+            padding: 0 2rem;
+        }
+        
+        nav ul li {
+            margin: 1rem 0;
             width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(255, 42, 109, 0.4), transparent);
-            transition: 0.5s;
         }
-
-        .submit-btn:hover::before {
-            left: 100%;
-        }
-
-        .switch-mode {
-            text-align: center;
-            margin-top: 1rem;
-            color: rgba(255, 255, 255, 0.7);
-        }
-
-        .switch-mode a {
-            color: var(--neon-blue);
-            text-decoration: none;
-            font-weight: 500;
-        }
-
-        .verification-section {
-            display: none;
-            margin-top: 1rem;
-        }
-
-        .message {
-            padding: 10px;
-            border-radius: 0;
-            margin-bottom: 1rem;
-            text-align: center;
-            display: none;
-            border: 1px solid;
-        }
-
-        .success {
-            background-color: rgba(40, 167, 69, 0.1);
-            color: #d4edda;
-            border-color: #28a745;
+        
+        nav ul li a {
+            font-size: 1.2rem;
             display: block;
+            padding: 0.5rem 0;
         }
-
-        .warning {
-            background-color: rgba(255, 193, 7, 0.1);
-            color: #fff3cd;
-            border-color: #ffc107;
+        
+        .mobile-menu-btn {
             display: block;
+            z-index: 1001;
         }
-
-        .error {
-            background-color: rgba(220, 53, 69, 0.1);
-            color: #f8d7da;
-            border-color: #dc3545;
-            display: block;
+        
+        .contact-header {
+            padding: 4rem 0;
         }
-
-        .spinner {
-            display: none;
-            width: 20px;
-            height: 20px;
-            border: 3px solid rgba(255,255,255,0.3);
-            border-radius: 50%;
-            border-top-color: white;
-            animation: spin 1s ease-in-out infinite;
-            margin: 0 auto;
+        
+        .contact-header h1 {
+            font-size: 2rem;
         }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
+        
+        .contact-header p {
+            font-size: 1.1rem;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .login-wrapper {
-                flex-direction: column;
-                padding: 1rem;
-            }
-            
-            .login-info {
-                padding: 1rem;
-                text-align: center;
-            }
-            
-            .login-container {
-                margin: 2rem auto 0;
-                max-width: 100%;
-            }
+        
+        .contact-container {
+            grid-template-columns: 1fr;
         }
-    </style>
+    }
+    
+    @media (max-width: 480px) {
+        .contact-header h1 {
+            font-size: 1.8rem;
+        }
+        
+        .contact-form,
+        .contact-info {
+            padding: 1.5rem;
+        }
+    }
+</style>
 </head>
 <body>
-    <div class="login-wrapper">
-        <!-- Left side with description -->
-        <div class="login-info">
-            <h1>Welcome Back, Modder!</h1>
-            <p>Join our community of passionate gamers and mod creators. Access exclusive content, share your creations, and connect with like-minded enthusiasts.</p>
-            
-            <div class="features-list">
-                <h3>Why join GameModHub?</h3>
+    <!-- Header -->
+    <header>
+        <div class="container header-container">
+            <a href="index.html" class="logo">Game<span>Mod</span>Hub</a>
+            <nav>
                 <ul>
-                    <li>Access to thousands of high-quality game mods</li>
-                    <li>Upload and share your own creations with the community</li>
-                    <li>Get early access to beta mods and tools</li>
-                    <li>Participate in modding contests with prizes</li>
-                    <li>Connect with other modders in our Discord community</li>
-                </ul>
-            </div>
-            
-            <p>Not a member yet? Click "Sign up" to create your free account and start your modding journey today!</p>
-        </div>
+                    <li><a href="index.html">Home</a></li>
+                    <li><a href="mods.html">Mods</a></li>
+                    <li><a href="categories.html">Categories</a></li>
+                    <li><a href="request.html">Request Mod</a></li>
+                    <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="contact.html" class="active">Contact</a></li>
+                    <li><a href="login.html">Login</a></li>
 
-        <!-- Right side with login form -->
-        <div class="login-container">
-            <div class="logo">Game<span>Mod</span>Hub</div>
-            
-            <div id="message" class="message"></div>
-            
-            <!-- Login Form -->
-            <form id="loginForm">
-                <div class="form-group">
-                    <label for="loginEmail">Email Address</label>
-                    <input type="email" id="loginEmail" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="loginPassword">Password</label>
-                    <input type="password" id="loginPassword" required>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="loginBtn">
-                    <span id="loginText">Log In</span>
-                    <span id="loginSpinner" class="spinner"></span>
-                </button>
-                
-                <div class="switch-mode">
-                    Don't have an account? <a href="#" id="switchToSignup">Sign up</a>
-                </div>
-            </form>
-            
-            <!-- Signup Form -->
-            <form id="signupForm" style="display: none;">
-                <div class="form-group">
-                    <label for="signupEmail">Email Address</label>
-                    <input type="email" id="signupEmail" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="signupPassword">Password</label>
-                    <input type="password" id="signupPassword" required>
-                </div>
-                
-                <div class="form-group">
-                    <label for="confirmPassword">Confirm Password</label>
-                    <input type="password" id="confirmPassword" required>
-                </div>
-                
-                <button type="submit" class="submit-btn" id="signupBtn">
-                    <span id="signupText">Sign Up</span>
-                    <span id="signupSpinner" class="spinner"></span>
-                </button>
-                
-                <div class="switch-mode">
-                    Already have an account? <a href="#" id="switchToLogin">Log in</a>
-                </div>
-                
-                <!-- Verification Section (hidden initially) -->
-                <div class="verification-section" id="verificationSection">
+                </ul>
+            </nav>
+        </div>
+    </header> </header>
+
+    <!-- Contact Header -->
+    <section class="contact-header">
+        <div class="container">
+            <h1>Contact Us</h1>
+            <p>Have questions? We're here to help!</p>
+        </div>
+    </section>
+
+    <!-- Contact Content -->
+    <div class="container">
+        <div class="contact-container">
+            <!-- Contact Form -->
+            <div class="contact-form">
+                <h2>Send Us a Message</h2>
+                <form id="contactForm">
                     <div class="form-group">
-                        <label for="verificationCode">Verification Code</label>
-                        <input type="text" id="verificationCode" placeholder="Enter code sent to your email">
+                        <label for="name">Your Name</label>
+                        <input type="text" id="name" name="name" required>
                     </div>
                     
-                    <button type="button" class="submit-btn" id="verifyBtn">
-                        <span id="verifyText">Verify</span>
-                        <span id="verifySpinner" class="spinner"></span>
-                    </button>
+                    <div class="form-group">
+                        <label for="email">Email Address</label>
+                        <input type="email" id="email" name="email" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="subject">Subject</label>
+                        <select id="subject" name="subject" required>
+                            <option value="" disabled selected>Select a subject</option>
+                            <option value="support">Technical Support</option>
+                            <option value="mod-issue">Mod Issue</option>
+                            <option value="partnership">Partnership Inquiry</option>
+                            <option value="copyright">Copyright/DMCA</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" name="message" required></textarea>
+                    </div>
+                    
+                    <button type="submit" class="submit-btn">Send Message</button>
+                    <div id="formResponse" class="form-response"></div>
+                </form>
+            </div>
+            
+
+            
+            <!-- Contact Information -->
+            <div class="contact-info">
+                <h2>Get In Touch</h2>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-envelope"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Email Us</h3>
+                        <p>aryan.ali.king.master@gmail.com</p>
+                        <!-- <p>dmca@gamemodhub.com</p> -->
+                    </div>
                 </div>
-            </form>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-comment-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Live Chat</h3>
+                        <p>Available 9AM-5PM EST</p>
+                        <!-- <p>Look for the chat icon in the corner</p> -->
+                    </div>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fas fa-phone-alt"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Call Us</h3>
+                        <p>+1 (555) 123-4567</p>
+                        <p>Mon-Fri, 9AM-5PM EST</p>
+                    </div>
+                </div>
+                
+                <div class="contact-method">
+                    <div class="contact-icon">
+                        <i class="fab fa-discord"></i>
+                    </div>
+                    <div class="contact-details">
+                        <h3>Discord</h3>
+                        <p>Join our community server</p>
+                        <p>discord.gg/_qetryx_</p>
+                    </div>
+                </div>
+                
+                <!-- Business Hours -->
+                <div class="business-hours">
+                    <h3>Business Hours</h3>
+                    <table class="hours-table">
+                        <tr>
+                            <td>Monday - Friday</td>
+                            <td>9:00 AM - 5:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td>Saturday</td>
+                            <td>10:00 AM - 2:00 PM</td>
+                        </tr>
+                        <tr>
+                            <td>Sunday</td>
+                            <td>Closed</td>
+                        </tr>
+                    </table>
+                </div>
+                
+                <!-- Map -->
+                <div class="contact-map">
+                    <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3022.215256024286!2d-73.98887592426978!3d40.74844097138945!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c259a9b3117469%3A0xd134e199a405a163!2sEmpire%20State%20Building!5e0!3m2!1sen!2sus!4v1690834532805!5m2!1sen!2sus" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+                </div>
+            </div>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <div class="container">
+            <div class="footer-container">
+                <div class="footer-col">
+                    <h3>GameModHub</h3>
+                    <p>The best place to download free game mods, cheats, skins and more for your favorite games.</p>
+                </div>
+                <div class="footer-col">
+                    <h3>Quick Links</h3>
+                    <ul>
+                        <li><a href="index.html">Home</a></li>
+                        <li><a href="mods.html">All Mods</a></li>
+                        <li><a href="categories.html">Categories</a></li>
+                        <li><a href="contact.html">Contact</a></li>
+                    </ul>
+                </div>
+                <div class="footer-col">
+                    <h3>Legal</h3>
+                    <ul>
+                        <li><a href="privacy.html">Privacy Policy</a></li>
+                        <li><a href="terms.html">Terms of Service</a></li>
+                        <li><a href="dmca.html">DMCA</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+            </div>
+        </div>
+    </footer>
     <script>
-        // Simple "database" using localStorage
-        const accounts = JSON.parse(localStorage.getItem('accounts')) || {};
-        
-        // DOM Elements
-        const loginForm = document.getElementById('loginForm');
-        const signupForm = document.getElementById('signupForm');
-        const verificationSection = document.getElementById('verificationSection');
-        const messageEl = document.getElementById('message');
-        
-        // Switch between login and signup forms
-        document.getElementById('switchToSignup').addEventListener('click', (e) => {
+        document.getElementById('contactForm').addEventListener('submit', function(e) {
             e.preventDefault();
-            loginForm.style.display = 'none';
-            signupForm.style.display = 'block';
-            messageEl.style.display = 'none';
-        });
-        
-        document.getElementById('switchToLogin').addEventListener('click', (e) => {
-            e.preventDefault();
-            signupForm.style.display = 'none';
-            loginForm.style.display = 'block';
-            messageEl.style.display = 'none';
-        });
-        
-        // Handle login
-        loginForm.addEventListener('submit', (e) => {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
-            const password = document.getElementById('loginPassword').value;
+            
+            const form = e.target;
+            const submitBtn = form.querySelector('.submit-btn');
+            const responseEl = document.getElementById('formResponse');
             
             // Show loading state
-            document.getElementById('loginText').style.display = 'none';
-            document.getElementById('loginSpinner').style.display = 'block';
+            submitBtn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Sending...';
+            submitBtn.disabled = true;
+            responseEl.className = 'form-response';
+            responseEl.innerHTML = ''; // Clear previous content
             
-            // Simulate API call
-            setTimeout(() => {
-                if (accounts[email] && accounts[email].password === password) {
-                    // Successful login - redirect to dashboard
-                    window.location.href = 'dashboard.html';
-                } else {
-                    showMessage('Invalid email or password', 'error');
+            // Use FormSubmit service
+            fetch('https://formsubmit.co/ajax/aryan.ali.king.master@gmail.com', {
+                method: 'POST',
+                headers: { 
+                    'Content-Type': 'application/json',
+                    'Accept': 'application/json'
+                },
+                body: JSON.stringify({
+                    name: form.name.value,
+                    email: form.email.value,
+                    subject: form.subject.value,
+                    message: form.message.value,
+                    _captcha: false,
+                    _template: 'table',
+                    _subject: 'New Contact Form Submission from GameModHub',
+                    _replyto: form.email.value // Auto-set reply-to address
+                })
+            })
+            .then(response => {
+                if (!response.ok) {
+                    throw new Error('Server responded with error');
                 }
+                return response.json();
+            })
+            .then(data => {
+                responseEl.className = 'form-response success';
+                responseEl.innerHTML = `
+                    <div style="padding: 15px;">
+                        <i class="fas fa-check-circle" style="font-size: 2rem; color: #28a745; margin-bottom: 10px;"></i>
+                        <h3 style="margin-bottom: 10px; color: var(--dark);">Thank You, ${form.name.value}!</h3>
+                        <p>Your message has been sent successfully.</p>
+                        <p>We'll respond to you at <strong>${form.email.value}</strong> soon.</p>
+                    </div>
+                `;
+                form.reset();
                 
-                // Reset loading state
-                document.getElementById('loginText').style.display = 'inline';
-                document.getElementById('loginSpinner').style.display = 'none';
-            }, 1000);
+                // Optional: Scroll to show the message
+                responseEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            })
+            .catch(error => {
+                responseEl.className = 'form-response error';
+                responseEl.innerHTML = `
+                    <div style="padding: 15px;">
+                        <i class="fas fa-exclamation-triangle" style="font-size: 2rem; color: #dc3545; margin-bottom: 10px;"></i>
+                        <h3 style="margin-bottom: 10px; color: var(--dark);">Oops! Something went wrong</h3>
+                        <p>We couldn't send your message. Please try again.</p>
+                        <p>If the problem persists, email us directly at support@gamemodhub.com</p>
+                    </div>
+                `;
+                console.error('Form submission error:', error);
+            })
+            .finally(() => {
+                submitBtn.innerHTML = 'Send Message';
+                submitBtn.disabled = false;
+            });
         });
-        
-        // Handle signup
-        signupForm.addEventListener('submit', async (e) => {
-            e.preventDefault();
-            const email = document.getElementById('signupEmail').value;
-            const password = document.getElementById('signupPassword').value;
-            const confirmPassword = document.getElementById('confirmPassword').value;
-            
-            // Validate passwords match
-            if (password !== confirmPassword) {
-                showMessage('Passwords do not match', 'error');
-                return;
-            }
-            
-            // Check if account already exists
-            if (accounts[email]) {
-                showMessage('This account already exists. Please log in instead.', 'warning');
-                return;
-            }
-            
-            // Show loading state
-            document.getElementById('signupText').style.display = 'none';
-            document.getElementById('signupSpinner').style.display = 'block';
-            
-            // Generate verification code (6 digits)
-            const verificationCode = Math.floor(100000 + Math.random() * 900000).toString();
-            
-            try {
-                // Send verification email using FormSubmit.co
-                const response = await fetch('https://formsubmit.co/ajax/' + encodeURIComponent(email), {
-                    method: 'POST',
-                    headers: { 
-                        'Content-Type': 'application/json',
-                        'Accept': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        _subject: 'GameModHub Verification Code',
-                        _replyto: email,
-                        message: `Your verification code is: ${verificationCode}`,
-                        _template: 'table',
-                        _captcha: 'false'
-                    })
-                });
-                
-                if (!response.ok) throw new Error('Failed to send verification code');
-                
-                // Store the verification code temporarily
-                accounts[email] = {
-                    password: password,
-                    verified: false,
-                    verificationCode: verificationCode
-                };
-                
-                // Show verification section
-                verificationSection.style.display = 'block';
-                showMessage(`Verification code sent to ${email}`, 'success');
-                
-            } catch (error) {
-                showMessage('Failed to send verification code. Please try again.', 'error');
-                console.error('Email sending error:', error);
-            } finally {
-                // Reset loading state
-                document.getElementById('signupText').style.display = 'inline';
-                document.getElementById('signupSpinner').style.display = 'none';
-            }
+    
+        // Keep your existing live chat simulation
+        document.querySelector('.contact-method:nth-child(2)').addEventListener('click', function() {
+            alert('In a real implementation, this would open your live chat system.\n\nPopular options: Tawk.to, LiveChat, or Intercom.');
         });
-        
-        // Handle verification
-        document.getElementById('verifyBtn').addEventListener('click', () => {
-            const email = document.getElementById('signupEmail').value;
-            const code = document.getElementById('verificationCode').value;
-            
-            // Show loading state
-            document.getElementById('verifyText').style.display = 'none';
-            document.getElementById('verifySpinner').style.display = 'block';
-            
-            // Simulate verification
-            setTimeout(() => {
-                if (accounts[email] && accounts[email].verificationCode === code) {
-                    // Mark account as verified
-                    accounts[email].verified = true;
-                    delete accounts[email].verificationCode;
-                    
-                    // Save to "database"
-                    localStorage.setItem('accounts', JSON.stringify(accounts));
-                    
-                    // Show success message
-                    showMessage('Account created successfully!', 'success');
-                    
-                    // Hide verification section
-                    verificationSection.style.display = 'none';
-                    
-                    // Switch to login form after 2 seconds
-                    setTimeout(() => {
-                        signupForm.style.display = 'none';
-                        loginForm.style.display = 'block';
-                        document.getElementById('loginEmail').value = email;
-                        messageEl.style.display = 'none';
-                    }, 2000);
-                } else {
-                    showMessage('Invalid verification code', 'error');
-                }
-                
-                // Reset loading state
-                document.getElementById('verifyText').style.display = 'inline';
-                document.getElementById('verifySpinner').style.display = 'none';
-            }, 1000);
-        });
-        
-        // Helper function to show messages
-        function showMessage(text, type) {
-            messageEl.textContent = text;
-            messageEl.className = 'message ' + type;
-            messageEl.style.display = 'block';
-        }
     </script>
 </body>
 </html>
