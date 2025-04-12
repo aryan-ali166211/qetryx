@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,9 +10,17 @@
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-firestore-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.6.0/firebase-storage-compat.js"></script>
-    <script src="auth.js"></script>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" type="image/png" href="Favicon/GMH.png">
+    
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <script>
+        // Supabase configuration
+        const supabaseUrl = 'https://taitgdhpomjkolaqvkxv.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhaXRnZGhwb21qa29sYXF2a3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0NTI2OTksImV4cCI6MjA2MDAyODY5OX0.oMf2P5UnNzANPRLr17PfEsuKC1b4GGO5CK0XMjyrYUQ';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+        </script>
+        <script src="auth.js"></script>
     <style>
         /* Cyberpunk Global Styles */
         :root {
@@ -26,49 +35,54 @@
             --glow-blue: rgba(5, 217, 232, 0.4);
             --glow-pink: rgba(255, 42, 109, 0.4);
         }
-        
+
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
             font-family: 'Rajdhani', sans-serif;
         }
-        
+
         body {
             background-color: var(--dark-bg);
             color: var(--light-text);
             line-height: 1.6;
             overflow-x: hidden;
-            background-image: 
+            background-image:
                 linear-gradient(rgba(5, 217, 232, 0.03) 1px, transparent 1px),
                 linear-gradient(90deg, rgba(5, 217, 232, 0.03) 1px, transparent 1px);
             background-size: 40px 40px;
         }
-        
-        h1, h2, h3, h4, .logo, .btn {
+
+        h1,
+        h2,
+        h3,
+        h4,
+        .logo,
+        .btn {
             font-family: 'Orbitron', sans-serif;
             text-transform: uppercase;
             letter-spacing: 1px;
         }
-        
+
         a {
             text-decoration: none;
             color: var(--neon-blue);
             transition: all 0.3s ease;
         }
-        
+
         a:hover {
             color: var(--neon-pink);
             text-shadow: 0 0 5px var(--glow-pink);
         }
-        
+
         .container {
             width: 90%;
             max-width: 1200px;
             margin: 0 auto;
             padding: 0 15px;
         }
-        
+
         /* Cyberpunk Header */
         header {
             background-color: rgba(13, 2, 33, 0.9);
@@ -81,13 +95,13 @@
             box-shadow: 0 0 15px rgba(211, 0, 197, 0.3);
             backdrop-filter: blur(5px);
         }
-        
+
         .header-container {
             display: flex;
             justify-content: space-between;
             align-items: center;
         }
-        
+
         .logo {
             font-size: 1.8rem;
             font-weight: bold;
@@ -95,22 +109,29 @@
             text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
             position: relative;
         }
-        
+
         .logo span {
             color: var(--neon-pink);
             text-shadow: 0 0 10px var(--neon-pink), 0 0 20px var(--glow-pink);
         }
-        
+
         .logo::after {
             content: '_';
             animation: blink 1s infinite step-end;
         }
-        
+
         @keyframes blink {
-            0%, 100% { opacity: 1; }
-            50% { opacity: 0; }
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0;
+            }
         }
-        
+
         .mobile-menu-btn {
             display: none;
             background: none;
@@ -120,16 +141,16 @@
             cursor: pointer;
             transition: all 0.3s ease;
         }
-        
+
         .mobile-menu-btn:hover {
             color: var(--neon-pink);
             transform: scale(1.1);
         }
-        
+
         /* Upload Header */
         .upload-header {
-            background: linear-gradient(rgba(5, 1, 14, 0.9), rgba(13, 2, 33, 0.7)), 
-                        url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
+            background: linear-gradient(rgba(5, 1, 14, 0.9), rgba(13, 2, 33, 0.7)),
+                url('https://images.unsplash.com/photo-1547036967-23d11aacaee0?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1374&q=80');
             background-size: cover;
             background-position: center;
             color: white;
@@ -138,7 +159,7 @@
             position: relative;
             overflow: hidden;
         }
-        
+
         .upload-header::before {
             content: '';
             position: absolute;
@@ -146,27 +167,27 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: linear-gradient(45deg, 
-                        transparent 65%, 
-                        rgba(255, 42, 109, 0.1) 65%, 
-                        rgba(255, 42, 109, 0.1) 70%, 
-                        transparent 70%),
-                    linear-gradient(-45deg, 
-                        transparent 65%, 
-                        rgba(5, 217, 232, 0.1) 65%, 
-                        rgba(5, 217, 232, 0.1) 70%, 
-                        transparent 70%);
+            background: linear-gradient(45deg,
+                    transparent 65%,
+                    rgba(255, 42, 109, 0.1) 65%,
+                    rgba(255, 42, 109, 0.1) 70%,
+                    transparent 70%),
+                linear-gradient(-45deg,
+                    transparent 65%,
+                    rgba(5, 217, 232, 0.1) 65%,
+                    rgba(5, 217, 232, 0.1) 70%,
+                    transparent 70%);
             background-size: 30px 30px;
             pointer-events: none;
         }
-        
+
         .upload-header h1 {
             font-size: 3rem;
             margin-bottom: 1.5rem;
             text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
             animation: glitch 2s infinite alternate;
         }
-        
+
         .upload-header p {
             font-size: 1.3rem;
             max-width: 700px;
@@ -174,7 +195,7 @@
             font-weight: 300;
             letter-spacing: 0.5px;
         }
-        
+
         /* Upload Form */
         .upload-container {
             background-color: var(--dark-accent);
@@ -187,7 +208,7 @@
             max-width: 800px;
             border: 1px solid rgba(5, 217, 232, 0.3);
         }
-        
+
         .upload-container::before {
             content: 'UPLOAD_MOD_';
             position: absolute;
@@ -197,11 +218,11 @@
             color: var(--neon-green);
             font-family: 'Orbitron', sans-serif;
         }
-        
+
         .form-group {
             margin-bottom: 1.5rem;
         }
-        
+
         .form-group label {
             display: block;
             margin-bottom: 0.8rem;
@@ -210,7 +231,7 @@
             font-family: 'Orbitron', sans-serif;
             font-size: 0.9rem;
         }
-        
+
         .form-group input,
         .form-group select,
         .form-group textarea {
@@ -223,7 +244,7 @@
             color: white;
             transition: all 0.3s ease;
         }
-        
+
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
@@ -231,23 +252,23 @@
             border-color: var(--neon-pink);
             box-shadow: 0 0 10px var(--glow-pink);
         }
-        
+
         .form-group textarea {
             min-height: 120px;
             resize: vertical;
         }
-        
+
         .form-group select option {
             background-color: var(--dark-bg);
         }
-        
+
         .file-upload {
             position: relative;
             overflow: hidden;
             display: inline-block;
             width: 100%;
         }
-        
+
         .file-upload-btn {
             display: block;
             text-align: center;
@@ -265,13 +286,13 @@
             overflow: hidden;
             cursor: pointer;
         }
-        
+
         .file-upload-btn:hover {
             background-color: var(--neon-blue);
             color: var(--dark-bg);
             box-shadow: 0 0 20px var(--glow-blue);
         }
-        
+
         .file-upload-btn::before {
             content: '';
             position: absolute;
@@ -279,17 +300,17 @@
             left: -100%;
             width: 100%;
             height: 100%;
-            background: linear-gradient(90deg, 
-                        transparent, 
-                        rgba(5, 217, 232, 0.4), 
-                        transparent);
+            background: linear-gradient(90deg,
+                    transparent,
+                    rgba(5, 217, 232, 0.4),
+                    transparent);
             transition: 0.5s;
         }
-        
+
         .file-upload-btn:hover::before {
             left: 100%;
         }
-        
+
         .file-upload-input {
             position: absolute;
             left: 0;
@@ -299,19 +320,19 @@
             height: 100%;
             cursor: pointer;
         }
-        
+
         .file-info {
             margin-top: 10px;
             font-size: 0.9rem;
             color: var(--neon-green);
         }
-        
+
         .file-error {
             color: var(--neon-pink);
             margin-top: 5px;
             font-size: 0.9rem;
         }
-        
+
         .submit-btn {
             display: block;
             width: 100%;
@@ -330,23 +351,23 @@
             box-shadow: 0 0 15px var(--glow-pink);
             margin-top: 2rem;
         }
-        
+
         .submit-btn:hover {
             background-color: #ff0a5e;
             box-shadow: 0 0 25px var(--glow-pink);
         }
-        
+
         .submit-btn:disabled {
             background-color: #666;
             box-shadow: none;
             cursor: not-allowed;
         }
-        
+
         .progress-container {
             margin-top: 1.5rem;
             display: none;
         }
-        
+
         .progress-bar {
             width: 100%;
             height: 10px;
@@ -355,23 +376,23 @@
             overflow: hidden;
             margin-bottom: 10px;
         }
-        
+
         .progress {
             height: 100%;
-            background: linear-gradient(90deg, 
-                        var(--neon-pink), 
-                        var(--neon-blue), 
-                        var(--neon-purple));
+            background: linear-gradient(90deg,
+                    var(--neon-pink),
+                    var(--neon-blue),
+                    var(--neon-purple));
             width: 0%;
             transition: width 0.3s ease;
         }
-        
+
         .progress-text {
             text-align: center;
             font-size: 0.9rem;
             color: var(--neon-green);
         }
-        
+
         .success-message {
             display: none;
             background-color: rgba(0, 255, 157, 0.1);
@@ -380,19 +401,19 @@
             text-align: center;
             margin-top: 1.5rem;
         }
-        
+
         .success-message h3 {
             color: var(--neon-green);
             margin-bottom: 0.5rem;
         }
-        
+
         .success-message a {
             display: inline-block;
             margin-top: 1rem;
             color: var(--neon-blue);
             text-decoration: underline;
         }
-        
+
         /* Cyberpunk Footer */
         footer {
             background-color: var(--darker-bg);
@@ -400,7 +421,7 @@
             padding: 4rem 0 1.5rem;
             position: relative;
         }
-        
+
         footer::before {
             content: '';
             position: absolute;
@@ -408,20 +429,20 @@
             left: 0;
             width: 100%;
             height: 1px;
-            background: linear-gradient(90deg, 
-                        transparent, 
-                        var(--neon-purple), 
-                        transparent);
+            background: linear-gradient(90deg,
+                    transparent,
+                    var(--neon-purple),
+                    transparent);
             box-shadow: 0 0 10px rgba(211, 0, 197, 0.3);
         }
-        
+
         .footer-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
             gap: 2.5rem;
             margin-bottom: 3rem;
         }
-        
+
         .footer-col h3 {
             margin-bottom: 1.5rem;
             font-size: 1.3rem;
@@ -429,7 +450,7 @@
             padding-bottom: 0.8rem;
             color: var(--neon-blue);
         }
-        
+
         .footer-col h3::after {
             content: '';
             position: absolute;
@@ -439,41 +460,41 @@
             height: 2px;
             background: linear-gradient(90deg, var(--neon-blue), var(--neon-pink));
         }
-        
+
         .footer-col p {
             margin-bottom: 1.5rem;
             line-height: 1.6;
             color: rgba(255, 255, 255, 0.7);
         }
-        
+
         .footer-col ul {
             list-style: none;
         }
-        
+
         .footer-col ul li {
             margin-bottom: 0.8rem;
             position: relative;
             padding-left: 15px;
         }
-        
+
         .footer-col ul li::before {
             content: '>';
             position: absolute;
             left: 0;
             color: var(--neon-green);
         }
-        
+
         .footer-col ul li a {
             color: rgba(255, 255, 255, 0.7);
             transition: all 0.3s ease;
             display: inline-block;
         }
-        
+
         .footer-col ul li a:hover {
             color: var(--neon-pink);
             transform: translateX(5px);
         }
-        
+
         .copyright {
             text-align: center;
             padding-top: 2rem;
@@ -481,31 +502,45 @@
             font-size: 0.9rem;
             color: rgba(255, 255, 255, 0.5);
         }
-        
+
         /* Cyberpunk Glitch Effect */
         @keyframes glitch {
-            0% { text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue); }
-            25% { text-shadow: 2px 2px 10px var(--neon-pink), -2px -2px 20px var(--glow-pink); }
-            50% { text-shadow: -2px -2px 10px var(--neon-green), 2px 2px 20px rgba(0, 255, 157, 0.4); }
-            75% { text-shadow: 3px -3px 10px var(--neon-purple), -3px 3px 20px rgba(211, 0, 197, 0.4); }
-            100% { text-shadow: -3px 3px 10px var(--neon-blue), 3px -3px 20px var(--glow-blue); }
+            0% {
+                text-shadow: 0 0 10px var(--neon-blue), 0 0 20px var(--glow-blue);
+            }
+
+            25% {
+                text-shadow: 2px 2px 10px var(--neon-pink), -2px -2px 20px var(--glow-pink);
+            }
+
+            50% {
+                text-shadow: -2px -2px 10px var(--neon-green), 2px 2px 20px rgba(0, 255, 157, 0.4);
+            }
+
+            75% {
+                text-shadow: 3px -3px 10px var(--neon-purple), -3px 3px 20px rgba(211, 0, 197, 0.4);
+            }
+
+            100% {
+                text-shadow: -3px 3px 10px var(--neon-blue), 3px -3px 20px var(--glow-blue);
+            }
         }
-        
+
         /* Responsive Styles */
         @media (max-width: 768px) {
             .upload-header {
                 padding: 4rem 0;
             }
-            
+
             .upload-header h1 {
                 font-size: 2rem;
             }
-            
+
             .upload-header p {
                 font-size: 1.1rem;
             }
         }
-        
+
         @media (max-width: 480px) {
             .upload-header h1 {
                 font-size: 1.8rem;
@@ -513,6 +548,7 @@
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header>
@@ -525,7 +561,7 @@
                     <li><a href="categories.html">Categories</a></li>
                     <li><a href="request.html">Request Mod</a></li>
                     <li><a href="faq.html">FAQ</a></li>
-                                        <li><a href="uploadmod.html">UploadMod</a></li>
+                    <li><a href="uploadmod.html">UploadMod</a></li>
 
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
@@ -548,7 +584,7 @@
                 <label for="modName">Mod Name</label>
                 <input type="text" id="modName" name="modName" required placeholder="Enter your mod name">
             </div>
-            
+
             <div class="form-group">
                 <label for="modGame">Game</label>
                 <select id="modGame" name="modGame" required>
@@ -561,7 +597,7 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="modCategory">Category</label>
                 <select id="modCategory" name="modCategory" required>
@@ -574,7 +610,7 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="modType">Type</label>
                 <select id="modType" name="modType" required>
@@ -586,17 +622,18 @@
                     <option value="other">Other</option>
                 </select>
             </div>
-            
+
             <div class="form-group">
                 <label for="modVersion">Version</label>
                 <input type="text" id="modVersion" name="modVersion" required placeholder="e.g. 1.0.0">
             </div>
-            
+
             <div class="form-group">
                 <label for="modDescription">Description</label>
-                <textarea id="modDescription" name="modDescription" required placeholder="Describe your mod in detail"></textarea>
+                <textarea id="modDescription" name="modDescription" required
+                    placeholder="Describe your mod in detail"></textarea>
             </div>
-            
+
             <div class="form-group">
                 <label>Mod File (Max 24MB)</label>
                 <div class="file-upload">
@@ -606,7 +643,7 @@
                 <div id="fileInfo" class="file-info"></div>
                 <div id="fileError" class="file-error"></div>
             </div>
-            
+
             <div class="form-group">
                 <label>Preview Image</label>
                 <div class="file-upload">
@@ -616,16 +653,16 @@
                 <div id="imageInfo" class="file-info"></div>
                 <div id="imageError" class="file-error"></div>
             </div>
-            
+
             <div class="progress-container" id="progressContainer">
                 <div class="progress-bar">
                     <div class="progress" id="progressBar"></div>
                 </div>
                 <div class="progress-text" id="progressText">Uploading: 0%</div>
             </div>
-            
+
             <button type="submit" class="submit-btn" id="submitBtn">Upload Mod</button>
-            
+
             <div class="success-message" id="successMessage">
                 <h3>Mod Uploaded Successfully!</h3>
                 <p>Your mod is now available to the community.</p>
@@ -661,18 +698,16 @@
                 </div>
             </div>
             <div class="copyright">
-                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective owners.</p>
+                <p>&copy; 2023 GameModHub. All rights reserved. All game trademarks are the property of their respective
+                    owners.</p>
             </div>
         </div>
     </footer>
 
     <script>
-        // Supabase configuration
-        const supabaseUrl = 'https://taitgdhpomjkolaqvkxv.supabase.co';
-        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRhaXRnZGhwb21qa29sYXF2a3h2Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ0NTI2OTksImV4cCI6MjA2MDAyODY5OX0.oMf2P5UnNzANPRLr17PfEsuKC1b4GGO5CK0XMjyrYUQ';
-        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+  
 
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             const modUploadForm = document.getElementById('modUploadForm');
             const modFileInput = document.getElementById('modFile');
             const modImageInput = document.getElementById('modImage');
@@ -690,10 +725,10 @@
             const MAX_FILE_SIZE = 24 * 1024 * 1024;
 
             // Display selected file info
-            modFileInput.addEventListener('change', function() {
+            modFileInput.addEventListener('change', function () {
                 if (this.files.length > 0) {
                     const file = this.files[0];
-                    
+
                     // Check file size
                     if (file.size > MAX_FILE_SIZE) {
                         fileError.textContent = 'File size exceeds 24MB limit';
@@ -703,7 +738,7 @@
                         fileError.textContent = '';
                         submitBtn.disabled = false;
                     }
-                    
+
                     fileInfo.textContent = `Selected: ${file.name} (${formatFileSize(file.size)})`;
                 } else {
                     fileInfo.textContent = '';
@@ -711,10 +746,10 @@
             });
 
             // Display selected image info
-            modImageInput.addEventListener('change', function() {
+            modImageInput.addEventListener('change', function () {
                 if (this.files.length > 0) {
                     const file = this.files[0];
-                    
+
                     // Check if it's an image
                     if (!file.type.startsWith('image/')) {
                         imageError.textContent = 'Please select an image file';
@@ -724,7 +759,7 @@
                         imageError.textContent = '';
                         submitBtn.disabled = false;
                     }
-                    
+
                     imageInfo.textContent = `Selected: ${file.name} (${formatFileSize(file.size)})`;
                 } else {
                     imageInfo.textContent = '';
@@ -741,16 +776,16 @@
             }
 
             // Form submission
-            modUploadForm.addEventListener('submit', async function(e) {
+            modUploadForm.addEventListener('submit', async function (e) {
                 e.preventDefault();
-                
+
                 // Check if user is logged in
                 const { data: { user } } = await supabase.auth.getUser();
                 if (!user) {
                     alert('Please sign in to upload mods');
                     return;
                 }
-                
+
                 // Get form values
                 const modName = document.getElementById('modName').value;
                 const modGame = document.getElementById('modGame').value;
@@ -760,31 +795,31 @@
                 const modDescription = document.getElementById('modDescription').value;
                 const modFile = modFileInput.files[0];
                 const modImage = modImageInput.files[0];
-                
+
                 // Validate files
                 if (!modFile || !modImage) {
                     alert('Please select both a mod file and a preview image');
                     return;
                 }
-                
+
                 if (modFile.size > MAX_FILE_SIZE) {
                     fileError.textContent = 'File size exceeds 24MB limit';
                     return;
                 }
-                
+
                 // Disable submit button
                 submitBtn.disabled = true;
                 submitBtn.textContent = 'Uploading...';
-                
+
                 // Show progress bar
                 progressContainer.style.display = 'block';
-                
+
                 try {
                     // Generate unique IDs for files
                     const modId = Date.now().toString();
                     const modFileName = `mods/${modId}_${modFile.name}`;
                     const imageFileName = `images/${modId}_${modImage.name}`;
-                    
+
                     // Upload mod file
                     const { data: modFileData, error: modFileError } = await supabase.storage
                         .from('mods')
@@ -792,9 +827,9 @@
                             cacheControl: '3600',
                             upsert: false
                         });
-                    
+
                     if (modFileError) throw modFileError;
-                    
+
                     // Upload image file
                     const { data: imageFileData, error: imageFileError } = await supabase.storage
                         .from('images')
@@ -802,18 +837,18 @@
                             cacheControl: '3600',
                             upsert: false
                         });
-                    
+
                     if (imageFileError) throw imageFileError;
-                    
+
                     // Get public URLs
                     const { data: { publicUrl: modFileUrl } } = supabase.storage
                         .from('mods')
                         .getPublicUrl(modFileName);
-                    
+
                     const { data: { publicUrl: imageUrl } } = supabase.storage
                         .from('images')
                         .getPublicUrl(imageFileName);
-                    
+
                     // Save mod data to database
                     const { data, error } = await supabase
                         .from('mods')
@@ -831,25 +866,25 @@
                             uploader_id: user.id,
                             uploader_name: user.email.split('@')[0] || 'Anonymous'
                         }]);
-                    
+
                     if (error) throw error;
-                    
+
                     // Show success message
                     progressContainer.style.display = 'none';
                     submitBtn.style.display = 'none';
                     successMessage.style.display = 'block';
-                    
+
                     // Reset form (but keep the success message visible)
                     modUploadForm.reset();
                     fileInfo.textContent = '';
                     imageInfo.textContent = '';
-                    
+
                 } catch (error) {
                     console.error('Error uploading mod:', error);
                     alert('Error uploading mod: ' + error.message);
                     resetForm();
                 }
-                
+
                 function resetForm() {
                     submitBtn.disabled = false;
                     submitBtn.textContent = 'Upload Mod';
@@ -859,4 +894,5 @@
         });
     </script>
 </body>
+
 </html>
