@@ -525,7 +525,7 @@
                     <li><a href="categories.html">Categories</a></li>
                     <li><a href="request.html">Request Mod</a></li>
                     <li><a href="faq.html">FAQ</a></li>
-                    <li><a href="uploadmod.html">UploadMod</a></li>
+                                        <li><a href="uploadmod.html">UploadMod</a></li>
 
                     <li><a href="contact.html">Contact</a></li>
                 </ul>
@@ -667,20 +667,10 @@
     </footer>
 
     <script>
-        // Firebase configuration (replace with your actual config)
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_AUTH_DOMAIN",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_STORAGE_BUCKET",
-            messagingSenderId: "YOUR_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
-
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const db = firebase.firestore();
-        const storage = firebase.storage();
+        // Supabase configuration
+        const supabaseUrl = 'YOUR_SUPABASE_URL';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
         document.addEventListener('DOMContentLoaded', function() {
             const modUploadForm = document.getElementById('modUploadForm');
@@ -747,15 +737,15 @@
                 const k = 1024;
                 const sizes = ['Bytes', 'KB', 'MB', 'GB'];
                 const i = Math.floor(Math.log(bytes) / Math.log(k));
-                return parseFloat((bytes / Math.pow(k, i)).toFixed(2) + ' ' + sizes[i];
+                return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
             }
 
             // Form submission
-            modUploadForm.addEventListener('submit', function(e) {
+            modUploadForm.addEventListener('submit', async function(e) {
                 e.preventDefault();
                 
                 // Check if user is logged in
-                const user = firebase.auth().currentUser;
+                const { data: { user } } = await supabase.auth.getUser();
                 if (!user) {
                     alert('Please sign in to upload mods');
                     return;
@@ -789,100 +779,75 @@
                 // Show progress bar
                 progressContainer.style.display = 'block';
                 
-                // Generate unique IDs for files
-                const modId = Date.now().toString();
-                const modFileName = `mods/${modId}_${modFile.name}`;
-                const imageFileName = `images/${modId}_${modImage.name}`;
-                
-                // Upload mod file
-                const modFileRef = storage.ref().child(modFileName);
-                const modFileUploadTask = modFileRef.put(modFile);
-                
-                // Upload image file
-                const imageFileRef = storage.ref().child(imageFileName);
-                const imageFileUploadTask = imageFileRef.put(modImage);
-                
-                // Track combined progress
-                let modFileProgress = 0;
-                let imageFileProgress = 0;
-                
-                modFileUploadTask.on('state_changed', 
-                    (snapshot) => {
-                        modFileProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 50;
-                        updateProgress();
-                    },
-                    (error) => {
-                        console.error('Mod file upload error:', error);
-                        alert('Error uploading mod file: ' + error.message);
-                        resetForm();
-                    },
-                    () => {
-                        modFileProgress = 50;
-                        updateProgress();
-                    }
-                );
-                
-                imageFileUploadTask.on('state_changed', 
-                    (snapshot) => {
-                        imageFileProgress = (snapshot.bytesTransferred / snapshot.totalBytes) * 50;
-                        updateProgress();
-                    },
-                    (error) => {
-                        console.error('Image upload error:', error);
-                        alert('Error uploading image: ' + error.message);
-                        resetForm();
-                    },
-                    () => {
-                        imageFileProgress = 50;
-                        updateProgress();
-                        
-                        // Both uploads complete, get download URLs
-                        Promise.all([
-                            modFileUploadTask.snapshot.ref.getDownloadURL(),
-                            imageFileUploadTask.snapshot.ref.getDownloadURL()
-                        ]).then(([modFileUrl, imageUrl]) => {
-                            // Save mod data to Firestore
-                            db.collection('mods').doc(modId).set({
-                                id: modId,
-                                name: modName,
-                                game: modGame,
-                                category: modCategory,
-                                type: modType,
-                                version: modVersion,
-                                description: modDescription,
-                                fileUrl: modFileUrl,
-                                imageUrl: imageUrl,
-                                downloads: 0,
-                                uploadDate: firebase.firestore.FieldValue.serverTimestamp(),
-                                uploaderId: user.uid,
-                                uploaderName: user.displayName || 'Anonymous'
-                            }).then(() => {
-                                // Show success message
-                                progressContainer.style.display = 'none';
-                                submitBtn.style.display = 'none';
-                                successMessage.style.display = 'block';
-                                
-                                // Reset form (but keep the success message visible)
-                                modUploadForm.reset();
-                                fileInfo.textContent = '';
-                                imageInfo.textContent = '';
-                            }).catch((error) => {
-                                console.error('Error saving mod data:', error);
-                                alert('Error saving mod data: ' + error.message);
-                                resetForm();
-                            });
-                        }).catch((error) => {
-                            console.error('Error getting download URLs:', error);
-                            alert('Error getting download URLs: ' + error.message);
-                            resetForm();
+                try {
+                    // Generate unique IDs for files
+                    const modId = Date.now().toString();
+                    const modFileName = `mods/${modId}_${modFile.name}`;
+                    const imageFileName = `images/${modId}_${modImage.name}`;
+                    
+                    // Upload mod file
+                    const { data: modFileData, error: modFileError } = await supabase.storage
+                        .from('mods')
+                        .upload(modFileName, modFile, {
+                            cacheControl: '3600',
+                            upsert: false
                         });
-                    }
-                );
-                
-                function updateProgress() {
-                    const totalProgress = Math.floor(modFileProgress + imageFileProgress);
-                    progressBar.style.width = totalProgress + '%';
-                    progressText.textContent = `Uploading: ${totalProgress}%`;
+                    
+                    if (modFileError) throw modFileError;
+                    
+                    // Upload image file
+                    const { data: imageFileData, error: imageFileError } = await supabase.storage
+                        .from('images')
+                        .upload(imageFileName, modImage, {
+                            cacheControl: '3600',
+                            upsert: false
+                        });
+                    
+                    if (imageFileError) throw imageFileError;
+                    
+                    // Get public URLs
+                    const { data: { publicUrl: modFileUrl } } = supabase.storage
+                        .from('mods')
+                        .getPublicUrl(modFileName);
+                    
+                    const { data: { publicUrl: imageUrl } } = supabase.storage
+                        .from('images')
+                        .getPublicUrl(imageFileName);
+                    
+                    // Save mod data to database
+                    const { data, error } = await supabase
+                        .from('mods')
+                        .insert([{
+                            id: modId,
+                            name: modName,
+                            game: modGame,
+                            category: modCategory,
+                            type: modType,
+                            version: modVersion,
+                            description: modDescription,
+                            file_url: modFileUrl,
+                            image_url: imageUrl,
+                            downloads: 0,
+                            uploader_id: user.id,
+                            uploader_name: user.email.split('@')[0] || 'Anonymous'
+                        }]);
+                    
+                    if (error) throw error;
+                    
+                    // Show success message
+                    progressContainer.style.display = 'none';
+                    submitBtn.style.display = 'none';
+                    successMessage.style.display = 'block';
+                    
+                    // Reset form (but keep the success message visible)
+                    modUploadForm.reset();
+                    fileInfo.textContent = '';
+                    imageInfo.textContent = '';
+                    
+                } catch (error) {
+                    console.error('Error uploading mod:', error);
+                    alert('Error uploading mod: ' + error.message);
+                    resetForm();
                 }
                 
                 function resetForm() {
