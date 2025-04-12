@@ -854,16 +854,24 @@
 
    
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        // Supabase configuration
+        const supabaseUrl = 'YOUR_SUPABASE_URL';
+        const supabaseKey = 'YOUR_SUPABASE_ANON_KEY';
+        const supabase = supabase.createClient(supabaseUrl, supabaseKey);
+
+        document.addEventListener('DOMContentLoaded', async function() {
             const modsGrid = document.getElementById('modsGrid');
             
             // Function to create a mod card
             function createModCard(mod) {
+                const uploadDate = new Date(mod.created_at);
+                const isNew = uploadDate.getTime() > Date.now() - 7*24*60*60*1000;
+                
                 return `
                     <div class="mod-card" data-game="${mod.game}" data-category="${mod.category}" data-type="${mod.type}">
                         <div class="mod-card-img">
-                            <img src="${mod.imageUrl}" alt="${mod.name}">
-                            ${mod.uploadDate.toDate().getTime() > Date.now() - 7*24*60*60*1000 ? '<span class="mod-badge">New</span>' : ''}
+                            <img src="${mod.image_url}" alt="${mod.name}">
+                            ${isNew ? '<span class="mod-badge">New</span>' : ''}
                         </div>
                         <div class="mod-card-content">
                             <h3>${mod.name}</h3>
@@ -872,32 +880,39 @@
                                 <span><i class="fas fa-download"></i> ${mod.downloads.toLocaleString()}</span>
                                 <span>v${mod.version}</span>
                             </div>
-                            <a href="${mod.fileUrl}" class="mod-download-btn" download>Download Now</a>
+                            <a href="${mod.file_url}" class="mod-download-btn" download>Download Now</a>
                         </div>
                     </div>
                 `;
             }
             
-            // Load mods from Firestore
-            db.collection('mods')
-                .orderBy('uploadDate', 'desc')
-                .get()
-                .then((querySnapshot) => {
-                    querySnapshot.forEach((doc) => {
-                        const mod = doc.data();
+            // Load mods from Supabase
+            try {
+                const { data: mods, error } = await supabase
+                    .from('mods')
+                    .select('*')
+                    .order('created_at', { ascending: false });
+                
+                if (error) throw error;
+                
+                if (mods && mods.length > 0) {
+                    mods.forEach(mod => {
                         modsGrid.innerHTML += createModCard(mod);
                     });
                     
                     // Update total mods count
-                    document.querySelector('.total-mods').textContent = `${querySnapshot.size} mods available`;
-                    
-                    // Initialize filter functionality
-                    initializeFilters();
-                })
-                .catch((error) => {
-                    console.error("Error getting mods: ", error);
-                    modsGrid.innerHTML = '<p class="error-message">Error loading mods. Please try again later.</p>';
-                });
+                    document.querySelector('.total-mods').textContent = `${mods.length} mods available`;
+                } else {
+                    modsGrid.innerHTML = '<p class="error-message">No mods found. Be the first to upload one!</p>';
+                }
+                
+                // Initialize filter functionality
+                initializeFilters();
+                
+            } catch (error) {
+                console.error("Error getting mods: ", error);
+                modsGrid.innerHTML = '<p class="error-message">Error loading mods. Please try again later.</p>';
+            }
             
             // Initialize filter functionality
             function initializeFilters() {
