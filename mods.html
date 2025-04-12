@@ -10,6 +10,21 @@
 
 <!-- Your auth script -->
 <script src="auth.js"></script>
+<script>
+    // Firebase configuration (same as in uploadmod.html)
+    const firebaseConfig = {
+        apiKey: "YOUR_API_KEY",
+        authDomain: "YOUR_AUTH_DOMAIN",
+        projectId: "YOUR_PROJECT_ID",
+        storageBucket: "YOUR_STORAGE_BUCKET",
+        messagingSenderId: "YOUR_SENDER_ID",
+        appId: "YOUR_APP_ID"
+    };
+
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+</script>
 <link rel="icon" type="image/png" href="Favicon/GMH.png">
 
 <link rel="stylesheet" href="styles.css">
@@ -726,8 +741,9 @@
                     <li><a href="categories.html">Categories</a></li>
                     <li><a href="request.html">Request Mod</a></li>
                     <li><a href="faq.html">FAQ</a></li>
+                    <li><a href="uploadmod.html">UploadMod</a></li>
+
                     <li><a href="contact.html" class="active">Contact</a></li>
-                    <li><a href="login.html">Login</a></li>
 
                    
                 </ul>
@@ -788,140 +804,10 @@
         </div>
 
         <!-- Mods Grid -->
-        <div class="mods-grid">
-            <!-- Mod Card 1 -->
-            <div class="mod-card" data-game="gta5" data-category="graphics" data-type="mod">
-                <div class="mod-card-img">
-                    <img src="https://images.unsplash.com/photo-1560253023-3ec5d502959f?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Mod">
-                    <span class="mod-badge">New</span>
-                </div>
-                <div class="mod-card-content">
-                    <h3>GTA V: Realistic Graphics Overhaul</h3>
-                    <p>Complete graphics enhancement for GTA V with 4K textures, ray tracing and improved lighting</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 12.4K</span>
-                        <span>v2.5.1</span>
-                    </div>
-                    <a href="mod-detail-gta5.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-            
-            <!-- Mod Card 2 -->
-            <div class="mod-card" data-game="minecraft" data-category="textures" data-type="texture">
-                <div class="mod-card-img">
-                    <img style="width: 5px 40px;" src="Lunar cracked/Lunar.png" alt="Minecraft Mod">
-                    <span class="mod-badge">Popular</span>
-                </div>
-                <div class="mod-card-content">
-                    <h3>Lunar Client Cracked Tool</h3>
-                    <p>Beautiful shaders with realistic lighting, shadows and water effects for Minecraft</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 8.7K</span>
-                        <span>v1.3.2</span>
-                    </div>
-                    <a href="mod-detail-minecraft.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-            
-            <!-- Mod Card 3 -->
-            <div class="mod-card" data-game="cyberpunk" data-category="gameplay" data-type="mod">
-                <div class="mod-card-img">
-                    <img src="https://images.unsplash.com/photo-1542751371-adc38448a05e?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Cyberpunk Mod">
-                </div>
-                <div class="mod-card-content">
-                    <h3>Cyberpunk 2077: Enhanced Gameplay</h3>
-                    <p>New weapons, vehicles and gameplay mechanics for Cyberpunk 2077</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 15.2K</span>
-                        <span>v3.1.0</span>
-                    </div>
-                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-            
-            <!-- Mod Card 4 -->
-            <div class="mod-card" data-game="skyrim" data-category="gameplay" data-type="mod">
-                <div class="mod-card-img">
-                    <img src="https://images.unsplash.com/photo-1493711662062-fa541adb3fc8?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Skyrim Mod">
-                </div>
-                <div class="mod-card-content">
-                    <h3>Skyrim: Immersive Quests</h3>
-                    <p>50+ new quests with full voice acting and unique rewards</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 9.8K</span>
-                        <span>v1.7.3</span>
-                    </div>
-                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-            
-            <!-- Mod Card 5 -->
-            <div class="mod-card" data-game="rdr2" data-category="gameplay" data-type="mod">
-                <div class="mod-card-img">
-                    <img src="https://images.unsplash.com/photo-1608889825205-eebdb9fc5806?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1480&q=80" alt="RDR2 Mod">
-                    <span class="mod-badge">Updated</span>
-                </div>
-                <div class="mod-card-content">
-                    <h3>RDR2: Hunting Expansion</h3>
-                    <p>New animals, weapons and hunting mechanics for Red Dead Redemption 2</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 3.2K</span>
-                        <span>v1.0.1</span>
-                    </div>
-                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-            
-            <!-- Mod Card 6 -->
-            <div class="mod-card" data-game="gta5" data-category="vehicles" data-type="mod">
-                <div class="mod-card-img">
-                    <img src="https://images.unsplash.com/photo-1503376780353-7e6692767b70?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="GTA V Cars">
-                </div>
-                <div class="mod-card-content">
-                    <h3>GTA V: Supercar Pack</h3>
-                    <p>Adds 25+ high-end sports cars to GTA V with realistic handling</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 7.5K</span>
-                        <span>v1.2.4</span>
-                    </div>
-                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-            
-            <!-- Mod Card 7 -->
-            <div class="mod-card" data-game="minecraft" data-category="maps" data-type="mod">
-                <div class="mod-card-img">
-                    <img src="https://images.unsplash.com/photo-1627855437693-dcc7b0c4ba7a?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Minecraft Map">
-                </div>
-                <div class="mod-card-content">
-                    <h3>Minecraft: Fantasy Kingdom Map</h3>
-                    <p>Massive pre-built fantasy kingdom with castles, villages and dungeons</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 5.1K</span>
-                        <span>v1.0.0</span>
-                    </div>
-                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-            
-            <!-- Mod Card 8 -->
-            <div class="mod-card" data-game="cyberpunk" data-category="characters" data-type="skin">
-                <div class="mod-card-img">
-                    <img src="https://images.unsplash.com/photo-1633613286848-e6f43bbafb8d?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=1470&q=80" alt="Cyberpunk Character">
-                    <span class="mod-badge">New</span>
-                </div>
-                <div class="mod-card-content">
-                    <h3>Cyberpunk: Custom Character Presets</h3>
-                    <p>50+ unique character presets for your Cyberpunk 2077 playthrough</p>
-                    <div class="mod-meta">
-                        <span><i class="fas fa-download"></i> 11.9K</span>
-                        <span>v2.0.3</span>
-                    </div>
-                    <a href="mod-detail.html" class="mod-download-btn">Download Now</a>
-                </div>
-            </div>
-        </div>
+        <div class="mods-grid" id="modsGrid">
+          
 
+        </div>
         <!-- Pagination -->
         <div class="pagination">
             <a href="#">&laquo;</a>
@@ -966,41 +852,88 @@
         </div>
     </footer>
 
+   
     <script>
-        // Simple filter functionality (can be enhanced with AJAX in real implementation)
         document.addEventListener('DOMContentLoaded', function() {
-            const gameFilter = document.getElementById('game-filter');
-            const categoryFilter = document.getElementById('category-filter');
-            const typeFilter = document.getElementById('type-filter');
-            const searchFilter = document.getElementById('search-filter');
-            const modCards = document.querySelectorAll('.mod-card');
+            const modsGrid = document.getElementById('modsGrid');
             
-            function filterMods() {
-                const gameValue = gameFilter.value;
-                const categoryValue = categoryFilter.value;
-                const typeValue = typeFilter.value;
-                const searchValue = searchFilter.value.toLowerCase();
-                
-                modCards.forEach(card => {
-                    const gameMatch = gameValue === 'all' || card.dataset.game === gameValue;
-                    const categoryMatch = categoryValue === 'all' || card.dataset.category === categoryValue;
-                    const typeMatch = typeValue === 'all' || card.dataset.type === typeValue;
-                    const title = card.querySelector('h3').textContent.toLowerCase();
-                    const searchMatch = title.includes(searchValue);
-                    
-                    if (gameMatch && categoryMatch && typeMatch && searchMatch) {
-                        card.style.display = 'block';
-                    } else {
-                        card.style.display = 'none';
-                    }
-                });
+            // Function to create a mod card
+            function createModCard(mod) {
+                return `
+                    <div class="mod-card" data-game="${mod.game}" data-category="${mod.category}" data-type="${mod.type}">
+                        <div class="mod-card-img">
+                            <img src="${mod.imageUrl}" alt="${mod.name}">
+                            ${mod.uploadDate.toDate().getTime() > Date.now() - 7*24*60*60*1000 ? '<span class="mod-badge">New</span>' : ''}
+                        </div>
+                        <div class="mod-card-content">
+                            <h3>${mod.name}</h3>
+                            <p>${mod.description}</p>
+                            <div class="mod-meta">
+                                <span><i class="fas fa-download"></i> ${mod.downloads.toLocaleString()}</span>
+                                <span>v${mod.version}</span>
+                            </div>
+                            <a href="${mod.fileUrl}" class="mod-download-btn" download>Download Now</a>
+                        </div>
+                    </div>
+                `;
             }
             
-            // Add event listeners to all filters
-            gameFilter.addEventListener('change', filterMods);
-            categoryFilter.addEventListener('change', filterMods);
-            typeFilter.addEventListener('change', filterMods);
-            searchFilter.addEventListener('input', filterMods);
+            // Load mods from Firestore
+            db.collection('mods')
+                .orderBy('uploadDate', 'desc')
+                .get()
+                .then((querySnapshot) => {
+                    querySnapshot.forEach((doc) => {
+                        const mod = doc.data();
+                        modsGrid.innerHTML += createModCard(mod);
+                    });
+                    
+                    // Update total mods count
+                    document.querySelector('.total-mods').textContent = `${querySnapshot.size} mods available`;
+                    
+                    // Initialize filter functionality
+                    initializeFilters();
+                })
+                .catch((error) => {
+                    console.error("Error getting mods: ", error);
+                    modsGrid.innerHTML = '<p class="error-message">Error loading mods. Please try again later.</p>';
+                });
+            
+            // Initialize filter functionality
+            function initializeFilters() {
+                const gameFilter = document.getElementById('game-filter');
+                const categoryFilter = document.getElementById('category-filter');
+                const typeFilter = document.getElementById('type-filter');
+                const searchFilter = document.getElementById('search-filter');
+                const modCards = document.querySelectorAll('.mod-card');
+                
+                function filterMods() {
+                    const gameValue = gameFilter.value;
+                    const categoryValue = categoryFilter.value;
+                    const typeValue = typeFilter.value;
+                    const searchValue = searchFilter.value.toLowerCase();
+                    
+                    modCards.forEach(card => {
+                        const gameMatch = gameValue === 'all' || card.dataset.game === gameValue;
+                        const categoryMatch = categoryValue === 'all' || card.dataset.category === categoryValue;
+                        const typeMatch = typeValue === 'all' || card.dataset.type === typeValue;
+                        const title = card.querySelector('h3').textContent.toLowerCase();
+                        const searchMatch = title.includes(searchValue);
+                        
+                        if (gameMatch && categoryMatch && typeMatch && searchMatch) {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                }
+                
+                // Add event listeners to all filters
+                gameFilter.addEventListener('change', filterMods);
+                categoryFilter.addEventListener('change', filterMods);
+                typeFilter.addEventListener('change', filterMods);
+                searchFilter.addEventListener('input', filterMods);
+            }
         });
     </script>
 </body>
