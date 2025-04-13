@@ -1,6 +1,6 @@
 // Initialize Supabase
-const supabaseUrl = 'YOUR_SUPABASE_URL';
-const supabaseKey = 'YOUR_SUPABASE_KEY';
+const supabaseUrl = 'https://usxvmlejkeqxveiogmrr.supabase.co';
+const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVzeHZtbGVqa2VxeHZlaW9nbXJyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NDA0MTQsImV4cCI6MjA2MDExNjQxNH0.byWwKr2wLMi4BKJ_cGrHcky0ZLNzsBF3hmuHUsLZftk';
 const supabase = supabase.createClient(supabaseUrl, supabaseKey);
 
 // Function to fetch all mods
