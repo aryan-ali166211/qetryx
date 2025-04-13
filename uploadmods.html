@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameModHub | Upload Mod</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Audiowide&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <script src="js/supabase.js" defer></script>
+    <script src="js/main.js" defer></script>
+</head>
+<body class="cyberpunk-theme">
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+    
+    <header class="cyberpunk-header">
+        <div class="container">
+            <nav class="cyberpunk-nav">
+                <div class="logo">
+                    <span class="neon-blue">Game</span><span class="neon-pink">Mod</span><span class="neon-green">Hub</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="neon-link">Home</a></li>
+                    <li><a href="mods.html" class="neon-link">Mods</a></li>
+                    <li><a href="uploadmods.html" class="neon-link active">Upload</a></li>
+                    <li><a href="faq.html" class="neon-link">FAQ</a></li>
+                    <li><a href="contact.html" class="neon-link">Contact</a></li>
+                </ul>
+                <div class="hamburger">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cyberpunk-main">
+        <section class="upload-section">
+            <div class="container">
+                <h1><span class="neon-underline">Upload</span> Your Mod</h1>
+                <form id="uploadForm" class="cyberpunk-form">
+                    <div class="form-group">
+                        <label for="modName" class="neon-label">Mod Name</label>
+                        <input type="text" id="modName" required class="cyberpunk-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="modDescription" class="neon-label">Description</label>
+                        <textarea id="modDescription" rows="5" required class="cyberpunk-textarea"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label for="modGame" class="neon-label">Game</label>
+                        <select id="modGame" required class="cyberpunk-select">
+                            <option value="">Select a game</option>
+                            <option value="cyberpunk2077">Cyberpunk 2077</option>
+                            <option value="deusex">Deus Ex</option>
+                            <option value="fallout">Fallout</option>
+                            <option value="skyrim">Skyrim</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modCategory" class="neon-label">Category</label>
+                        <select id="modCategory" required class="cyberpunk-select">
+                            <option value="">Select a category</option>
+                            <option value="graphics">Graphics</option>
+                            <option value="gameplay">Gameplay</option>
+                            <option value="ui">UI</option>
+                            <option value="character">Character</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label for="modFile" class="neon-label">Mod File (ZIP/RAR)</label>
+                        <input type="file" id="modFile" accept=".zip,.rar" required class="cyberpunk-file">
+                    </div>
+                    <div class="form-group">
+                        <label for="modThumbnail" class="neon-label">Thumbnail Image</label>
+                        <input type="file" id="modThumbnail" accept="image/*" required class="cyberpunk-file">
+                        <div class="thumbnail-preview" id="thumbnailPreview"></div>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn neon-btn-pink">Upload Mod</button>
+                    </div>
+                    <div id="uploadStatus" class="status-message"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="cyberpunk-footer">
+        <!-- Same footer as index.html -->
+    </footer>
+</body>
+</html>

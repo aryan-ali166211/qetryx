@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameModHub | Request a Mod</title>
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/animations.css">
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Audiowide&display=swap" rel="stylesheet">
+    <script src="js/submitco.js" defer></script>
+</head>
+<body class="cyberpunk-theme">
+    <div class="scanlines"></div>
+    <div class="noise"></div>
+    
+    <header class="cyberpunk-header">
+        <div class="container">
+            <nav class="cyberpunk-nav">
+                <div class="logo">
+                    <span class="neon-blue">Game</span><span class="neon-pink">Mod</span><span class="neon-green">Hub</span>
+                </div>
+                <ul class="nav-links">
+                    <li><a href="index.html" class="neon-link">Home</a></li>
+                    <li><a href="mods.html" class="neon-link">Mods</a></li>
+                    <li><a href="uploadmods.html" class="neon-link">Upload</a></li>
+                    <li><a href="faq.html" class="neon-link">FAQ</a></li>
+                    <li><a href="contact.html" class="neon-link">Contact</a></li>
+                </ul>
+                <div class="hamburger">
+                    <div class="line"></div>
+                    <div class="line"></div>
+                    <div class="line"></div>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <main class="cyberpunk-main">
+        <section class="request-section">
+            <div class="container">
+                <h1><span class="neon-underline">Request</span> a Mod</h1>
+                <form id="requestForm" class="cyberpunk-form">
+                    <div class="form-group">
+                        <label for="requestName" class="neon-label">Your Name</label>
+                        <input type="text" id="requestName" required class="cyberpunk-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="requestEmail" class="neon-label">Email Address</label>
+                        <input type="email" id="requestEmail" required class="cyberpunk-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="requestGame" class="neon-label">Game Title</label>
+                        <input type="text" id="requestGame" required class="cyberpunk-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="requestTitle" class="neon-label">Mod Request Title</label>
+                        <input type="text" id="requestTitle" required class="cyberpunk-input">
+                    </div>
+                    <div class="form-group">
+                        <label for="requestDetails" class="neon-label">Mod Details</label>
+                        <textarea id="requestDetails" rows="5" required class="cyberpunk-textarea"></textarea>
+                        <p class="hint">Be as detailed as possible about what you'd like the mod to do</p>
+                    </div>
+                    <div class="form-group">
+                        <button type="submit" class="btn neon-btn-green">Submit Request</button>
+                    </div>
+                    <div id="requestStatus" class="status-message"></div>
+                </form>
+            </div>
+        </section>
+    </main>
+
+    <footer class="cyberpunk-footer">
+        <!-- Same footer as index.html -->
+    </footer>
+</body>
+</html>
