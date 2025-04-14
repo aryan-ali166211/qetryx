@@ -255,44 +255,44 @@
   <!-- Toast Notification -->
   <div id="toast" class="fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 hidden"></div>
 
-  <script>
+  <script type="module">
+    import { getDashboardStats, getRecentMods, getRecentActivity } from './supabase.js';
+  
     // Initialize admin dashboard
-    document.addEventListener('DOMContentLoaded', async function() {
-      // Set admin email
+    document.addEventListener('DOMContentLoaded', async function () {
       const adminEmail = localStorage.getItem('userEmail') || 'Admin';
       document.getElementById('admin-email').textContent = adminEmail;
-
-      // Load all data
+  
       await loadDashboardData();
-
-      // Setup event listeners
+  
       document.getElementById('refresh-data').addEventListener('click', loadDashboardData);
       document.getElementById('logout-btn').addEventListener('click', logout);
       document.getElementById('clear-cache-btn').addEventListener('click', clearCache);
       document.getElementById('backup-data-btn').addEventListener('click', backupData);
     });
-
+  
     async function loadDashboardData() {
       try {
         showToast('Loading dashboard data...', 'info');
-        
-        // In a real app, these would be API calls to your backend
-        const stats = await fetchAdminStats();
-        const activity = await fetchRecentActivity();
-        const recentMods = await fetchRecentMods();
-
+  
+        const [stats, activity, recentMods] = await Promise.all([
+          getDashboardStats(),
+          getRecentActivity(),
+          getRecentMods()
+        ]);
+  
         updateStats(stats);
         renderActivity(activity);
         renderRecentMods(recentMods);
         renderCharts(stats);
-
-        showToast('Dashboard updated successfully!', 'success');
+  
+        showToast('Dashboard updated!', 'success');
       } catch (error) {
-        console.error('Error loading dashboard:', error);
-        showToast('Failed to load dashboard data', 'error');
+        showToast('Failed to load data: ' + error.message, 'error');
+        console.error(error);
       }
     }
-
+  
     function updateStats(stats) {
       document.getElementById('total-mods').textContent = stats.totalMods;
       document.getElementById('new-mods-today').textContent = stats.newModsToday;
@@ -303,11 +303,11 @@
       document.getElementById('storage-used').textContent = stats.storageUsed;
       document.getElementById('storage-progress').style.width = `${stats.storagePercent}%`;
     }
-
+  
     function renderActivity(activity) {
       const tbody = document.getElementById('activity-table-body');
       if (!tbody) return;
-
+  
       if (activity.length === 0) {
         tbody.innerHTML = `
           <tr>
@@ -316,7 +316,7 @@
         `;
         return;
       }
-
+  
       tbody.innerHTML = activity.map(item => `
         <tr>
           <td class="px-6 py-4 whitespace-nowrap">
@@ -329,25 +329,19 @@
               </div>
             </div>
           </td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${item.user}</td>
+          <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-400">${item.mod || 'N/A'}</td>
           <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-400">${item.user}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <div class="text-sm text-gray-400">${item.mod || 'N/A'}</div>
-          </td>
-          <td class="px-6 py-4 whitespace-nowrap">
-            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-700 text-gray-300">
-              ${item.time}
-            </span>
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-700 text-gray-300">${item.time}</span>
           </td>
         </tr>
       `).join('');
     }
-
+  
     function renderRecentMods(mods) {
       const container = document.getElementById('recent-mods');
       if (!container) return;
-
+  
       if (mods.length === 0) {
         container.innerHTML = `
           <div class="col-span-full text-center py-10">
@@ -356,7 +350,7 @@
         `;
         return;
       }
-
+  
       container.innerHTML = mods.map(mod => `
         <div class="bg-gray-700/50 rounded-lg border border-gray-600 p-4 hover:border-purple-500 transition-colors">
           <div class="h-40 bg-gray-700 rounded-md overflow-hidden mb-3">
@@ -378,9 +372,8 @@
         </div>
       `).join('');
     }
-
+  
     function renderCharts(stats) {
-      // Mods by Game Chart
       const modsByGameCtx = document.getElementById('modsByGameChart').getContext('2d');
       new Chart(modsByGameCtx, {
         type: 'doughnut',
@@ -388,9 +381,7 @@
           labels: stats.modsByGame.labels,
           datasets: [{
             data: stats.modsByGame.data,
-            backgroundColor: [
-              '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EC4899'
-            ],
+            backgroundColor: ['#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EC4899'],
             borderWidth: 0
           }]
         },
@@ -402,17 +393,14 @@
               position: 'right',
               labels: {
                 color: '#E5E7EB',
-                font: {
-                  family: "'Share Tech Mono', monospace"
-                }
+                font: { family: "'Share Tech Mono', monospace" }
               }
             }
           },
           cutout: '70%'
         }
       });
-
-      // Downloads Chart
+  
       const downloadsCtx = document.getElementById('downloadsChart').getContext('2d');
       new Chart(downloadsCtx, {
         type: 'line',
@@ -431,33 +419,53 @@
           responsive: true,
           maintainAspectRatio: false,
           plugins: {
-            legend: {
-              display: false
-            }
+            legend: { display: false }
           },
           scales: {
             x: {
-              grid: {
-                color: 'rgba(55, 65, 81, 0.5)'
-              },
-              ticks: {
-                color: '#9CA3AF'
-              }
+              grid: { color: 'rgba(55, 65, 81, 0.5)' },
+              ticks: { color: '#9CA3AF' }
             },
             y: {
-              grid: {
-                color: 'rgba(55, 65, 81, 0.5)'
-              },
-              ticks: {
-                color: '#9CA3AF'
-              }
+              grid: { color: 'rgba(55, 65, 81, 0.5)' },
+              ticks: { color: '#9CA3AF' }
             }
           }
         }
       });
     }
-
-    // Helper functions
+  
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+  
+      const colors = {
+        'success': 'bg-green-800 text-green-100',
+        'error': 'bg-red-800 text-red-100',
+        'info': 'bg-blue-800 text-blue-100',
+        'warning': 'bg-yellow-800 text-yellow-100'
+      };
+  
+      toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 flex items-center ${colors[type] || colors.info} animate-fade-in`;
+      toast.innerHTML = `
+        <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2"
+                d="${type === 'success' ? 'M5 13l4 4L19 7' :
+                    type === 'error' ? 'M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z' :
+                    type === 'warning' ? 'M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z' :
+                    'M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z'}"/>
+        </svg>
+        ${message}
+      `;
+  
+      toast.classList.remove('hidden');
+  
+      setTimeout(() => {
+        toast.classList.add('animate-fade-out');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 5000);
+    }
+  
     function getActivityIcon(type) {
       const icons = {
         'upload': `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -475,7 +483,7 @@
       };
       return icons[type] || icons.default;
     }
-
+  
     function getActivityColor(type) {
       const colors = {
         'upload': 'purple',
@@ -485,120 +493,18 @@
       };
       return colors[type] || colors.default;
     }
-
+  
     function formatDate(dateString) {
       const options = { year: 'numeric', month: 'short', day: 'numeric' };
       return new Date(dateString).toLocaleDateString(undefined, options);
     }
-
-    function showToast(message, type = 'info') {
-      const toast = document.getElementById('toast');
-      if (!toast) return;
-
-      const colors = {
-        'success': 'bg-green-800 text-green-100',
-        'error': 'bg-red-800 text-red-100',
-        'info': 'bg-blue-800 text-blue-100',
-        'warning': 'bg-yellow-800 text-yellow-100'
-      };
-
-      toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 flex items-center ${colors[type] || colors.info} animate-fade-in`;
-      toast.innerHTML = `
-        ${type === 'success' ? `
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
-          </svg>
-        ` : type === 'error' ? `
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-        ` : type === 'warning' ? `
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
-          </svg>
-        ` : `
-          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
-          </svg>
-        `}
-        ${message}
-      `;
-
-      toast.classList.remove('hidden');
-      
-      setTimeout(() => {
-        toast.classList.add('animate-fade-out');
-        setTimeout(() => toast.classList.add('hidden'), 300);
-      }, 5000);
-    }
-
-    // Mock data functions - replace with real API calls
-    async function fetchAdminStats() {
-      return {
-        totalMods: 142,
-        newModsToday: 5,
-        totalDownloads: 8924,
-        downloadsToday: 124,
-        pendingRequests: 8,
-        newRequestsToday: 2,
-        storageUsed: '3.2 GB',
-        storagePercent: 64,
-        modsByGame: {
-          labels: ['Cyberpunk 2077', 'GTA V', 'Skyrim', 'Fallout 4', 'Others'],
-          data: [42, 38, 28, 19, 15]
-        },
-        downloadsLast7Days: {
-          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
-          data: [320, 450, 280, 510, 490, 620, 740]
-        }
-      };
-    }
-
-    async function fetchRecentActivity() {
-      return [
-        { event: 'Mod Upload', user: 'qetryx', mod: 'Cyber Vehicle Pack', time: '2 mins ago', type: 'upload' },
-        { event: 'Mod Download', user: 'anonymous', mod: 'HD Texture Pack', time: '15 mins ago', type: 'download' },
-        { event: 'New Request', user: 'modfan22', mod: null, time: '1 hour ago', type: 'request' },
-        { event: 'Mod Update', user: 'mujtabaali.i', mod: 'UI Overhaul', time: '3 hours ago', type: 'upload' },
-        { event: 'Mod Download', user: 'gamergirl', mod: 'Weapon Skins', time: '5 hours ago', type: 'download' }
-      ];
-    }
-
-    async function fetchRecentMods() {
-      // In a real app, fetch from Supabase
-      return [
-        {
-          title: 'Cyber Vehicle Pack v2.1',
-          game: 'Cyberpunk 2077',
-          image_url: 'https://example.com/image1.jpg',
-          file_url: '#',
-          upload_date: new Date().toISOString()
-        },
-        {
-          title: 'HD Texture Pack',
-          game: 'GTA V',
-          image_url: null,
-          file_url: '#',
-          upload_date: new Date(Date.now() - 86400000).toISOString()
-        },
-        {
-          title: 'Fantasy UI Overhaul',
-          game: 'Skyrim',
-          image_url: 'https://example.com/image2.jpg',
-          file_url: '#',
-          upload_date: new Date(Date.now() - 172800000).toISOString()
-        }
-      ];
-    }
-
+  
     function logout() {
-      // For production: supabase.auth.signOut().then(() => {
       localStorage.removeItem('isAuthenticated');
       localStorage.removeItem('userEmail');
       window.location.href = 'login.html';
-      // });
     }
-
+  
     function clearCache() {
       showToast('Clearing cache...', 'info');
       setTimeout(() => {
@@ -606,7 +512,7 @@
         loadDashboardData();
       }, 1500);
     }
-
+  
     function backupData() {
       showToast('Creating database backup...', 'info');
       setTimeout(() => {
@@ -614,5 +520,6 @@
       }, 2000);
     }
   </script>
+  
 </body>
 </html>
