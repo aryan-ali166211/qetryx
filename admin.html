@@ -6,64 +6,244 @@
   <title>Admin Dashboard - GameModHub</title>
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="../assets/css/styles.css" rel="stylesheet">
-  <script src="../assets/js/auth.js" defer></script>
-  <!-- Supabase JavaScript SDK -->
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase.js" defer></script>
+  <script src="../assets/js/admin.js" defer></script>
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col font-tech">
   <!-- Header -->
   <div data-include="../components/header.html"></div>
   
   <main class="flex-grow container mx-auto px-4 py-8">
-    <div class="flex justify-between items-center mb-8">
-      <h1 class="text-3xl font-bold font-orbitron text-blue-300">Admin Dashboard</h1>
-      <button id="logout-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md">
-        Logout
-      </button>
-    </div>
-    
-    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-      <!-- Mod Management Section -->
-      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-        <h2 class="text-xl font-bold text-blue-300 mb-4">Mod Management</h2>
-        <div class="space-y-4">
-          <a href="uploadmods.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
-            Upload New Mod
-          </a>
-          <a href="mods.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
-            Manage Existing Mods
-          </a>
-        </div>
+    <!-- Admin Header -->
+    <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+      <div>
+        <h1 class="text-3xl font-bold font-orbitron text-blue-300 mb-2">Admin Dashboard</h1>
+        <p class="text-gray-400">Welcome back, <span id="admin-email" class="text-purple-400"></span></p>
       </div>
-      
-      <!-- User Requests Section -->
-      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
-        <h2 class="text-xl font-bold text-blue-300 mb-4">User Requests</h2>
-        <div class="space-y-4">
-          <a href="requestmessage.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
-            View Mod Requests
-          </a>
-          <a href="contactmessage.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
-            View Contact Messages
-          </a>
+      <div class="flex gap-3">
+        <button id="refresh-data" class="px-4 py-2 bg-gray-700 hover:bg-gray-600 rounded-md flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          Refresh Data
+        </button>
+        <button id="logout-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md flex items-center gap-2">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
+          </svg>
+          Logout
+        </button>
+      </div>
+    </div>
+
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-400 text-sm">Total Mods</p>
+            <h3 class="text-3xl font-bold text-purple-400 mt-1" id="total-mods">--</h3>
+          </div>
+          <div class="p-2 bg-purple-600/20 rounded-md">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M20 7l-8-4-8 4m16 0l-8 4m8-4v10l-8 4m0-10L4 7m8 4v10M4 7v10l8 4"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-gray-500 text-xs mt-3"><span id="new-mods-today" class="text-green-400">0</span> new today</p>
+      </div>
+
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-400 text-sm">Total Downloads</p>
+            <h3 class="text-3xl font-bold text-blue-400 mt-1" id="total-downloads">--</h3>
+          </div>
+          <div class="p-2 bg-blue-600/20 rounded-md">
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-gray-500 text-xs mt-3"><span id="downloads-today" class="text-green-400">0</span> today</p>
+      </div>
+
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-400 text-sm">Pending Requests</p>
+            <h3 class="text-3xl font-bold text-yellow-400 mt-1" id="pending-requests">--</h3>
+          </div>
+          <div class="p-2 bg-yellow-600/20 rounded-md">
+            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+            </svg>
+          </div>
+        </div>
+        <p class="text-gray-500 text-xs mt-3"><span id="new-requests-today" class="text-green-400">0</span> new today</p>
+      </div>
+
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
+        <div class="flex justify-between items-start">
+          <div>
+            <p class="text-gray-400 text-sm">Storage Used</p>
+            <h3 class="text-3xl font-bold text-green-400 mt-1" id="storage-used">--</h3>
+          </div>
+          <div class="p-2 bg-green-600/20 rounded-md">
+            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+            </svg>
+          </div>
+        </div>
+        <div class="w-full bg-gray-700 rounded-full h-2 mt-3">
+          <div id="storage-progress" class="bg-green-500 h-2 rounded-full" style="width: 0%"></div>
         </div>
       </div>
     </div>
 
-    <!-- Stats Section -->
-    <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 mt-8">
-      <h3 class="text-xl font-bold text-blue-300 mb-4">Website Stats</h3>
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <!-- Total Mods Installed -->
-        <div class="bg-gray-700 rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300">
-          <h4 class="text-lg text-blue-300 font-bold">Total Mods Installed</h4>
-          <p id="total-mods" class="text-3xl text-blue-500 font-extrabold">Loading...</p>
+    <!-- Charts Row -->
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-8">
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
+        <h3 class="text-xl font-bold text-blue-300 mb-4">Mods by Game</h3>
+        <div class="h-64">
+          <canvas id="modsByGameChart"></canvas>
         </div>
+      </div>
 
-        <!-- Pending Requests -->
-        <div class="bg-gray-700 rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300">
-          <h4 class="text-lg text-blue-300 font-bold">Pending Requests</h4>
-          <p id="pending-requests" class="text-3xl text-blue-500 font-extrabold">Loading...</p>
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
+        <h3 class="text-xl font-bold text-blue-300 mb-4">Downloads Last 7 Days</h3>
+        <div class="h-64">
+          <canvas id="downloadsChart"></canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Actions -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 mb-8">
+      <a href="uploadmods.html" class="bg-gray-800 rounded-lg border border-gray-700 p-6 hover:border-purple-500 transition-all group">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-purple-600/20 rounded-md group-hover:bg-purple-600/30 transition-colors">
+            <svg class="w-6 h-6 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-blue-300">Upload New Mod</h3>
+            <p class="text-gray-400 text-sm">Add a new mod to the platform</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="mods.html" class="bg-gray-800 rounded-lg border border-gray-700 p-6 hover:border-blue-500 transition-all group">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-blue-600/20 rounded-md group-hover:bg-blue-600/30 transition-colors">
+            <svg class="w-6 h-6 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-blue-300">Manage Mods</h3>
+            <p class="text-gray-400 text-sm">Edit, update or remove existing mods</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="requestmod.html" class="bg-gray-800 rounded-lg border border-gray-700 p-6 hover:border-yellow-500 transition-all group">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-yellow-600/20 rounded-md group-hover:bg-yellow-600/30 transition-colors">
+            <svg class="w-6 h-6 text-yellow-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-blue-300">Mod Requests</h3>
+            <p class="text-gray-400 text-sm">Review user-submitted mod requests</p>
+          </div>
+        </div>
+      </a>
+
+      <a href="contact.html" class="bg-gray-800 rounded-lg border border-gray-700 p-6 hover:border-green-500 transition-all group">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-green-600/20 rounded-md group-hover:bg-green-600/30 transition-colors">
+            <svg class="w-6 h-6 text-green-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-blue-300">Contact Messages</h3>
+            <p class="text-gray-400 text-sm">View and respond to user messages</p>
+          </div>
+        </div>
+      </a>
+
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 hover:border-red-500 transition-all group cursor-pointer" id="clear-cache-btn">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-red-600/20 rounded-md group-hover:bg-red-600/30 transition-colors">
+            <svg class="w-6 h-6 text-red-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-blue-300">Clear Cache</h3>
+            <p class="text-gray-400 text-sm">Refresh all cached data</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 hover:border-pink-500 transition-all group cursor-pointer" id="backup-data-btn">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-pink-600/20 rounded-md group-hover:bg-pink-600/30 transition-colors">
+            <svg class="w-6 h-6 text-pink-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 12h14M5 12a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v4a2 2 0 01-2 2M5 12a2 2 0 00-2 2v4a2 2 0 002 2h14a2 2 0 002-2v-4a2 2 0 00-2-2m-2-4h.01M17 16h.01"></path>
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-lg font-medium text-blue-300">Backup Data</h3>
+            <p class="text-gray-400 text-sm">Create a full database backup</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Recent Activity -->
+    <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box mb-8">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-blue-300">Recent Activity</h3>
+        <a href="#" class="text-sm text-purple-400 hover:underline">View All</a>
+      </div>
+      <div class="overflow-x-auto">
+        <table class="min-w-full divide-y divide-gray-700">
+          <thead class="bg-gray-700/50">
+            <tr>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Event</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">User</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Mod</th>
+              <th scope="col" class="px-6 py-3 text-left text-xs font-medium text-blue-300 uppercase tracking-wider">Time</th>
+            </tr>
+          </thead>
+          <tbody id="activity-table-body" class="bg-gray-800 divide-y divide-gray-700">
+            <!-- Activity items will be loaded here -->
+            <tr>
+              <td colspan="4" class="px-6 py-4 text-center text-gray-400">Loading activity...</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Latest Mods -->
+    <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
+      <div class="flex justify-between items-center mb-4">
+        <h3 class="text-xl font-bold text-blue-300">Recently Added Mods</h3>
+        <a href="mods.html" class="text-sm text-purple-400 hover:underline">View All</a>
+      </div>
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4" id="recent-mods">
+        <!-- Recent mods will be loaded here -->
+        <div class="col-span-full text-center py-10">
+          <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
+          <p class="mt-2 text-blue-300">Loading recent mods...</p>
         </div>
       </div>
     </div>
@@ -72,6 +252,367 @@
   <!-- Footer -->
   <div data-include="../components/footer.html"></div>
 
-  
+  <!-- Toast Notification -->
+  <div id="toast" class="fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 hidden"></div>
+
+  <script>
+    // Initialize admin dashboard
+    document.addEventListener('DOMContentLoaded', async function() {
+      // Set admin email
+      const adminEmail = localStorage.getItem('userEmail') || 'Admin';
+      document.getElementById('admin-email').textContent = adminEmail;
+
+      // Load all data
+      await loadDashboardData();
+
+      // Setup event listeners
+      document.getElementById('refresh-data').addEventListener('click', loadDashboardData);
+      document.getElementById('logout-btn').addEventListener('click', logout);
+      document.getElementById('clear-cache-btn').addEventListener('click', clearCache);
+      document.getElementById('backup-data-btn').addEventListener('click', backupData);
+    });
+
+    async function loadDashboardData() {
+      try {
+        showToast('Loading dashboard data...', 'info');
+        
+        // In a real app, these would be API calls to your backend
+        const stats = await fetchAdminStats();
+        const activity = await fetchRecentActivity();
+        const recentMods = await fetchRecentMods();
+
+        updateStats(stats);
+        renderActivity(activity);
+        renderRecentMods(recentMods);
+        renderCharts(stats);
+
+        showToast('Dashboard updated successfully!', 'success');
+      } catch (error) {
+        console.error('Error loading dashboard:', error);
+        showToast('Failed to load dashboard data', 'error');
+      }
+    }
+
+    function updateStats(stats) {
+      document.getElementById('total-mods').textContent = stats.totalMods;
+      document.getElementById('new-mods-today').textContent = stats.newModsToday;
+      document.getElementById('total-downloads').textContent = stats.totalDownloads;
+      document.getElementById('downloads-today').textContent = stats.downloadsToday;
+      document.getElementById('pending-requests').textContent = stats.pendingRequests;
+      document.getElementById('new-requests-today').textContent = stats.newRequestsToday;
+      document.getElementById('storage-used').textContent = stats.storageUsed;
+      document.getElementById('storage-progress').style.width = `${stats.storagePercent}%`;
+    }
+
+    function renderActivity(activity) {
+      const tbody = document.getElementById('activity-table-body');
+      if (!tbody) return;
+
+      if (activity.length === 0) {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="4" class="px-6 py-4 text-center text-gray-400">No recent activity</td>
+          </tr>
+        `;
+        return;
+      }
+
+      tbody.innerHTML = activity.map(item => `
+        <tr>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="flex items-center">
+              <div class="flex-shrink-0 h-5 w-5 text-${getActivityColor(item.type)}-400">
+                ${getActivityIcon(item.type)}
+              </div>
+              <div class="ml-4">
+                <div class="text-sm font-medium text-blue-300">${item.event}</div>
+              </div>
+            </div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-400">${item.user}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <div class="text-sm text-gray-400">${item.mod || 'N/A'}</div>
+          </td>
+          <td class="px-6 py-4 whitespace-nowrap">
+            <span class="px-2 inline-flex text-xs leading-5 font-semibold rounded-full bg-gray-700 text-gray-300">
+              ${item.time}
+            </span>
+          </td>
+        </tr>
+      `).join('');
+    }
+
+    function renderRecentMods(mods) {
+      const container = document.getElementById('recent-mods');
+      if (!container) return;
+
+      if (mods.length === 0) {
+        container.innerHTML = `
+          <div class="col-span-full text-center py-10">
+            <p class="text-blue-300">No recent mods found</p>
+          </div>
+        `;
+        return;
+      }
+
+      container.innerHTML = mods.map(mod => `
+        <div class="bg-gray-700/50 rounded-lg border border-gray-600 p-4 hover:border-purple-500 transition-colors">
+          <div class="h-40 bg-gray-700 rounded-md overflow-hidden mb-3">
+            <img src="${mod.image_url || 'assets/images/default-mod-thumbnail.png'}" 
+                 alt="${mod.title}" 
+                 class="w-full h-full object-cover"
+                 loading="lazy">
+          </div>
+          <h4 class="text-lg font-medium text-blue-300 truncate mb-1">${mod.title}</h4>
+          <p class="text-gray-400 text-sm mb-2">${mod.game}</p>
+          <div class="flex justify-between items-center">
+            <span class="text-xs text-gray-500">${formatDate(mod.upload_date)}</span>
+            <a href="${mod.file_url}" 
+               class="text-xs px-3 py-1 bg-purple-600 hover:bg-purple-700 rounded-md"
+               download>
+              Download
+            </a>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    function renderCharts(stats) {
+      // Mods by Game Chart
+      const modsByGameCtx = document.getElementById('modsByGameChart').getContext('2d');
+      new Chart(modsByGameCtx, {
+        type: 'doughnut',
+        data: {
+          labels: stats.modsByGame.labels,
+          datasets: [{
+            data: stats.modsByGame.data,
+            backgroundColor: [
+              '#8B5CF6', '#3B82F6', '#10B981', '#F59E0B', '#EC4899'
+            ],
+            borderWidth: 0
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              position: 'right',
+              labels: {
+                color: '#E5E7EB',
+                font: {
+                  family: "'Share Tech Mono', monospace"
+                }
+              }
+            }
+          },
+          cutout: '70%'
+        }
+      });
+
+      // Downloads Chart
+      const downloadsCtx = document.getElementById('downloadsChart').getContext('2d');
+      new Chart(downloadsCtx, {
+        type: 'line',
+        data: {
+          labels: stats.downloadsLast7Days.labels,
+          datasets: [{
+            label: 'Downloads',
+            data: stats.downloadsLast7Days.data,
+            borderColor: '#3B82F6',
+            backgroundColor: 'rgba(59, 130, 246, 0.1)',
+            fill: true,
+            tension: 0.3
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: {
+              display: false
+            }
+          },
+          scales: {
+            x: {
+              grid: {
+                color: 'rgba(55, 65, 81, 0.5)'
+              },
+              ticks: {
+                color: '#9CA3AF'
+              }
+            },
+            y: {
+              grid: {
+                color: 'rgba(55, 65, 81, 0.5)'
+              },
+              ticks: {
+                color: '#9CA3AF'
+              }
+            }
+          }
+        }
+      });
+    }
+
+    // Helper functions
+    function getActivityIcon(type) {
+      const icons = {
+        'upload': `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 16a4 4 0 01-.88-7.903A5 5 0 1115.9 6L16 6a5 5 0 011 9.9M15 13l-3-3m0 0l-3 3m3-3v12"></path>
+        </svg>`,
+        'download': `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-4l-4 4m0 0l-4-4m4 4V4"></path>
+        </svg>`,
+        'request': `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8.228 9c.549-1.165 2.03-2 3.772-2 2.21 0 4 1.343 4 3 0 1.4-1.278 2.575-3.006 2.907-.542.104-.994.54-.994 1.093m0 3h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+        </svg>`,
+        'default': `<svg fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path>
+        </svg>`
+      };
+      return icons[type] || icons.default;
+    }
+
+    function getActivityColor(type) {
+      const colors = {
+        'upload': 'purple',
+        'download': 'blue',
+        'request': 'yellow',
+        'default': 'gray'
+      };
+      return colors[type] || colors.default;
+    }
+
+    function formatDate(dateString) {
+      const options = { year: 'numeric', month: 'short', day: 'numeric' };
+      return new Date(dateString).toLocaleDateString(undefined, options);
+    }
+
+    function showToast(message, type = 'info') {
+      const toast = document.getElementById('toast');
+      if (!toast) return;
+
+      const colors = {
+        'success': 'bg-green-800 text-green-100',
+        'error': 'bg-red-800 text-red-100',
+        'info': 'bg-blue-800 text-blue-100',
+        'warning': 'bg-yellow-800 text-yellow-100'
+      };
+
+      toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 flex items-center ${colors[type] || colors.info} animate-fade-in`;
+      toast.innerHTML = `
+        ${type === 'success' ? `
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+          </svg>
+        ` : type === 'error' ? `
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        ` : type === 'warning' ? `
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-3L13.732 4c-.77-1.333-2.694-1.333-3.464 0L3.34 16c-.77 1.333.192 3 1.732 3z"></path>
+          </svg>
+        ` : `
+          <svg class="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path>
+          </svg>
+        `}
+        ${message}
+      `;
+
+      toast.classList.remove('hidden');
+      
+      setTimeout(() => {
+        toast.classList.add('animate-fade-out');
+        setTimeout(() => toast.classList.add('hidden'), 300);
+      }, 5000);
+    }
+
+    // Mock data functions - replace with real API calls
+    async function fetchAdminStats() {
+      return {
+        totalMods: 142,
+        newModsToday: 5,
+        totalDownloads: 8924,
+        downloadsToday: 124,
+        pendingRequests: 8,
+        newRequestsToday: 2,
+        storageUsed: '3.2 GB',
+        storagePercent: 64,
+        modsByGame: {
+          labels: ['Cyberpunk 2077', 'GTA V', 'Skyrim', 'Fallout 4', 'Others'],
+          data: [42, 38, 28, 19, 15]
+        },
+        downloadsLast7Days: {
+          labels: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun'],
+          data: [320, 450, 280, 510, 490, 620, 740]
+        }
+      };
+    }
+
+    async function fetchRecentActivity() {
+      return [
+        { event: 'Mod Upload', user: 'qetryx', mod: 'Cyber Vehicle Pack', time: '2 mins ago', type: 'upload' },
+        { event: 'Mod Download', user: 'anonymous', mod: 'HD Texture Pack', time: '15 mins ago', type: 'download' },
+        { event: 'New Request', user: 'modfan22', mod: null, time: '1 hour ago', type: 'request' },
+        { event: 'Mod Update', user: 'mujtabaali.i', mod: 'UI Overhaul', time: '3 hours ago', type: 'upload' },
+        { event: 'Mod Download', user: 'gamergirl', mod: 'Weapon Skins', time: '5 hours ago', type: 'download' }
+      ];
+    }
+
+    async function fetchRecentMods() {
+      // In a real app, fetch from Supabase
+      return [
+        {
+          title: 'Cyber Vehicle Pack v2.1',
+          game: 'Cyberpunk 2077',
+          image_url: 'https://example.com/image1.jpg',
+          file_url: '#',
+          upload_date: new Date().toISOString()
+        },
+        {
+          title: 'HD Texture Pack',
+          game: 'GTA V',
+          image_url: null,
+          file_url: '#',
+          upload_date: new Date(Date.now() - 86400000).toISOString()
+        },
+        {
+          title: 'Fantasy UI Overhaul',
+          game: 'Skyrim',
+          image_url: 'https://example.com/image2.jpg',
+          file_url: '#',
+          upload_date: new Date(Date.now() - 172800000).toISOString()
+        }
+      ];
+    }
+
+    function logout() {
+      // For production: supabase.auth.signOut().then(() => {
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('userEmail');
+      window.location.href = 'login.html';
+      // });
+    }
+
+    function clearCache() {
+      showToast('Clearing cache...', 'info');
+      setTimeout(() => {
+        showToast('Cache cleared successfully', 'success');
+        loadDashboardData();
+      }, 1500);
+    }
+
+    function backupData() {
+      showToast('Creating database backup...', 'info');
+      setTimeout(() => {
+        showToast('Backup created successfully', 'success');
+      }, 2000);
+    }
+  </script>
 </body>
 </html>
