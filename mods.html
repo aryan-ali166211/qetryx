@@ -1,71 +1,78 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>GameModHub | All Mods</title>
-    <link rel="stylesheet" href="css/style.css">
-    <link rel="stylesheet" href="css/animations.css">
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&family=Audiowide&display=swap" rel="stylesheet">
-    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-    <script src="js/supabase.js" defer></script>
-    <script src="js/main.js" defer></script>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Browse Mods - GameModHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="../assets/css/styles.css" rel="stylesheet">
+  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+  <script src="../assets/js/supabase.js" defer></script>
+  <script src="../assets/js/main.js" defer></script>
 </head>
-<body class="cyberpunk-theme">
-    <div class="scanlines"></div>
-    <div class="noise"></div>
-    
-    <header class="cyberpunk-header">
-        <div class="container">
-            <nav class="cyberpunk-nav">
-                <div class="logo">
-                    <span class="neon-blue">Game</span><span class="neon-pink">Mod</span><span class="neon-green">Hub</span>
-                </div>
-                <ul class="nav-links">
-                    <li><a href="index.html" class="neon-link">Home</a></li>
-                    <li><a href="mods.html" class="neon-link active">Mods</a></li>
-                    <li><a href="uploadmods.html" class="neon-link">Upload</a></li>
-                    <li><a href="faq.html" class="neon-link">FAQ</a></li>
-                    <li><a href="contact.html" class="neon-link">Contact</a></li>
-                </ul>
-                <div class="hamburger">
-                    <div class="line"></div>
-                    <div class="line"></div>
-                    <div class="line"></div>
-                </div>
-            </nav>
-        </div>
-    </header>
-
-    <main class="cyberpunk-main">
-        <section class="mods-section">
-            <div class="container">
-                <div class="mods-header">
-                    <h1><span class="neon-underline">All</span> Mods</h1>
-                    <div class="search-filter">
-                        <input type="text" id="modSearch" placeholder="Search mods..." class="cyberpunk-input">
-                        <select id="gameFilter" class="cyberpunk-select">
-                            <option value="all">All Games</option>
-                            <option value="cyberpunk2077">Cyberpunk 2077</option>
-                            <option value="deusex">Deus Ex</option>
-                            <option value="fallout">Fallout</option>
-                            <option value="skyrim">Skyrim</option>
-                            <option value="other">Other</option>
-                        </select>
-                    </div>
-                </div>
-                <div class="mod-grid" id="allMods">
-                    <!-- All mods will be loaded here via JavaScript -->
-                </div>
-                <div class="pagination" id="pagination">
-                    <!-- Pagination will be added here via JavaScript -->
-                </div>
+<body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col font-tech">
+  <!-- Header -->
+  <div data-include="../components/header.html"></div>
+  
+  <main class="flex-grow">
+    <!-- Mods Listing -->
+    <section class="py-12 bg-gray-900">
+      <div class="container mx-auto px-4">
+        <div class="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
+          <h1 class="text-3xl font-bold font-orbitron text-blue-300">
+            <span class="border-b-2 border-purple-500 pb-2">All Mods</span>
+          </h1>
+          
+          <div class="w-full md:w-auto flex flex-col sm:flex-row gap-3">
+            <div class="relative flex-grow">
+              <input type="text" placeholder="Search mods..." 
+                     class="w-full px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-blue-300">
+              <svg class="absolute right-3 top-2.5 h-5 w-5 text-gray-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+              </svg>
             </div>
-        </section>
-    </main>
+            <select class="px-4 py-2 bg-gray-800 border border-gray-700 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-blue-300">
+              <option value="">All Games</option>
+              <option value="cyberpunk">Cyberpunk 2077</option>
+              <option value="gta5">GTA V</option>
+              <option value="skyrim">Skyrim</option>
+              <option value="fallout">Fallout 4</option>
+            </select>
+          </div>
+        </div>
+        
 
-    <footer class="cyberpunk-footer">
-        <!-- Same footer as index.html -->
-    </footer>
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6" id="mods-container">
+          <!-- Mods will be loaded here via JavaScript -->
+          <div class="col-span-full text-center py-10">
+            <p class="text-blue-300">Loading mods...</p>
+          </div>
+        </div>
+        <!-- Pagination -->
+        <div class="mt-10 flex justify-center">
+          <nav class="inline-flex rounded-md shadow">
+            <a href="#" class="px-3 py-2 rounded-l-md bg-gray-800 border border-gray-700 text-blue-300 hover:bg-gray-700">
+              Previous
+            </a>
+            <a href="#" class="px-3 py-2 bg-gray-800 border-t border-b border-gray-700 text-blue-300 hover:bg-gray-700">
+              1
+            </a>
+            <a href="#" class="px-3 py-2 bg-purple-600 border-t border-b border-purple-600 text-white">
+              2
+            </a>
+            <a href="#" class="px-3 py-2 bg-gray-800 border-t border-b border-gray-700 text-blue-300 hover:bg-gray-700">
+              3
+            </a>
+            <a href="#" class="px-3 py-2 rounded-r-md bg-gray-800 border border-gray-700 text-blue-300 hover:bg-gray-700">
+              Next
+            </a>
+          </nav>
+        </div>
+      </div>
+    </section>
+  </main>
+  
+  <!-- Footer -->
+  <div data-include="../components/footer.html"></div>
 </body>
 </html>
