@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en" class="scroll-smooth">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - GameModHub</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="../assets/css/styles.css" rel="stylesheet">
+  <script src="../assets/js/auth.js" defer></script>
+</head>
+<body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col font-tech">
+  <!-- Header -->
+  <div data-include="../components/header.html"></div>
+  
+  <main class="flex-grow container mx-auto px-4 py-8">
+    <div class="flex justify-between items-center mb-8">
+      <h1 class="text-3xl font-bold font-orbitron text-blue-300">Admin Dashboard</h1>
+      <button id="logout-btn" class="px-4 py-2 bg-red-600 hover:bg-red-700 text-white rounded-md">
+        Logout
+      </button>
+    </div>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
+        <h2 class="text-xl font-bold text-blue-300 mb-4">Mod Management</h2>
+        <div class="space-y-4">
+          <a href="uploadmods.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
+            Upload New Mod
+          </a>
+          <a href="mods.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
+            Manage Existing Mods
+          </a>
+        </div>
+      </div>
+      
+      <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
+        <h2 class="text-xl font-bold text-blue-300 mb-4">User Requests</h2>
+        <div class="space-y-4">
+          <a href="requestmessage.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
+            View Mod Requests
+          </a>
+          <a href="contactmessage.html" class="block px-4 py-3 bg-gray-700 hover:bg-gray-600 rounded-md">
+            View Contact Messages
+          </a>
+        </div>
+      </div>
+    </div>
+  </main>
+  
+  <!-- Footer -->
+  <div data-include="../components/footer.html"></div>
+
+  <script>
+    // Logout functionality
+    document.getElementById('logout-btn')?.addEventListener('click', () => {
+      // For production: 
+      // supabase.auth.signOut().then(() => {
+      //   window.location.href = 'login.html';
+      // });
+      
+      // For demo:
+      localStorage.removeItem('isAuthenticated');
+      localStorage.removeItem('userEmail');
+      window.location.href = 'login.html';
+    });
+  </script>
+</body>
+</html>
