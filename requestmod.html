@@ -1,58 +1,59 @@
 <!DOCTYPE html>
 <html lang="en" class="scroll-smooth">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Request Mod - GameModHub</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <link href="../assets/css/styles.css" rel="stylesheet">
-  <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase.js" defer></script>
-  <script src="../assets/js/main.js" defer></script>
+  <link href="../assets/css/styles.css" rel="stylesheet" />
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col font-tech">
   <!-- Header -->
   <div data-include="../components/header.html"></div>
-  
+
   <main class="flex-grow">
-    <!-- Request Form -->
     <section class="py-12 bg-gray-900">
       <div class="container mx-auto px-4 max-w-3xl">
         <h1 class="text-3xl font-bold mb-8 text-center font-orbitron text-blue-300">
           <span class="border-b-2 border-purple-500 pb-2">Request a Mod</span>
         </h1>
-        
+
         <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 neon-box">
-          <form id="request-mod-form" data-submitco="true" class="space-y-6">
+          <!-- ✅ FormSubmit version -->
+          <form action="https://formsubmit.co/aryan.ali.king.master@gmail.com" method="POST" class="space-y-6">
+            <!-- 👇 Hidden config for FormSubmit -->
+            <input type="hidden" name="_next" value="https://qetryx.pages.dev/thankyou.html" />
+            <input type="hidden" name="_captcha" value="false" />
+
             <div>
               <label for="game_name" class="block text-sm font-medium text-blue-300 mb-1">Game Name</label>
-              <input type="text" id="game_name" name="game_name" required
+              <input type="text" id="game_name" name="Game Name" required
                      class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-blue-300"
-                     placeholder="Cyberpunk 2077">
+                     placeholder="Cyberpunk 2077" />
             </div>
-            
+
             <div>
               <label for="idea" class="block text-sm font-medium text-blue-300 mb-1">Mod Idea/Title</label>
-              <input type="text" id="idea" name="idea" required
+              <input type="text" id="idea" name="Mod Idea" required
                      class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-blue-300"
-                     placeholder="Neon Cyberware Overhaul">
+                     placeholder="Neon Cyberware Overhaul" />
             </div>
-            
+
             <div>
               <label for="description" class="block text-sm font-medium text-blue-300 mb-1">Detailed Description</label>
-              <textarea id="description" name="description" rows="5" required
+              <textarea id="description" name="Description" rows="5" required
                         class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-blue-300"
                         placeholder="Describe what you'd like the mod to do, features you want, etc."></textarea>
             </div>
-            
+
             <div>
               <label for="contact" class="block text-sm font-medium text-blue-300 mb-1">Contact Info (Optional)</label>
-              <input type="text" id="contact" name="contact"
+              <input type="text" id="contact" name="Contact Info"
                      class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-purple-500 text-blue-300"
-                     placeholder="Email or Discord">
+                     placeholder="Email or Discord" />
               <p class="mt-1 text-xs text-gray-500">If you'd like to be notified when someone creates your requested mod</p>
             </div>
-            
+
             <div class="pt-4">
               <button type="submit" class="w-full px-6 py-3 bg-purple-600 hover:bg-purple-700 text-white rounded-md font-medium transition-colors btn-neon">
                 Submit Request
@@ -60,25 +61,25 @@
             </div>
           </form>
         </div>
-        
+
         <div class="mt-8 bg-gray-800/50 rounded-lg border border-gray-700 p-6">
           <h3 class="text-xl font-bold text-blue-300 mb-4">How Mod Requests Work</h3>
           <ul class="space-y-3 text-gray-400">
             <li class="flex items-start">
               <svg class="h-5 w-5 text-purple-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               <span>Your request will be visible to our community of modders</span>
             </li>
             <li class="flex items-start">
               <svg class="h-5 w-5 text-purple-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               <span>Modders can choose to create your requested mod</span>
             </li>
             <li class="flex items-start">
               <svg class="h-5 w-5 text-purple-500 mr-2 mt-0.5 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7" />
               </svg>
               <span>If provided, you'll be notified when your request is fulfilled</span>
             </li>
@@ -87,7 +88,7 @@
       </div>
     </section>
   </main>
-  
+
   <!-- Footer -->
   <div data-include="../components/footer.html"></div>
 </body>
