@@ -7,6 +7,8 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="../assets/css/styles.css" rel="stylesheet">
   <script src="../assets/js/auth.js" defer></script>
+  <!-- Supabase JavaScript SDK -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.0.0/dist/umd/supabase.js"></script>
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col font-tech">
   <!-- Header -->
@@ -21,6 +23,7 @@
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <!-- Mod Management Section -->
       <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
         <h2 class="text-xl font-bold text-blue-300 mb-4">Mod Management</h2>
         <div class="space-y-4">
@@ -33,6 +36,7 @@
         </div>
       </div>
       
+      <!-- User Requests Section -->
       <div class="bg-gray-800 rounded-lg border border-gray-700 p-6">
         <h2 class="text-xl font-bold text-blue-300 mb-4">User Requests</h2>
         <div class="space-y-4">
@@ -45,24 +49,29 @@
         </div>
       </div>
     </div>
+
+    <!-- Stats Section -->
+    <div class="bg-gray-800 rounded-lg border border-gray-700 p-6 mt-8">
+      <h3 class="text-xl font-bold text-blue-300 mb-4">Website Stats</h3>
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+        <!-- Total Mods Installed -->
+        <div class="bg-gray-700 rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300">
+          <h4 class="text-lg text-blue-300 font-bold">Total Mods Installed</h4>
+          <p id="total-mods" class="text-3xl text-blue-500 font-extrabold">Loading...</p>
+        </div>
+
+        <!-- Pending Requests -->
+        <div class="bg-gray-700 rounded-lg p-6 shadow-md hover:shadow-lg transition duration-300">
+          <h4 class="text-lg text-blue-300 font-bold">Pending Requests</h4>
+          <p id="pending-requests" class="text-3xl text-blue-500 font-extrabold">Loading...</p>
+        </div>
+      </div>
+    </div>
   </main>
   
   <!-- Footer -->
   <div data-include="../components/footer.html"></div>
 
-  <script>
-    // Logout functionality
-    document.getElementById('logout-btn')?.addEventListener('click', () => {
-      // For production: 
-      // supabase.auth.signOut().then(() => {
-      //   window.location.href = 'login.html';
-      // });
-      
-      // For demo:
-      localStorage.removeItem('isAuthenticated');
-      localStorage.removeItem('userEmail');
-      window.location.href = 'login.html';
-    });
-  </script>
+  
 </body>
 </html>
