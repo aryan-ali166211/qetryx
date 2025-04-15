@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-blue-300">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Upload Post - GameModHub</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="p-6">
+  <h1 class="text-3xl font-bold text-center text-purple-400 mb-6">📤 Upload a New Post</h1>
+
+  <form id="postForm" class="max-w-xl mx-auto bg-gray-800 p-6 rounded-xl shadow-xl border border-purple-700 space-y-4">
+    <div>
+      <label for="title" class="block mb-1 font-semibold text-blue-300">Post Title</label>
+      <input type="text" id="title" name="title" required class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500">
+    </div>
+
+    <div>
+      <label for="description" class="block mb-1 font-semibold text-blue-300">Description</label>
+      <textarea id="description" name="description" required class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md focus:ring-2 focus:ring-purple-500"></textarea>
+    </div>
+
+    <div>
+      <label for="image" class="block mb-1 font-semibold text-blue-300">Image</label>
+      <input type="file" id="image" name="image" accept="image/*" required class="w-full file:px-4 file:py-2 file:rounded-md file:border-0 file:bg-purple-600 file:text-white hover:file:bg-purple-700 bg-gray-700 text-blue-300 rounded-md border border-gray-600">
+    </div>
+
+    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-md">🚀 Upload Post</button>
+  </form>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo'; // 🔁 Replace this
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    const postForm = document.getElementById('postForm');
+
+    postForm.addEventListener('submit', async function (e) {
+      e.preventDefault();
+
+      const title = document.getElementById('title').value;
+      const description = document.getElementById('description').value;
+      const imageFile = document.getElementById('image').files[0];
+
+      if (!imageFile) return alert("📸 Please select an image!");
+
+      const fileExt = imageFile.name.split('.').pop();
+      const fileName = `${Date.now()}.${fileExt}`;
+      const filePath = `public/${fileName}`;
+
+      // 1. Upload image
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from('post-images')
+        .upload(filePath, imageFile);
+
+      if (uploadError) {
+        console.error("Image upload failed", uploadError);
+        alert("❌ Failed to upload image.");
+        return;
+      }
+
+      const imageUrl = `${supabaseUrl}/storage/v1/object/public/post-images/${filePath}`;
+
+      // 2. Insert post
+      const { data: postData, error: postError } = await supabase
+        .from('posts')
+        .insert([
+          { title, description, image_url: imageUrl, likes: 0 }
+        ]);
+
+      if (postError) {
+        console.error("Post upload failed", postError);
+        alert("❌ Failed to upload post.");
+        return;
+      }
+
+      alert("✅ Post uploaded successfully!");
+      postForm.reset();
+    });
+  </script>
+</body>
+</html>

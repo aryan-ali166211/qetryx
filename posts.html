@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-blue-300">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Posts - GameModHub</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="p-6">
+  <h1 class="text-3xl font-bold text-center text-purple-400 mb-6">📰 Latest Posts</h1>
+
+  <div id="postsContainer" class="space-y-6 max-w-6xl mx-auto"></div>
+
+  <!-- Supabase JS -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+  <script>
+    const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    async function loadPosts() {
+      const { data: posts, error } = await supabase
+        .from('posts')
+        .select('*')
+        .order('id', { ascending: false });
+
+      if (error) {
+        console.error('Error loading posts:', error);
+        return;
+      }
+
+      const postsContainer = document.getElementById('postsContainer');
+      postsContainer.innerHTML = '';
+      posts.forEach(renderPost);
+    }
+
+    function renderPost(post) {
+      const postCard = document.createElement('div');
+      postCard.className = 'bg-gray-800 border border-purple-700 rounded-xl p-4 shadow-md w-full';
+
+      const postImage = document.createElement('img');
+      postImage.src = post.image_url;
+      postImage.alt = post.title;
+      postImage.className = 'w-full h-80 object-cover rounded-md mb-4';
+
+      const postTitle = document.createElement('h2');
+      postTitle.className = 'text-xl font-bold text-purple-400 mb-2';
+      postTitle.textContent = post.title;
+
+      const postDescription = document.createElement('p');
+      postDescription.className = 'text-blue-300 mb-2';
+      postDescription.textContent = post.description;
+
+      const likeCount = document.createElement('p');
+      likeCount.className = 'text-sm text-pink-400 mt-2';
+      likeCount.textContent = `❤️ 10K Likes`;
+
+      postCard.appendChild(postImage);
+      postCard.appendChild(postTitle);
+      postCard.appendChild(postDescription);
+      postCard.appendChild(likeCount);
+
+      document.getElementById('postsContainer').appendChild(postCard);
+    }
+
+    loadPosts();
+  </script>
+</body>
+</html>
