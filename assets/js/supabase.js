@@ -1,11 +1,9 @@
 // Supabase configuration
-const SUPABASE_URL = 'https://ykvadqrjttexgurxkrst.supabase.co';
-const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InlrdmFkcXJqdHRleGd1cnhrcnN0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ1NjI1OTYsImV4cCI6MjA2MDEzODU5Nn0.nB-nniNKb5TMVWI-AvQ9YDIRJwgIUaauH5bC0ZuF4rk';
-window.supabase = window.supabase || supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
+const SUPABASE_URL = 'https://ogwufpqcthruhgpqseff.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
 
 // Initialize Supabase client
-const { createClient } = window.supabase;  // Correct reference to the supabase.js library
-const supabase = createClient(SUPABASE_URL, SUPABASE_KEY);
+const supabase = window.supabase.createClient(SUPABASE_URL, SUPABASE_KEY);
 
 // Function to fetch mods from Supabase
 async function fetchModsFromSupabase() {
@@ -86,7 +84,6 @@ async function uploadModToSupabase(form) {
         file_url: modFileUrl.publicUrl
       }]);
 
-
     if (modInsertError) throw modInsertError;
 
     return { success: true, data: modData };
@@ -131,3 +128,5 @@ async function submitWithSubmitCo(formData) {
     }, 1500);
   });
 }
+
+// Use the functions directly in your app without exporting (since this isn't a module)

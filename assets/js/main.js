@@ -1,7 +1,9 @@
-document.addEventListener('DOMContentLoaded', function () {
+// Mobile menu toggle with enhanced accessibility
+document.addEventListener('DOMContentLoaded', function() {
+    // Mobile menu functionality
     const mobileMenuButton = document.getElementById('mobile-menu-button');
     const mobileMenu = document.getElementById('mobile-menu');
-
+    
     function toggleMobileMenu() {
         const isHidden = mobileMenu.classList.toggle('hidden');
         mobileMenuButton.setAttribute('aria-expanded', !isHidden);
@@ -10,6 +12,8 @@ document.addEventListener('DOMContentLoaded', function () {
 
     if (mobileMenuButton && mobileMenu) {
         mobileMenuButton.addEventListener('click', toggleMobileMenu);
+        
+        // Close menu when clicking on links
         mobileMenu.querySelectorAll('a').forEach(link => {
             link.addEventListener('click', toggleMobileMenu);
         });
@@ -20,45 +24,49 @@ document.addEventListener('DOMContentLoaded', function () {
         loadMods().catch(handleLoadError);
     }
 
-    // Initialize news loading for news.html
-    if (document.getElementById('news-container')) {
-        loadNews().catch(error => {
-            console.error('Error loading news:', error);
-        });
-    }
-
-    // Initialize all forms with their specific handlers
+    // Initialize all forms
     document.querySelectorAll('form').forEach(form => {
-        if (form.id === 'news-upload-form') {
-            form.addEventListener('submit', (e) => handleNewsUpload(e, form));
-        } else if (form.id === 'mod-upload-form') {
-            form.addEventListener('submit', (e) => handleModUpload(e, form));
-        } else if (form.id === 'mod-request-form') {
-            form.addEventListener('submit', (e) => handleModRequest(e, form));
-        } else if (form.id === 'contact-form') {
-            form.addEventListener('submit', (e) => handleContactForm(e, form));
-        }
+        form.addEventListener('submit', handleFormSubmit);
     });
 });
 
-// ✅ Load Mods
+// Supabase-powered mod loading
 async function loadMods() {
     const container = document.getElementById('mods-container');
-    container.innerHTML = '<p class="text-white">Loading mods...</p>';
+    if (!container) return;
 
-    const { data, error } = await fetchModsFromSupabase();
+    // Show loading state
+    container.innerHTML = `
+        <div class="col-span-full text-center py-10">
+            <div class="inline-block animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-purple-500"></div>
+            <p class="mt-2 text-blue-300">Loading mods...</p>
+        </div>
+    `;
 
-    if (error) {
-        console.error('Form error:', error?.message || error || 'Unknown error');
-        return alert('❌ Failed to load mods: ' + (error?.message || error || 'Unknown error'));
+    try {
+        const { data, error, count } = await supabase
+            .from('mods')
+            .select('*', { count: 'exact' })
+            .order('upload_date', { ascending: false });
+
+        if (error) throw error;
+
+        if (data.length === 0) {
+            container.innerHTML = `
+                <div class="col-span-full text-center py-10">
+                    <p class="text-blue-300">No mods found. Be the first to upload one!</p>
+                    <a href="uploadmods.html" class="mt-4 inline-block px-4 py-2 bg-purple-600 text-white rounded-md">
+                        Upload Mod
+                    </a>
+                </div>
+            `;
+            return;
+        }
+
+        renderMods(data, container);
+    } catch (error) {
+        handleLoadError(error);
     }
-
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p class="text-yellow-500">No mods found yet. Upload one!</p>';
-        return;
-    }
-
-    renderMods(data, container);
 }
 
 function renderMods(mods, container) {
@@ -75,7 +83,7 @@ function renderMods(mods, container) {
                             <span class="px-2 py-1 bg-gray-900/80 text-blue-300 text-xs rounded-full backdrop-blur-sm">
                                 ${tag}
                             </span>
-                        `).join('')}
+                        `).join('') }
                     </div>
                 ` : ''}
             </div>
@@ -95,86 +103,144 @@ function renderMods(mods, container) {
     `).join('');
 }
 
-// ✅ Load News
-async function loadNews() {
-    const container = document.getElementById('news-container');
-    container.innerHTML = '<p class="text-white">Loading news...</p>';
-
-    const { data, error } = await supabase
-        .from('news')
-        .select('*')
-        .order('created_at', { ascending: false });
-
-    if (error) {
-        container.innerHTML = '<p class="text-red-500">Error loading news.</p>';
-        throw error;
-    }
-
-    if (!data || data.length === 0) {
-        container.innerHTML = '<p class="text-yellow-400">No news yet. Stay tuned!</p>';
-        return;
-    }
-
-    renderNews(data, container);
-}
-
-// ✅ Render News
-function renderNews(newsList, container) {
-    container.innerHTML = newsList.map(news => `
-        <div class="bg-gray-800 rounded-lg p-4 border border-gray-700 shadow-md hover:border-cyan-500 transition-all">
-            <h3 class="text-xl text-cyan-400 font-bold mb-1">${news.title}</h3>
-            <p class="text-gray-300 text-sm mb-2">${news.description}</p>
-            <p class="text-xs text-gray-500">Posted on: ${new Date(news.created_at).toLocaleString()}</p>
-        </div>
-    `).join('');
-}
-
-// ✅ Form Handler for News Upload
-async function handleNewsUpload(e, form) {
-    e.preventDefault();  // Prevent the default form submission
-
-    const formData = new FormData(form);
+// Unified form handler for all Supabase submissions
+async function handleFormSubmit(e) {
+    e.preventDefault();
+    const form = e.target;
+    const submitButton = form.querySelector('[type="submit"]');
+    const originalText = submitButton.textContent;
 
     try {
-        // Ensure we are sending the correct data fields
-        const title = formData.get('title');
-        const description = formData.get('description');
+        // Set loading state
+        submitButton.disabled = true;
+        submitButton.innerHTML = `
+            <span class="inline-block animate-spin rounded-full h-4 w-4 border-t-2 border-b-2 border-white mr-2"></span>
+            Processing...
+        `;
 
-        if (!title || !description) {
-            throw new Error('Title and description are required.');
+        let result;
+        
+        if (form.id === 'upload-mod-form') {
+            result = await handleModUpload(form);
+        } 
+        else if (form.id === 'request-mod-form') {
+            result = await handleModRequest(form);
+        }
+        else if (form.id === 'contact-form') {
+            result = await handleContactForm(form);
         }
 
-        // Insert data into Supabase
-        const { data, error } = await supabase
-            .from('news')
-            .insert([{
-                title: title,
-                description: description,
-            }]);
-
-        if (error) {
-            throw new Error(error.message || 'Error inserting news into the database');
-        }
-
-        // Show a success toast
-        showToast('News uploaded successfully!', 'success');
-
-        // After successful upload, reload the news content dynamically
-        loadNews(); // Reload news section to show the newly uploaded news
-
+        showToast(result.message, 'success');
+        form.reset();
     } catch (error) {
-        console.error('Error while uploading news:', error);
-        showToast(error.message || 'An unknown error occurred while uploading news', 'error');
+        showToast(error.message, 'error');
+        console.error('Form error:', error);
+    } finally {
+        submitButton.disabled = false;
+        submitButton.textContent = originalText;
     }
 }
 
-// ✅ UI Helpers
+// Specific form handlers
+async function handleModUpload(form) {
+    const formData = new FormData(form);
+    
+    // 1. Upload the mod file
+    const modFile = formData.get('mod_file');
+    const modFilePath = `mods/${Date.now()}_${modFile.name}`;
+    
+    const { error: uploadError } = await supabase.storage
+        .from('mod-files')
+        .upload(modFilePath, modFile);
+    
+    if (uploadError) throw new Error('File upload failed: ' + uploadError.message);
+
+    // 2. Upload the image if provided
+    let imageUrl = null;
+    const imageFile = formData.get('mod_image');
+    
+    if (imageFile) {
+        const imagePath = `images/${Date.now()}_${imageFile.name}`;
+        const { error: imageError } = await supabase.storage
+            .from('mod-images')
+            .upload(imagePath, imageFile);
+        
+        if (!imageError) {
+            const { data: { publicUrl } } = supabase.storage
+                .from('mod-images')
+                .getPublicUrl(imagePath);
+            imageUrl = publicUrl;
+        }
+    }
+
+    // 3. Get mod file URL
+    const { data: { publicUrl: modFileUrl } } = supabase.storage
+        .from('mod-files')
+        .getPublicUrl(modFilePath);
+
+    // 4. Create database record
+    const { error: dbError } = await supabase
+        .from('mods')
+        .insert([{
+            title: formData.get('title'),
+            description: formData.get('description'),
+            game: formData.get('game'),
+            tags: formData.get('tags').split(',').map(t => t.trim()),
+            image_url: imageUrl,
+            file_url: modFileUrl
+        }]);
+
+
+    if (dbError) throw new Error('Database error: ' + dbError.message);
+
+    return { message: 'Mod uploaded successfully!' };
+}
+
+async function handleModRequest(form) {
+    const formData = new FormData(form);
+    
+    const { error } = await supabase
+        .from('requests')
+        .insert([{
+            game_name: formData.get('game_name'),
+            idea: formData.get('idea'),
+            description: formData.get('description'),
+            contact: formData.get('contact') || null
+        }]);
+
+
+    if (error) throw new Error('Request submission failed: ' + error.message);
+
+    return { message: 'Mod request submitted!' };
+}
+
+async function handleContactForm(form) {
+    const formData = new FormData(form);
+    
+    const { error } = await supabase
+        .from('contacts')
+        .insert([{
+            name: formData.get('name'),
+            email: formData.get('email'),
+            subject: formData.get('subject'),
+            message: formData.get('message')
+        }]);
+
+
+    if (error) throw new Error('Message sending failed: ' + error.message);
+
+    return { message: 'Message sent successfully!' };
+}
+
+// UI Helpers
 function showToast(message, type = 'success') {
     const toast = document.createElement('div');
-    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 animate-fade-in ${type === 'success' ? 'bg-green-800 text-green-100' : 'bg-red-800 text-red-100'}`;
+    toast.className = `fixed bottom-4 right-4 px-6 py-3 rounded-md shadow-lg z-50 animate-fade-in ${
+        type === 'success' ? 'bg-green-800 text-green-100' : 'bg-red-800 text-red-100'
+    }`;
     toast.innerHTML = `
         <div class="flex items-center">
-            ${type === 'success' ? `
+            ${type === 'success' ? ` 
                 <svg class="h-5 w-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 13l4 4L19 7"></path>
                 </svg>
@@ -194,7 +260,6 @@ function showToast(message, type = 'success') {
     }, 5000);
 }
 
-// Error handling for mod loading
 function handleLoadError(error) {
     const container = document.getElementById('mods-container');
     if (container) {
