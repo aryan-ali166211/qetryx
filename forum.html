@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>GameModHub Forum</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #8e44ad;
+            --secondary: #1abc9c;
+            --dark: #1e1e2d;
+            --darker: #171722;
+            --light: #f5f5f5;
+            --gray: #95a5a6;
+            --orange: #f39c12;
+            --danger: #e74c3c;
+        }
+        
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--dark);
+            color: var(--light);
+            padding: 20px;
+            max-width: 900px;
+            margin: 0 auto;
+            line-height: 1.6;
+            
+        }
+
+        .forum-header {
+            text-align: center;
+            margin-bottom: 40px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .forum-title {
+            color: var(--orange);
+            font-size: 2.5rem;
+            margin-bottom: 10px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .forum-subtitle {
+            color: var(--secondary);
+            font-size: 1.2rem;
+            margin-bottom: 25px;
+            font-weight: 300;
+        }
+
+        .create-thread-btn {
+            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            color: white;
+            padding: 14px 28px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border: none;
+            border-radius: 50px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+            transition: all 0.3s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .create-thread-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(26, 188, 156, 0.6);
+        }
+
+        .thread {
+            background-color: var(--darker);
+            margin-bottom: 25px;
+            padding: 25px;
+            border-radius: 12px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            transition: transform 0.2s ease;
+            border-left: 4px solid var(--primary);
+        }
+
+        .thread:hover {
+            transform: translateY(-3px);
+        }
+
+        .thread-title {
+            font-size: 1.4rem;
+            color: var(--orange);
+            margin-bottom: 15px;
+            font-weight: 700;
+        }
+
+        .thread-content {
+            margin: 15px 0;
+            color: var(--light);
+            line-height: 1.7;
+            font-size: 1.05rem;
+        }
+
+        .reply {
+            background-color: rgba(255,255,255,0.05);
+            margin-top: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--secondary);
+            transition: all 0.2s ease;
+        }
+
+        .reply:hover {
+            background-color: rgba(255,255,255,0.08);
+        }
+
+        .reply-content {
+            color: var(--light);
+            margin: 0;
+            font-size: 0.95rem;
+        }
+
+        .reply-meta {
+            font-size: 0.8rem;
+            color: var(--gray);
+            margin-top: 8px;
+            font-style: italic;
+        }
+
+        .reply-btn {
+            margin-top: 15px;
+            background-color: var(--primary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .reply-btn:hover {
+            background-color: #9b59b6;
+            transform: translateY(-1px);
+        }
+
+        .reply-form {
+            margin-top: 20px;
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .reply-input {
+            width: 100%;
+            padding: 15px;
+            background-color: rgba(255,255,255,0.05);
+            color: white;
+            border: 1px solid rgba(255,255,255,0.1);
+            border-radius: 8px;
+            margin-bottom: 15px;
+            min-height: 100px;
+            resize: vertical;
+            font-family: inherit;
+            font-size: 0.95rem;
+            transition: border 0.2s ease;
+        }
+
+        .reply-input:focus {
+            outline: none;
+            border-color: var(--secondary);
+        }
+
+        .submit-reply {
+            background-color: var(--secondary);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+        .submit-reply:hover {
+            background-color: #2ecc71;
+            transform: translateY(-1px);
+        }
+
+        .cancel-reply {
+            background-color: var(--danger);
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            margin-left: 10px;
+        }
+
+        .cancel-reply:hover {
+            background-color: #c0392b;
+            transform: translateY(-1px);
+        }
+
+        .no-replies {
+            color: var(--gray);
+            font-style: italic;
+            padding: 10px 0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 10px;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1 class="text-center">GameModHub Forum</h1>
+    <h2 style="text-align: center; color: #1abc9c; margin-bottom: 20px;">Want to start a new discussion?</h2>
+    <a href="createthread.html">
+        <div style="text-align: center; margin-bottom: 40px;">
+            <button id="postForumBtn" style="
+    background: linear-gradient(135deg, #8e44ad, #1abc9c);
+    color: white;
+    padding: 12px 25px;
+    font-size: 16px;
+    font-weight: bold;
+    border: none;
+    border-radius: 12px;
+    cursor: pointer;
+    box-shadow: 0 4px 15px rgba(26, 188, 156, 0.4);
+    transition: all 0.3s ease;
+  ">
+                ✨ Post a Forum
+            </button>
+        </div>
+    </a>
+    <div id="threadsContainer"></div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', async () => {
+            const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+            const DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000001'; // Change to your user UUID
+
+            async function loadThreads() {
+                const { data: threads, error } = await supabase
+                    .from('forum_threads')
+                    .select(`
+            *,
+            replies (
+              *,
+              users (
+                username
+              )
+            )
+          `)
+                    .order('created_at', { ascending: false });
+
+                if (error) {
+                    console.error("Error loading threads:", error);
+                    return;
+                }
+
+                const threadsContainer = document.getElementById('threadsContainer');
+                threadsContainer.innerHTML = '';
+
+                threads.forEach(thread => {
+                    const threadElement = document.createElement('div');
+                    threadElement.classList.add('thread');
+                    threadElement.innerHTML = `
+            <h2 class="thread-title">${escapeHtml(thread.title)}</h2>
+            <p class="thread-content">${escapeHtml(thread.content)}</p>
+            <button class="reply-btn" data-thread-id="${thread.id}">Reply</button>
+            <div class="replies-container" id="replies-${thread.id}">
+              ${thread.replies && thread.replies.length > 0 ?
+                            thread.replies.map(reply => formatReply(reply)).join('') :
+                            '<p class="no-replies">No replies yet</p>'}
+            </div>
+            <div class="reply-form" id="reply-form-${thread.id}">
+              <textarea class="reply-input" placeholder="Write your reply here..."></textarea>
+              <button class="submit-reply" data-thread-id="${thread.id}">Submit Reply</button>
+              <button class="cancel-reply" data-thread-id="${thread.id}">Cancel</button>
+            </div>
+          `;
+                    threadsContainer.appendChild(threadElement);
+                });
+
+                setupEventListeners();
+            }
+
+            function formatReply(reply) {
+                const username = reply.users ? reply.users.username : 'Anonymous';
+                const date = new Date(reply.created_at).toLocaleString();
+                return `
+          <div class="reply">
+            <p class="reply-content">${escapeHtml(reply.content)}</p>
+            <p class="reply-meta">Posted by ${escapeHtml(username)} on ${date}</p>
+          </div>
+        `;
+            }
+
+            function setupEventListeners() {
+                document.addEventListener('click', function (e) {
+                    if (e.target.classList.contains('reply-btn')) {
+                        const threadId = e.target.getAttribute('data-thread-id');
+                        document.getElementById(`reply-form-${threadId}`).style.display = 'block';
+                        e.target.style.display = 'none';
+                    }
+
+                    if (e.target.classList.contains('cancel-reply')) {
+                        const threadId = e.target.getAttribute('data-thread-id');
+                        document.getElementById(`reply-form-${threadId}`).style.display = 'none';
+                        document.querySelector(`[data-thread-id="${threadId}"].reply-btn`).style.display = 'block';
+                    }
+
+                    if (e.target.classList.contains('submit-reply')) {
+                        const threadId = e.target.getAttribute('data-thread-id');
+                        submitReply(threadId);
+                    }
+                });
+            }
+
+            async function submitReply(threadId) {
+                const replyInput = document.querySelector(`#reply-form-${threadId} .reply-input`);
+                const replyContent = replyInput.value.trim();
+
+                if (!replyContent) {
+                    alert("Please write something before submitting!");
+                    return;
+                }
+
+                const { error } = await supabase
+                    .from('replies')
+                    .insert([
+                        {
+                            thread_id: threadId,
+                            content: replyContent,
+                            user_id: DEFAULT_USER_ID
+                        }
+                    ]);
+
+                if (error) {
+                    console.error("Error posting reply:", error);
+                    alert("Failed to post reply. Please try again.");
+                    return;
+                }
+
+                replyInput.value = '';
+                document.getElementById(`reply-form-${threadId}`).style.display = 'none';
+                document.querySelector(`[data-thread-id="${threadId}"].reply-btn`).style.display = 'block';
+                await fetchReplies(threadId);
+            }
+
+            async function fetchReplies(threadId) {
+                const { data: thread, error } = await supabase
+                    .from('forum_threads')
+                    .select(`
+            *,
+            replies (
+              *,
+              users (
+                username
+              )
+            )
+          `)
+                    .eq('id', threadId)
+                    .single();
+
+                if (error) {
+                    console.error("Error fetching replies:", error);
+                    return;
+                }
+
+                const repliesContainer = document.getElementById(`replies-${threadId}`);
+                repliesContainer.innerHTML = thread.replies && thread.replies.length > 0 ?
+                    thread.replies.map(reply => formatReply(reply)).join('') :
+                    '<p class="no-replies">No replies yet</p>';
+            }
+
+            function escapeHtml(unsafe) {
+                if (!unsafe) return '';
+                return unsafe.toString()
+                    .replace(/&/g, "&amp;")
+                    .replace(/</g, "&lt;")
+                    .replace(/>/g, "&gt;")
+                    .replace(/"/g, "&quot;")
+                    .replace(/'/g, "&#039;");
+            }
+
+            loadThreads();
+        });
+    </script>
+</body>
+
+</html>

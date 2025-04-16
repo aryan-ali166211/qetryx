@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en" class="bg-gray-900 text-blue-300">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Create Thread - GameModHub Forum</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+</head>
+<body class="p-6">
+  <h1 class="text-3xl font-bold text-purple-400 text-center mb-6">📝 Create a New Thread</h1>
+
+  <form id="threadForm" class="max-w-xl mx-auto bg-gray-800 p-6 rounded-xl shadow-xl space-y-4 border border-purple-700">
+    <div>
+      <label for="title" class="block mb-1 font-semibold">Title</label>
+      <input type="text" id="title" name="title" required class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md">
+    </div>
+
+    <div>
+      <label for="content" class="block mb-1 font-semibold">Content</label>
+      <textarea id="content" name="content" required class="w-full px-4 py-2 bg-gray-700 border border-gray-600 rounded-md"></textarea>
+    </div>
+
+    <button type="submit" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-bold py-2 rounded-md">🚀 Post Thread</button>
+  </form>
+
+  <!-- ✅ Load Supabase before script runs -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Initialize Supabase after the DOM is fully loaded
+      const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+      const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+      const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+      const threadForm = document.getElementById('threadForm');
+
+      threadForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const title = document.getElementById('title').value;
+        const content = document.getElementById('content').value;
+
+        const { data, error } = await supabase
+          .from('forum_threads')
+          .insert([{ title, content }]);
+
+        if (error) {
+          alert("❌ Failed to post thread!");
+          console.error(error);
+        } else {
+          alert("✅ Thread posted!");
+          window.location.href = 'forum.html';
+        }
+      });
+    });
+  </script>
+</body>
+</html>
