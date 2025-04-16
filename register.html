@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Register</title>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: #0f0f0f;
+      color: #fff;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+    }
+    form {
+      display: flex;
+      flex-direction: column;
+      width: 300px;
+      gap: 10px;
+      padding: 20px;
+      background: #1a1a1a;
+      border-radius: 10px;
+    }
+    input {
+      padding: 10px;
+      border: none;
+      border-radius: 5px;
+    }
+    button {
+      padding: 10px;
+      background: #00ffae;
+      color: #000;
+      font-weight: bold;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>Register</h1>
+  <form id="registerForm">
+    <input type="email" id="email" placeholder="Email" required />
+    <input type="password" id="password" placeholder="Password" required />
+    <input type="text" id="username" placeholder="Username" required />
+    <button type="submit">Register</button>
+  </form>
+
+  <script>
+    const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co'; // Replace with your URL
+    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo'; // Replace with your anon/public key
+    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+    const registerForm = document.getElementById("registerForm");
+
+    registerForm.addEventListener("submit", async (e) => {
+      e.preventDefault();
+
+      const email = document.getElementById("email").value;
+      const password = document.getElementById("password").value;
+      const username = document.getElementById("username").value;
+
+      try {
+        // 1. Register the user
+        const { data: authData, error: authError } = await supabase.auth.signUp({
+          email,
+          password,
+        });
+
+        if (authError) throw authError;
+
+        const user = authData.user;
+        if (!user) throw new Error("User not returned from signUp");
+
+        // 2. Insert user info into useraccount table
+        const { error: insertError } = await supabase
+          .from("useraccount")
+          .insert([
+            {
+              user_id: user.id,
+              email: email,
+              username: username,
+              created_at: new Date().toISOString(),
+            },
+          ]);
+
+        if (insertError) throw insertError;
+
+        alert("Registration successful!");
+      } catch (error) {
+        console.error("Registration error:", error);
+        alert("Registration failed: " + error.message);
+      }
+    });
+  </script>
+
+</body>
+</html>

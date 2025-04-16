@@ -18,7 +18,7 @@
             --orange: #f39c12;
             --danger: #e74c3c;
         }
-        
+
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: var(--dark);
@@ -27,14 +27,14 @@
             max-width: 900px;
             margin: 0 auto;
             line-height: 1.6;
-            
+
         }
 
         .forum-header {
             text-align: center;
             margin-bottom: 40px;
             padding-bottom: 20px;
-            border-bottom: 1px solid rgba(255,255,255,0.1);
+            border-bottom: 1px solid rgba(255, 255, 255, 0.1);
         }
 
         .forum-title {
@@ -43,7 +43,7 @@
             margin-bottom: 10px;
             font-weight: 800;
             letter-spacing: -0.5px;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .forum-subtitle {
@@ -79,7 +79,7 @@
             margin-bottom: 25px;
             padding: 25px;
             border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
             transition: transform 0.2s ease;
             border-left: 4px solid var(--primary);
         }
@@ -103,7 +103,7 @@
         }
 
         .reply {
-            background-color: rgba(255,255,255,0.05);
+            background-color: rgba(255, 255, 255, 0.05);
             margin-top: 15px;
             padding: 15px;
             border-radius: 8px;
@@ -112,7 +112,7 @@
         }
 
         .reply:hover {
-            background-color: rgba(255,255,255,0.08);
+            background-color: rgba(255, 255, 255, 0.08);
         }
 
         .reply-content {
@@ -155,16 +155,23 @@
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .reply-input {
             width: 100%;
             padding: 15px;
-            background-color: rgba(255,255,255,0.05);
+            background-color: rgba(255, 255, 255, 0.05);
             color: white;
-            border: 1px solid rgba(255,255,255,0.1);
+            border: 1px solid rgba(255, 255, 255, 0.1);
             border-radius: 8px;
             margin-bottom: 15px;
             min-height: 100px;
@@ -227,8 +234,8 @@
 </head>
 
 <body>
-    
-    
+
+
     <h2 style="text-align: center; color: #1abc9c; margin-bottom: 20px;">Want to start a new discussion?</h2>
     <a href="createthread.html">
         <div style="text-align: center; margin-bottom: 40px;">
@@ -252,160 +259,179 @@
 
     <script>
         document.addEventListener('DOMContentLoaded', async () => {
-            const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
-            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
-            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-
-            const DEFAULT_USER_ID = '00000000-0000-0000-0000-000000000001'; // Change to your user UUID
-
-            async function loadThreads() {
-                const { data: threads, error } = await supabase
-                    .from('forum_threads')
-                    .select(`
-            *,
-            replies (
-              *,
-              users (
-                username
-              )
-            )
-          `)
-                    .order('created_at', { ascending: false });
-
-                if (error) {
-                    console.error("Error loading threads:", error);
-                    return;
-                }
-
-                const threadsContainer = document.getElementById('threadsContainer');
-                threadsContainer.innerHTML = '';
-
-                threads.forEach(thread => {
-                    const threadElement = document.createElement('div');
-                    threadElement.classList.add('thread');
-                    threadElement.innerHTML = `
-            <h2 class="thread-title">${escapeHtml(thread.title)}</h2>
-            <p class="thread-content">${escapeHtml(thread.content)}</p>
-            <button class="reply-btn" data-thread-id="${thread.id}">Reply</button>
-            <div class="replies-container" id="replies-${thread.id}">
-              ${thread.replies && thread.replies.length > 0 ?
-                            thread.replies.map(reply => formatReply(reply)).join('') :
-                            '<p class="no-replies">No replies yet</p>'}
-            </div>
-            <div class="reply-form" id="reply-form-${thread.id}">
-              <textarea class="reply-input" placeholder="Write your reply here..."></textarea>
-              <button class="submit-reply" data-thread-id="${thread.id}">Submit Reply</button>
-              <button class="cancel-reply" data-thread-id="${thread.id}">Cancel</button>
-            </div>
-          `;
-                    threadsContainer.appendChild(threadElement);
-                });
-
-                setupEventListeners();
+          const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+          const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+          const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+      
+          async function getCurrentUsername() {
+            const { data: { user }, error: userError } = await supabase.auth.getUser();
+      
+            if (userError || !user || !user.email) {
+              console.error("❌ Could not get user or email", userError);
+              return "Anonymous";
             }
-
-            function formatReply(reply) {
-                const username = reply.users ? reply.users.username : 'Anonymous';
-                const date = new Date(reply.created_at).toLocaleString();
-                return `
-          <div class="reply">
-            <p class="reply-content">${escapeHtml(reply.content)}</p>
-            <p class="reply-meta">Posted by ${escapeHtml(username)} on ${date}</p>
-          </div>
-        `;
+      
+            const { data, error: profileError } = await supabase
+              .from("useraccount")
+              .select("username")
+              .eq("email", user.email)
+              .single();
+      
+            if (profileError || !data) {
+              console.error("❌ Could not fetch username", profileError);
+              return "Anonymous";
             }
-
-            function setupEventListeners() {
-                document.addEventListener('click', function (e) {
-                    if (e.target.classList.contains('reply-btn')) {
-                        const threadId = e.target.getAttribute('data-thread-id');
-                        document.getElementById(`reply-form-${threadId}`).style.display = 'block';
-                        e.target.style.display = 'none';
-                    }
-
-                    if (e.target.classList.contains('cancel-reply')) {
-                        const threadId = e.target.getAttribute('data-thread-id');
-                        document.getElementById(`reply-form-${threadId}`).style.display = 'none';
-                        document.querySelector(`[data-thread-id="${threadId}"].reply-btn`).style.display = 'block';
-                    }
-
-                    if (e.target.classList.contains('submit-reply')) {
-                        const threadId = e.target.getAttribute('data-thread-id');
-                        submitReply(threadId);
-                    }
-                });
+      
+            return data.username;
+          }
+      
+          async function loadThreads() {
+            const { data: threads, error } = await supabase
+              .from('forum_threads')
+              .select(`
+                *,
+                replies (
+                  *,
+                  username
+                )
+              `)
+              .order('created_at', { ascending: false });
+      
+            if (error) {
+              console.error("❌ Error loading threads:", error);
+              return;
             }
-
-            async function submitReply(threadId) {
-                const replyInput = document.querySelector(`#reply-form-${threadId} .reply-input`);
-                const replyContent = replyInput.value.trim();
-
-                if (!replyContent) {
-                    alert("Please write something before submitting!");
-                    return;
-                }
-
-                const { error } = await supabase
-                    .from('replies')
-                    .insert([
-                        {
-                            thread_id: threadId,
-                            content: replyContent,
-                            user_id: DEFAULT_USER_ID
-                        }
-                    ]);
-
-                if (error) {
-                    console.error("Error posting reply:", error);
-                    alert("Failed to post reply. Please try again.");
-                    return;
-                }
-
-                replyInput.value = '';
+      
+            const threadsContainer = document.getElementById('threadsContainer');
+            threadsContainer.innerHTML = '';
+      
+            threads.forEach(thread => {
+              const threadElement = document.createElement('div');
+              threadElement.classList.add('thread');
+              threadElement.innerHTML = `
+                <h2 class="thread-title">${escapeHtml(thread.title)}</h2>
+                <p class="thread-content">${escapeHtml(thread.content)}</p>
+                <button class="reply-btn" data-thread-id="${thread.id}">Reply</button>
+                <div class="replies-container" id="replies-${thread.id}">
+                  ${thread.replies && thread.replies.length > 0
+                    ? thread.replies.map(reply => formatReply(reply)).join('')
+                    : '<p class="no-replies">No replies yet</p>'}
+                </div>
+                <div class="reply-form" id="reply-form-${thread.id}">
+                  <textarea class="reply-input" placeholder="Write your reply here..."></textarea>
+                  <button class="submit-reply" data-thread-id="${thread.id}">Submit Reply</button>
+                  <button class="cancel-reply" data-thread-id="${thread.id}">Cancel</button>
+                </div>
+              `;
+              threadsContainer.appendChild(threadElement);
+            });
+      
+            setupEventListeners();
+          }
+      
+          function formatReply(reply) {
+            const username = reply.username || 'Anonymous';
+            const date = new Date(reply.created_at).toLocaleString();
+            return `
+              <div class="reply">
+                <p class="reply-content">${escapeHtml(reply.content)}</p>
+                <p class="reply-meta">🧑‍💻 Uploaded by ${escapeHtml(username)} on ${date}</p>
+              </div>
+            `;
+          }
+      
+          function setupEventListeners() {
+            document.addEventListener('click', function (e) {
+              if (e.target.classList.contains('reply-btn')) {
+                const threadId = e.target.getAttribute('data-thread-id');
+                document.getElementById(`reply-form-${threadId}`).style.display = 'block';
+                e.target.style.display = 'none';
+              }
+      
+              if (e.target.classList.contains('cancel-reply')) {
+                const threadId = e.target.getAttribute('data-thread-id');
                 document.getElementById(`reply-form-${threadId}`).style.display = 'none';
                 document.querySelector(`[data-thread-id="${threadId}"].reply-btn`).style.display = 'block';
-                await fetchReplies(threadId);
+              }
+      
+              if (e.target.classList.contains('submit-reply')) {
+                const threadId = e.target.getAttribute('data-thread-id');
+                submitReply(threadId);
+              }
+            });
+          }
+      
+          async function submitReply(threadId) {
+            const replyInput = document.querySelector(`#reply-form-${threadId} .reply-input`);
+            const replyContent = replyInput.value.trim();
+      
+            if (!replyContent) {
+              alert("Please write something before submitting!");
+              return;
             }
-
-            async function fetchReplies(threadId) {
-                const { data: thread, error } = await supabase
-                    .from('forum_threads')
-                    .select(`
-            *,
-            replies (
-              *,
-              users (
-                username
-              )
-            )
-          `)
-                    .eq('id', threadId)
-                    .single();
-
-                if (error) {
-                    console.error("Error fetching replies:", error);
-                    return;
+      
+            const username = await getCurrentUsername();
+      
+            const { error } = await supabase
+              .from('replies')
+              .insert([
+                {
+                  thread_id: threadId,
+                  content: replyContent,
+                  username: username
                 }
-
-                const repliesContainer = document.getElementById(`replies-${threadId}`);
-                repliesContainer.innerHTML = thread.replies && thread.replies.length > 0 ?
-                    thread.replies.map(reply => formatReply(reply)).join('') :
-                    '<p class="no-replies">No replies yet</p>';
+              ]);
+      
+            if (error) {
+              console.error("❌ Error posting reply:", error);
+              alert("Failed to post reply. Please try again.");
+              return;
             }
-
-            function escapeHtml(unsafe) {
-                if (!unsafe) return '';
-                return unsafe.toString()
-                    .replace(/&/g, "&amp;")
-                    .replace(/</g, "&lt;")
-                    .replace(/>/g, "&gt;")
-                    .replace(/"/g, "&quot;")
-                    .replace(/'/g, "&#039;");
+      
+            replyInput.value = '';
+            document.getElementById(`reply-form-${threadId}`).style.display = 'none';
+            document.querySelector(`[data-thread-id="${threadId}"].reply-btn`).style.display = 'block';
+            await fetchReplies(threadId);
+          }
+      
+          async function fetchReplies(threadId) {
+            const { data: thread, error } = await supabase
+              .from('forum_threads')
+              .select(`
+                *,
+                replies (
+                  *,
+                  username
+                )
+              `)
+              .eq('id', threadId)
+              .single();
+      
+            if (error) {
+              console.error("❌ Error fetching replies:", error);
+              return;
             }
-
-            loadThreads();
+      
+            const repliesContainer = document.getElementById(`replies-${threadId}`);
+            repliesContainer.innerHTML = thread.replies && thread.replies.length > 0
+              ? thread.replies.map(reply => formatReply(reply)).join('')
+              : '<p class="no-replies">No replies yet</p>';
+          }
+      
+          function escapeHtml(unsafe) {
+            if (!unsafe) return '';
+            return unsafe.toString()
+              .replace(/&/g, "&amp;")
+              .replace(/</g, "&lt;")
+              .replace(/>/g, "&gt;")
+              .replace(/"/g, "&quot;")
+              .replace(/'/g, "&#039;");
+          }
+      
+          loadThreads();
         });
-    </script>
+      </script>
+      
 </body>
 
 </html>
