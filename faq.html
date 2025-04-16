@@ -9,6 +9,29 @@
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col font-tech">
   <!-- Header -->
+  <nav class="bg-gray-900 text-gray-200 shadow-lg">
+    <div class="max-w-screen-xl mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <a href="index.html" class="text-3xl font-bold font-orbitron text-transparent bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text">
+          GameModHub
+        </a>
+        <div class="hidden md:flex space-x-6 text-lg font-medium">
+          <a href="index.html" class="hover:text-blue-300 transition-colors">Home</a>
+          <a href="mods.html" class="hover:text-blue-300 transition-colors">Mods</a>
+          <a href="posts.html" class="hover:text-blue-300 transition-colors">Posts</a>
+          <a href="forum.html" class="hover:text-blue-300 transition-colors">Forums</a>
+          <a href="faq.html" class="hover:text-blue-300 transition-colors">FAQ</a>
+          <a href="requestmod.html" class="hover:text-blue-300 transition-colors">Request Mod</a>
+          <a href="contact.html" class="hover:text-blue-300 transition-colors">Contact</a>
+        </div>
+        <div class="md:hidden flex items-center space-x-4">
+          <button class="text-3xl" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
   <div data-include="../components/header.html"></div>
   
   <main class="flex-grow">

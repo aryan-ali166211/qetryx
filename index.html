@@ -11,6 +11,65 @@
   <script src="../assets/js/main.js" defer></script>
 </head>
 <body class="bg-gray-900 text-gray-200 min-h-screen flex flex-col font-tech">
+
+  <!-- Navbar -->
+  <nav class="bg-gray-900 text-gray-200 shadow-lg">
+    <div class="max-w-screen-xl mx-auto px-4 py-4">
+      <div class="flex justify-between items-center">
+        <a href="index.html" class="text-3xl font-bold font-orbitron text-transparent bg-gradient-to-r from-blue-400 to-purple-600 bg-clip-text">
+          GameModHub
+        </a>
+        <div class="hidden md:flex space-x-6 text-lg font-medium">
+          <a href="index.html" class="hover:text-blue-300 transition-colors">Home</a>
+          <a href="mods.html" class="hover:text-blue-300 transition-colors">Mods</a>
+          <a href="posts.html" class="hover:text-blue-300 transition-colors">Posts</a>
+          <a href="forum.html" class="hover:text-blue-300 transition-colors">Forums</a>
+          <a href="faq.html" class="hover:text-blue-300 transition-colors">FAQ</a>
+          <a href="requestmod.html" class="hover:text-blue-300 transition-colors">Request Mod</a>
+          <a href="contact.html" class="hover:text-blue-300 transition-colors">Contact</a>
+        </div>
+        <div class="md:hidden flex items-center space-x-4">
+          <button class="text-3xl" id="menu-toggle">
+            <i class="fas fa-bars"></i>
+          </button>
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Mobile Menu -->
+  <div class="md:hidden fixed inset-0 bg-black bg-opacity-50 hidden" id="mobile-menu-overlay">
+    <div class="flex justify-end p-4">
+      <button id="close-menu" class="text-white text-3xl">
+        <i class="fas fa-times"></i>
+      </button>
+    </div>
+    <div class="flex flex-col items-center text-xl space-y-6 mt-10">
+      <a href="index.html" class="text-white hover:text-blue-300">Home</a>
+      <a href="mods.html" class="text-white hover:text-blue-300">Mods</a>
+      <a href="posts.html" class="text-white hover:text-blue-300">Posts</a>
+      <a href="forum.html" class="text-white hover:text-blue-300">Forums</a>
+      <a href="faq.html" class="text-white hover:text-blue-300">FAQ</a>
+      <a href="requestmod.html" class="text-white hover:text-blue-300">Request Mod</a>
+      <a href="contact.html" class="text-white hover:text-blue-300">Contact</a>
+    </div>
+  </div>
+
+  <script>
+    // Mobile Menu Toggle
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    const closeMenu = document.getElementById('close-menu');
+
+    menuToggle.addEventListener('click', () => {
+      mobileMenuOverlay.classList.remove('hidden');
+    });
+
+    closeMenu.addEventListener('click', () => {
+      mobileMenuOverlay.classList.add('hidden');
+    });
+  </script>
+
   <!-- Header -->
   <div data-include="../components/header.html"></div>
   
@@ -141,7 +200,7 @@
         const featuredContainer = document.getElementById('featured-mods');
         
         if (featuredMods.length > 0) {
-          featuredContainer.innerHTML = featuredMods.map(mod => `
+          featuredContainer.innerHTML = featuredMods.map(mod => ` 
             <div class="bg-gray-800 rounded-lg overflow-hidden border border-gray-700 hover:border-purple-500 transition-all duration-300 hover:shadow-lg hover:neon-box-purple">
               <div class="h-48 bg-gray-700 overflow-hidden">
                 <img src="${mod.image_url || '../assets/images/default-mod-thumbnail.png'}" 
@@ -168,9 +227,19 @@
         document.getElementById('total-downloads').textContent = "10K+";
         
       } catch (error) {
-        console.error('Error loading featured mods:', error);
+        console.error('Error fetching featured mods:', error);
       }
     });
+    
+    async function fetchModsFromSupabase() {
+      const supabase = createSupabaseClient();
+      const { data, error } = await supabase
+        .from('mods')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      return { data, error };
+    }
   </script>
 </body>
 </html>
