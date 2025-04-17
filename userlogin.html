@@ -1,46 +1,69 @@
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Login | Your App Name</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600&display=swap" rel="stylesheet">
-    <!-- Load Supabase script in the head with defer -->
-    <script src="https://unpkg.com/@supabase/supabase-js@2" defer></script>
+    <title>Login | GameModHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
-            --primary: #4361ee;
-            --primary-dark: #3a56d4;
-            --error: #f72585;
-            --success: #4cc9f0;
-            --text: #2b2d42;
-            --light: #f8f9fa;
+            --primary: #6d28d9;
+            --primary-dark: #5b21b6;
+            --primary-light: #8b5cf6;
+            --error: #ef4444;
+            --success: #10b981;
+            --text-light: #e5e7eb;
+            --text-dark: #1f2937;
+            --bg-dark: #111827;
+            --bg-darker: #0b1120;
+            --accent: #00f0ff;
         }
 
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Poppins', sans-serif;
         }
 
         body {
-            background-color: #f5f7ff;
+            background-color: var(--bg-darker);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(109, 40, 217, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 240, 255, 0.15) 0%, transparent 50%);
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--text-light);
             display: flex;
             justify-content: center;
             align-items: center;
             min-height: 100vh;
-            color: var(--text);
+            overflow-x: hidden;
         }
 
         .container {
-            background-color: white;
+            background-color: rgba(17, 24, 39, 0.9);
             border-radius: 16px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 0 30px rgba(109, 40, 217, 0.3);
             width: 100%;
             max-width: 420px;
             overflow: hidden;
+            border: 1px solid rgba(109, 40, 217, 0.3);
+            backdrop-filter: blur(10px);
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            z-index: -1;
+            border-radius: 18px;
+            opacity: 0.3;
         }
 
         .form-container {
@@ -50,62 +73,109 @@
         .logo {
             text-align: center;
             margin-bottom: 1.5rem;
-            font-size: 1.8rem;
-            font-weight: 600;
-            color: var(--primary);
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            letter-spacing: 1px;
         }
 
         h1 {
             font-size: 1.5rem;
             margin-bottom: 1.5rem;
             text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
 
         .form-group {
-            margin-bottom: 1.25rem;
+            margin-bottom: 1.5rem;
+            position: relative;
         }
 
         label {
             display: block;
             margin-bottom: 0.5rem;
             font-weight: 500;
+            color: var(--accent);
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
         }
 
         input {
             width: 100%;
             padding: 0.75rem 1rem;
-            border: 1px solid #ddd;
+            background-color: rgba(31, 41, 55, 0.7);
+            border: 1px solid rgba(109, 40, 217, 0.5);
             border-radius: 8px;
             font-size: 1rem;
-            transition: border 0.3s;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
         }
 
         input:focus {
             outline: none;
-            border-color: var(--primary);
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2);
         }
 
         button {
             width: 100%;
             padding: 0.75rem;
-            background-color: var(--primary);
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
             color: white;
             border: none;
             border-radius: 8px;
             font-size: 1rem;
-            font-weight: 500;
+            font-weight: 600;
             cursor: pointer;
-            transition: background-color 0.3s;
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            position: relative;
+            overflow: hidden;
         }
 
         button:hover {
-            background-color: var(--primary-dark);
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(109, 40, 217, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(
+                to bottom right,
+                rgba(255, 255, 255, 0.3),
+                rgba(255, 255, 255, 0)
+            );
+            transform: rotate(30deg);
+            transition: all 0.5s ease;
+        }
+
+        button:hover::before {
+            left: 100%;
         }
 
         .divider {
             text-align: center;
             margin: 1.5rem 0;
             position: relative;
+            color: rgba(229, 231, 235, 0.5);
         }
 
         .divider::before {
@@ -115,29 +185,31 @@
             left: 0;
             right: 0;
             height: 1px;
-            background-color: #ddd;
+            background: linear-gradient(90deg, transparent, rgba(109, 40, 217, 0.5), transparent);
             z-index: -1;
         }
 
         .divider span {
-            background-color: white;
+            background-color: var(--bg-dark);
             padding: 0 1rem;
-            color: #777;
         }
 
         .link {
             text-align: center;
             margin-top: 1.5rem;
+            font-size: 0.9rem;
         }
 
         .link a {
-            color: var(--primary);
+            color: var(--accent);
             text-decoration: none;
             font-weight: 500;
+            transition: all 0.3s ease;
         }
 
         .link a:hover {
             text-decoration: underline;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
         }
 
         .error {
@@ -145,6 +217,7 @@
             font-size: 0.875rem;
             margin-top: 0.5rem;
             display: none;
+            font-weight: 500;
         }
 
         .success {
@@ -152,143 +225,189 @@
             font-size: 0.875rem;
             margin-top: 0.5rem;
             display: none;
+            font-weight: 500;
         }
 
         .resend-link {
-            color: var(--primary);
+            color: var(--accent);
             cursor: pointer;
-            text-decoration: underline;
+            text-decoration: none;
             margin-top: 10px;
             display: block;
+            text-align: center;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .resend-link:hover {
+            text-decoration: underline;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+        }
+
+        /* Animated background elements */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(109, 40, 217, 0.2), transparent 70%);
+            z-index: -1;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .circle-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -200px;
+            right: -200px;
+            animation: float 20s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(20px, 20px);
+            }
         }
     </style>
 </head>
-
 <body>
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    
     <div class="container">
         <div class="form-container">
-            <div class="logo">YourApp</div>
-            <h1>Welcome back</h1>
+            <div class="logo">GAMEMODHUB</div>
+            <h1>ACCESS TERMINAL</h1>
 
             <form id="loginForm">
                 <div class="form-group">
-                    <label for="email">Email</label>
-                    <input type="email" id="email" name="email" required>
+                    <label for="email">EMAIL</label>
+                    <input type="email" id="email" name="email" required placeholder="user@example.com">
                 </div>
 
                 <div class="form-group">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" name="password" required>
+                    <label for="password">PASSWORD</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
                 </div>
 
                 <div id="loginError" class="error"></div>
                 <div id="resendContainer" style="display: none;">
-                    <a id="resendLink" class="resend-link">Resend confirmation email</a>
+                    <a id="resendLink" class="resend-link">RESEND CONFIRMATION</a>
                 </div>
 
-                <button type="submit">Log In</button>
+                <button type="submit">
+                    <span>LOGIN</span>
+                </button>
             </form>
 
+            <div class="divider">
+                <span>OR</span>
+            </div>
+
             <div class="link">
-                Don't have an account? <a href="register.html">Sign up</a>
+                NEW USER? <a href="register.html">CREATE ACCOUNT</a>
             </div>
         </div>
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function () {
-            // Initialize Supabase
-            const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
-            const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
-            const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        // Initialize Supabase
+        const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
 
-            // Login form submission
-            document.getElementById('loginForm').addEventListener('submit', async (e) => {
-                e.preventDefault();
+        // Login form submission
+        document.getElementById('loginForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-                const email = document.getElementById('email').value;
-                const password = document.getElementById('password').value;
-                const errorElement = document.getElementById('loginError');
-                const resendContainer = document.getElementById('resendContainer');
-                const submitButton = e.target.querySelector('button[type="submit"]');
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorElement = document.getElementById('loginError');
+            const resendContainer = document.getElementById('resendContainer');
+            const submitButton = e.target.querySelector('button[type="submit"]');
 
-                // Reset messages
-                errorElement.style.display = 'none';
+            // Reset messages
+            errorElement.style.display = 'none';
+            resendContainer.style.display = 'none';
+
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span>AUTHENTICATING...</span>';
+
+            try {
+                const { data, error } = await supabase.auth.signInWithPassword({
+                    email: email,
+                    password: password
+                });
+
+                if (error) throw error;
+
+                // Login successful - store session and redirect
+                localStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
+                window.location.href = 'dashboard.html';
+
+            } catch (error) {
+                console.error('Login error:', error);
+
+                if (error.message.includes('Email not confirmed')) {
+                    errorElement.textContent = 'EMAIL VERIFICATION REQUIRED';
+                    resendContainer.style.display = 'block';
+                } else if (error.message.includes('Invalid login credentials')) {
+                    errorElement.textContent = 'INVALID CREDENTIALS';
+                } else {
+                    errorElement.textContent = 'SYSTEM ERROR: ' + (error.message || 'Authentication failed');
+                }
+
+                errorElement.style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<span>LOGIN</span>';
+            }
+        });
+
+        // Resend confirmation email
+        document.getElementById('resendLink').addEventListener('click', async () => {
+            const email = document.getElementById('email').value;
+            const errorElement = document.getElementById('loginError');
+            const resendLink = document.getElementById('resendLink');
+
+            if (!email) {
+                errorElement.textContent = 'EMAIL REQUIRED';
+                errorElement.style.display = 'block';
+                return;
+            }
+
+            resendLink.textContent = 'SENDING...';
+
+            try {
+                const { error } = await supabase.auth.resend({
+                    type: 'signup',
+                    email: email
+                });
+
+                if (error) throw error;
+
+                errorElement.textContent = 'VERIFICATION SENT TO ' + email;
+                errorElement.style.display = 'block';
+                errorElement.style.color = 'var(--success)';
                 resendContainer.style.display = 'none';
 
-                // Show loading state
-                submitButton.disabled = true;
-                submitButton.textContent = 'Logging in...';
-
-                try {
-                    const { data, error } = await supabase.auth.signInWithPassword({
-                        email: email,
-                        password: password
-                    });
-
-                    if (error) throw error;
-
-                    // Login successful - store session and redirect
-                    localStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
-                    window.location.href = 'dashboard.html'; // or mods.html
-
-                } catch (error) {
-                    console.error('Login error:', error);
-
-                    if (error.message.includes('Email not confirmed')) {
-                        errorElement.textContent = 'Please confirm your email address before logging in.';
-                        resendContainer.style.display = 'block';
-                    } else if (error.message.includes('Invalid login credentials')) {
-                        errorElement.textContent = 'Invalid email or password';
-                    } else {
-                        errorElement.textContent = error.message || 'Login failed. Please try again.';
-                    }
-
-                    errorElement.style.display = 'block';
-                } finally {
-                    submitButton.disabled = false;
-                    submitButton.textContent = 'Log In';
-                }
-            });
-
-            // Resend confirmation email
-            document.getElementById('resendLink').addEventListener('click', async () => {
-                const email = document.getElementById('email').value;
-                const errorElement = document.getElementById('loginError');
-                const resendLink = document.getElementById('resendLink');
-
-                if (!email) {
-                    errorElement.textContent = 'Please enter your email address';
-                    errorElement.style.display = 'block';
-                    return;
-                }
-
-                resendLink.textContent = 'Sending...';
-
-                try {
-                    const { error } = await supabase.auth.resend({
-                        type: 'signup',
-                        email: email
-                    });
-
-                    if (error) throw error;
-
-                    errorElement.textContent = 'Confirmation email sent! Please check your inbox.';
-                    errorElement.style.display = 'block';
-                    errorElement.style.color = 'var(--success)';
-                    resendContainer.style.display = 'none';
-
-                } catch (error) {
-                    console.error('Resend error:', error);
-                    errorElement.textContent = 'Failed to send confirmation email. Please try again.';
-                    errorElement.style.display = 'block';
-                } finally {
-                    resendLink.textContent = 'Resend confirmation email';
-                }
-            });
+            } catch (error) {
+                console.error('Resend error:', error);
+                errorElement.textContent = 'TRANSMISSION FAILED: ' + error.message;
+                errorElement.style.display = 'block';
+            } finally {
+                resendLink.textContent = 'RESEND CONFIRMATION';
+            }
         });
     </script>
-
 </body>
-
 </html>

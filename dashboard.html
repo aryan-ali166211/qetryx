@@ -143,6 +143,8 @@
             justify-content: center;
             font-size: 3rem;
             color: var(--gray);
+            background-size: cover;
+            background-position: center;
         }
 
         .avatar-edit {
@@ -295,7 +297,7 @@
             <div class="header">
                 <h1>Dashboard</h1>
                 <div class="user-menu">
-                   
+                    <img id="headerAvatar" class="user-avatar" src="" alt="User Avatar">
                     <span id="headerUsername"></span>
                 </div>
             </div>
@@ -341,13 +343,13 @@
         </main>
     </div>
     <script>
+        // Initialize Supabase client globally
+        const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+        
         document.addEventListener('DOMContentLoaded', async function() {
             try {
-                // Initialize Supabase
-                const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
-                const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
-                const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
-    
                 // Check authentication
                 const { data: { user }, error: authError } = await supabase.auth.getUser();
                 if (authError || !user) {
@@ -361,14 +363,13 @@
                     const { data, error } = await supabase
                         .from('useraccount')
                         .select('*')
-                        .eq('user_id', user.id)  // Make sure this matches your column name
-                        .maybeSingle();  // Returns null instead of error if no rows
+                        .eq('user_id', user.id)
+                        .maybeSingle();
     
                     if (error) throw error;
                     profile = data;
                 } catch (profileError) {
                     console.warn('Profile load warning:', profileError);
-                    // Continue with basic user data
                 }
     
                 // Create profile if doesn't exist
@@ -396,10 +397,17 @@
                 // Render dashboard with combined data
                 renderDashboard({ ...user, ...(profile || {}) });
     
+                // Set up avatar upload
+                setupAvatarUpload(user.id);
+    
             } catch (error) {
                 console.error('Initialization error:', error);
-                showMessage('Failed to load dashboard. Please try again.', 'error');
-                document.getElementById('logoutBtn').style.display = 'block';
+                alert('Failed to load dashboard. Please try again.');
+                document.getElementById('logoutBtn').addEventListener('click', () => {
+                    supabase.auth.signOut().then(() => {
+                        window.location.href = 'userlogin.html';
+                    });
+                });
             }
         });
     
@@ -438,22 +446,97 @@
                 const avatarPreview = document.getElementById('avatarPreview');
                 avatarPreview.style.backgroundImage = `url(${publicUrl})`;
                 avatarPreview.innerHTML = '';
-                document.getElementById('headerAvatar').src = publicUrl;
+                
+                // Also update the header avatar
+                const headerAvatar = document.getElementById('headerAvatar');
+                headerAvatar.src = publicUrl;
             } catch (error) {
                 console.error('Avatar load error:', error);
             }
         }
     
-        function showMessage(message, type) {
-            const element = document.createElement('div');
-            element.className = `message ${type}`;
-            element.textContent = message;
-            document.querySelector('.main-content').prepend(element);
-            setTimeout(() => element.remove(), 5000);
+        function setupAvatarUpload(userId) {
+            const avatarInput = document.getElementById('avatarInput');
+            const avatarPreview = document.getElementById('avatarPreview');
+            const saveBtn = document.getElementById('saveBtn');
+            
+            avatarInput.addEventListener('change', async (event) => {
+                const file = event.target.files[0];
+                if (!file) return;
+                
+                // Show preview immediately
+                const reader = new FileReader();
+                reader.onload = (e) => {
+                    avatarPreview.style.backgroundImage = `url(${e.target.result})`;
+                    avatarPreview.innerHTML = '';
+                    
+                    // Also update the header avatar preview
+                    const headerAvatar = document.getElementById('headerAvatar');
+                    headerAvatar.src = e.target.result;
+                };
+                reader.readAsDataURL(file);
+                
+                // Show save button
+                saveBtn.style.display = 'inline-flex';
+                
+                // Handle save button click
+                saveBtn.onclick = async () => {
+                    try {
+                        saveBtn.disabled = true;
+                        document.getElementById('saveText').innerHTML = '<div class="loading"></div> Saving...';
+                        
+                        // Upload to Supabase Storage
+                        const fileExt = file.name.split('.').pop();
+                        const fileName = `${userId}-${Date.now()}.${fileExt}`;
+                        const filePath = `${fileName}`;
+                        
+                        // First delete old avatar if exists
+                        const { data: userData } = await supabase
+                            .from('useraccount')
+                            .select('avatar_url')
+                            .eq('user_id', userId)
+                            .single();
+                        
+                        if (userData?.avatar_url) {
+                            const oldFileName = userData.avatar_url.split('/').pop();
+                            await supabase.storage.from('avatars').remove([oldFileName]);
+                        }
+                        
+                        // Upload new avatar
+                        const { error: uploadError } = await supabase.storage
+                            .from('avatars')
+                            .upload(filePath, file);
+                        
+                        if (uploadError) throw uploadError;
+                        
+                        // Get public URL
+                        const { data: { publicUrl } } = supabase.storage
+                            .from('avatars')
+                            .getPublicUrl(filePath);
+                        
+                        // Update user profile with new avatar URL
+                        const { error: updateError } = await supabase
+                            .from('useraccount')
+                            .update({ avatar_url: publicUrl })
+                            .eq('user_id', userId);
+                        
+                        if (updateError) throw updateError;
+                        
+                        // Hide save button
+                        saveBtn.style.display = 'none';
+                        document.getElementById('saveText').textContent = 'Save Changes';
+                        saveBtn.disabled = false;
+                        
+                        alert('Profile picture updated successfully!');
+                    } catch (error) {
+                        console.error('Error updating avatar:', error);
+                        alert('Failed to update profile picture. Please try again.');
+                        saveBtn.disabled = false;
+                        document.getElementById('saveText').textContent = 'Save Changes';
+                    }
+                };
+            });
         }
     </script>
-
-
 </body>
-
 </html>

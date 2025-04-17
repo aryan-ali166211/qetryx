@@ -1,103 +1,381 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Register</title>
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <style>
-    body {
-      font-family: Arial, sans-serif;
-      background: #0f0f0f;
-      color: #fff;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      height: 100vh;
-    }
-    form {
-      display: flex;
-      flex-direction: column;
-      width: 300px;
-      gap: 10px;
-      padding: 20px;
-      background: #1a1a1a;
-      border-radius: 10px;
-    }
-    input {
-      padding: 10px;
-      border: none;
-      border-radius: 5px;
-    }
-    button {
-      padding: 10px;
-      background: #00ffae;
-      color: #000;
-      font-weight: bold;
-      border: none;
-      border-radius: 5px;
-      cursor: pointer;
-    }
-  </style>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Register | GameModHub</title>
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+    <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
+    <style>
+        :root {
+            --primary: #6d28d9;
+            --primary-dark: #5b21b6;
+            --primary-light: #8b5cf6;
+            --error: #ef4444;
+            --success: #10b981;
+            --text-light: #e5e7eb;
+            --text-dark: #1f2937;
+            --bg-dark: #111827;
+            --bg-darker: #0b1120;
+            --accent: #00f0ff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: var(--bg-darker);
+            background-image: 
+                radial-gradient(circle at 25% 25%, rgba(109, 40, 217, 0.15) 0%, transparent 50%),
+                radial-gradient(circle at 75% 75%, rgba(0, 240, 255, 0.15) 0%, transparent 50%);
+            font-family: 'Rajdhani', sans-serif;
+            color: var(--text-light);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        .container {
+            background-color: rgba(17, 24, 39, 0.9);
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(109, 40, 217, 0.3);
+            width: 100%;
+            max-width: 420px;
+            overflow: hidden;
+            border: 1px solid rgba(109, 40, 217, 0.3);
+            position: relative;
+            z-index: 1;
+        }
+
+        .container::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--primary), var(--accent));
+            z-index: -1;
+            border-radius: 18px;
+            opacity: 0.3;
+        }
+
+        .form-container {
+            padding: 2.5rem;
+        }
+
+        .logo {
+            text-align: center;
+            margin-bottom: 1.5rem;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--accent);
+            font-family: 'Orbitron', sans-serif;
+            text-shadow: 0 0 10px rgba(0, 240, 255, 0.5);
+            letter-spacing: 1px;
+        }
+
+        h1 {
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--text-light);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .form-group {
+            margin-bottom: 1.5rem;
+            position: relative;
+        }
+
+        label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: var(--accent);
+            font-size: 0.9rem;
+            letter-spacing: 0.5px;
+        }
+
+        input {
+            width: 100%;
+            padding: 0.75rem 1rem;
+            background-color: rgba(31, 41, 55, 0.7);
+            border: 1px solid rgba(109, 40, 217, 0.5);
+            border-radius: 8px;
+            font-size: 1rem;
+            color: var(--text-light);
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: var(--accent);
+            box-shadow: 0 0 0 3px rgba(0, 240, 255, 0.2);
+        }
+
+        button {
+            width: 100%;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-family: 'Rajdhani', sans-serif;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, var(--primary-light), var(--primary));
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(109, 40, 217, 0.4);
+        }
+
+        button:active {
+            transform: translateY(0);
+        }
+
+        .link {
+            text-align: center;
+            margin-top: 1.5rem;
+            font-size: 0.9rem;
+        }
+
+        .link a {
+            color: var(--accent);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+        }
+
+        .link a:hover {
+            text-decoration: underline;
+            text-shadow: 0 0 8px rgba(0, 240, 255, 0.5);
+        }
+
+        .error {
+            color: var(--error);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        .success {
+            color: var(--success);
+            font-size: 0.875rem;
+            margin-top: 0.5rem;
+            display: none;
+            font-weight: 500;
+        }
+
+        /* Password strength meter */
+        .strength-meter {
+            height: 4px;
+            background-color: var(--bg-dark);
+            margin-top: 8px;
+            border-radius: 2px;
+            overflow: hidden;
+        }
+
+        .strength-meter-fill {
+            height: 100%;
+            width: 0;
+            background-color: var(--error);
+            transition: width 0.3s ease, background-color 0.3s ease;
+        }
+
+        /* Animated background elements */
+        .bg-circle {
+            position: fixed;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(109, 40, 217, 0.2), transparent 70%);
+            z-index: -1;
+        }
+
+        .circle-1 {
+            width: 300px;
+            height: 300px;
+            top: -100px;
+            left: -100px;
+            animation: float 15s infinite ease-in-out;
+        }
+
+        .circle-2 {
+            width: 500px;
+            height: 500px;
+            bottom: -200px;
+            right: -200px;
+            animation: float 20s infinite ease-in-out reverse;
+        }
+
+        @keyframes float {
+            0%, 100% {
+                transform: translate(0, 0);
+            }
+            50% {
+                transform: translate(20px, 20px);
+            }
+        }
+    </style>
 </head>
 <body>
+    <div class="bg-circle circle-1"></div>
+    <div class="bg-circle circle-2"></div>
+    
+    <div class="container">
+        <div class="form-container">
+            <div class="logo">GAMEMODHUB</div>
+            <h1>NEW USER REGISTRATION</h1>
 
-  <h1>Register</h1>
-  <form id="registerForm">
-    <input type="email" id="email" placeholder="Email" required />
-    <input type="password" id="password" placeholder="Password" required />
-    <input type="text" id="username" placeholder="Username" required />
-    <button type="submit">Register</button>
-  </form>
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="email">EMAIL</label>
+                    <input type="email" id="email" name="email" required placeholder="user@example.com">
+                </div>
 
-  <script>
-    const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co'; // Replace with your URL
-    const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo'; // Replace with your anon/public key
-    const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+                <div class="form-group">
+                    <label for="username">USERNAME</label>
+                    <input type="text" id="username" name="username" required placeholder="modder123">
+                </div>
 
-    const registerForm = document.getElementById("registerForm");
+                <div class="form-group">
+                    <label for="password">PASSWORD</label>
+                    <input type="password" id="password" name="password" required placeholder="••••••••">
+                    <div class="strength-meter">
+                        <div class="strength-meter-fill" id="password-strength"></div>
+                    </div>
+                </div>
 
-    registerForm.addEventListener("submit", async (e) => {
-      e.preventDefault();
+                <div id="registerError" class="error"></div>
+                <div id="registerSuccess" class="success"></div>
 
-      const email = document.getElementById("email").value;
-      const password = document.getElementById("password").value;
-      const username = document.getElementById("username").value;
+                <button type="submit">
+                    <span>CREATE ACCOUNT</span>
+                </button>
+            </form>
 
-      try {
-        // 1. Register the user
-        const { data: authData, error: authError } = await supabase.auth.signUp({
-          email,
-          password,
+            <div class="link">
+                ALREADY HAVE AN ACCOUNT? <a href="userlogin.html">LOGIN HERE</a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Password strength indicator
+        document.getElementById('password').addEventListener('input', function(e) {
+            const password = e.target.value;
+            const strengthBar = document.getElementById('password-strength');
+            let strength = 0;
+            
+            if (password.length > 7) strength += 25;
+            if (password.length > 11) strength += 25;
+            if (/[A-Z]/.test(password)) strength += 15;
+            if (/[0-9]/.test(password)) strength += 15;
+            if (/[^A-Za-z0-9]/.test(password)) strength += 20;
+            
+            strength = Math.min(100, strength);
+            strengthBar.style.width = strength + '%';
+            
+            if (strength < 40) {
+                strengthBar.style.backgroundColor = 'var(--error)';
+            } else if (strength < 70) {
+                strengthBar.style.backgroundColor = '#f59e0b';
+            } else {
+                strengthBar.style.backgroundColor = 'var(--success)';
+            }
         });
 
-        if (authError) throw authError;
+        // Registration form submission
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
 
-        const user = authData.user;
-        if (!user) throw new Error("User not returned from signUp");
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const username = document.getElementById('username').value;
+            const errorElement = document.getElementById('registerError');
+            const successElement = document.getElementById('registerSuccess');
+            const submitButton = e.target.querySelector('button[type="submit"]');
 
-        // 2. Insert user info into useraccount table
-        const { error: insertError } = await supabase
-          .from("useraccount")
-          .insert([
-            {
-              user_id: user.id,
-              email: email,
-              username: username,
-              created_at: new Date().toISOString(),
-            },
-          ]);
+            // Reset messages
+            errorElement.style.display = 'none';
+            successElement.style.display = 'none';
 
-        if (insertError) throw insertError;
+            // Show loading state
+            submitButton.disabled = true;
+            submitButton.innerHTML = '<span>CREATING ACCOUNT...</span>';
 
-        alert("Registration successful!");
-      } catch (error) {
-        console.error("Registration error:", error);
-        alert("Registration failed: " + error.message);
-      }
-    });
-  </script>
+            try {
+                // 1. Register the user
+                const { data: authData, error: authError } = await supabase.auth.signUp({
+                    email,
+                    password,
+                    options: {
+                        data: {
+                            username: username
+                        }
+                    }
+                });
 
+                if (authError) throw authError;
+
+                const user = authData.user;
+                if (!user) throw new Error("Registration failed - no user returned");
+
+                // 2. Insert user info into useraccount table
+                const { error: insertError } = await supabase
+                    .from('useraccount')
+                    .insert([
+                        {
+                            user_id: user.id,
+                            email: email,
+                            username: username,
+                            created_at: new Date().toISOString()
+                        }
+                    ]);
+
+                if (insertError) throw insertError;
+
+                // Registration successful
+                // successElement.textContent = `ACCOUNT CREATED! Verification sent to ${email}`;
+                successElement.style.display = 'block';
+                
+                // Clear form
+                e.target.reset();
+                document.getElementById('password-strength').style.width = '0';
+
+                // Redirect after delay
+                setTimeout(() => {
+                    window.location.href = 'userlogin.html';
+                }, 3000);
+
+            } catch (error) {
+                console.error('Registration error:', error);
+                errorElement.textContent = 'REGISTRATION ERROR: ' + error.message;
+                errorElement.style.display = 'block';
+            } finally {
+                submitButton.disabled = false;
+                submitButton.innerHTML = '<span>CREATE ACCOUNT</span>';
+            }
+        });
+    </script>
 </body>
 </html>
