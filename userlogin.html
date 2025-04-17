@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -152,6 +153,7 @@
             margin-top: 0.5rem;
             display: none;
         }
+
         .resend-link {
             color: var(--primary);
             cursor: pointer;
@@ -161,6 +163,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="form-container">
@@ -193,7 +196,7 @@
     </div>
 
     <script>
-        document.addEventListener('DOMContentLoaded', function() {
+        document.addEventListener('DOMContentLoaded', function () {
             // Initialize Supabase
             const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
             const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
@@ -225,12 +228,13 @@
 
                     if (error) throw error;
 
-                    // Login successful - redirect to dashboard
-                    window.location.href = 'dashboard.html';
+                    // Login successful - store session and redirect
+                    localStorage.setItem('supabase.auth.token', JSON.stringify(data.session));
+                    window.location.href = 'dashboard.html'; // or mods.html
 
                 } catch (error) {
                     console.error('Login error:', error);
-                    
+
                     if (error.message.includes('Email not confirmed')) {
                         errorElement.textContent = 'Please confirm your email address before logging in.';
                         resendContainer.style.display = 'block';
@@ -239,7 +243,7 @@
                     } else {
                         errorElement.textContent = error.message || 'Login failed. Please try again.';
                     }
-                    
+
                     errorElement.style.display = 'block';
                 } finally {
                     submitButton.disabled = false;
@@ -260,7 +264,7 @@
                 }
 
                 resendLink.textContent = 'Sending...';
-                
+
                 try {
                     const { error } = await supabase.auth.resend({
                         type: 'signup',
@@ -284,6 +288,7 @@
             });
         });
     </script>
-      
+
 </body>
+
 </html>

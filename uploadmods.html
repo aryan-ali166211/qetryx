@@ -8,7 +8,7 @@
   <script src="https://cdn.tailwindcss.com"></script>
   <link href="../assets/css/styles.css" rel="stylesheet">
   <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
-  <script src="../assets/js/supabase.js" defer></script>
+  <!-- <script src="../assets/js/supabase.js" defer></script> -->
   <script src="../assets/js/main.js" defer></script>
   <script src="../assets/js/uploadmod.js" defer></script>
  
@@ -184,21 +184,17 @@
 
   <!-- Footer -->
   <div data-include="../components/footer.html"></div>
-  <script>
-    document.getElementById('mod_image').addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      const preview = document.getElementById('image-preview');
-
-      if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.classList.remove('hidden');
-      } else {
-        preview.src = '';
-        preview.classList.add('hidden');
-      }
-    });
-
-  </script>
+ <!-- Remove the old script and add this -->
+<script src="../assets/js/auth.js"></script>
+<script>
+  document.addEventListener('DOMContentLoaded', async () => {
+    // Check authentication first
+    const session = await checkAuth();
+    if (!session) return;
+    
+    // Rest of your existing uploadmod.js code can run now...
+  });
+</script>
 </body>
 
 </html>
