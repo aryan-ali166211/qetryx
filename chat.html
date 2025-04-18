@@ -53,7 +53,6 @@
             flex-direction: column;
         }
 
-        /* Header Styles */
         .user-header {
             display: flex;
             align-items: center;
@@ -100,38 +99,6 @@
             letter-spacing: 1px;
         }
 
-        .user-status {
-            font-size: 0.8rem;
-            color: var(--neon-pink);
-            display: flex;
-            align-items: center;
-            gap: 5px;
-        }
-
-        .status-indicator {
-            width: 8px;
-            height: 8px;
-            border-radius: 50%;
-            background-color: var(--neon-pink);
-            box-shadow: 0 0 5px var(--neon-pink);
-            animation: pulse 1.5s infinite;
-        }
-
-        @keyframes pulse {
-            0% {
-                opacity: 0.5;
-            }
-
-            50% {
-                opacity: 1;
-            }
-
-            100% {
-                opacity: 0.5;
-            }
-        }
-
-        /* Chat Window Styles */
         .chat-window {
             flex: 1;
             background: var(--panel-bg);
@@ -181,6 +148,10 @@
             box-shadow: 0 0 8px var(--neon-purple);
             background-color: #1a1a2e;
             flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         .message-content {
@@ -219,28 +190,6 @@
             overflow: hidden;
         }
 
-        .message-text::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.05), transparent);
-            animation: scanline 6s linear infinite;
-        }
-
-        @keyframes scanline {
-            0% {
-                transform: translateX(-100%);
-            }
-
-            100% {
-                transform: translateX(100%);
-            }
-        }
-
-        /* Input Area Styles */
         .input-area {
             display: flex;
             gap: 10px;
@@ -284,44 +233,8 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            position: relative;
-            overflow: hidden;
         }
 
-        .send-button::before {
-            content: '';
-            position: absolute;
-            top: -50%;
-            left: -50%;
-            width: 200%;
-            height: 200%;
-            background: linear-gradient(to bottom right,
-                    transparent, transparent, transparent,
-                    rgba(255, 255, 255, 0.3), transparent, transparent);
-            transform: rotate(30deg);
-            animation: shine 3s infinite;
-        }
-
-        @keyframes shine {
-            0% {
-                transform: translateX(-100%) rotate(30deg);
-            }
-
-            100% {
-                transform: translateX(100%) rotate(30deg);
-            }
-        }
-
-        .send-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0, 240, 255, 0.4);
-        }
-
-        .send-button:active {
-            transform: translateY(0);
-        }
-
-        /* Loading State */
         .loading {
             display: flex;
             justify-content: center;
@@ -346,7 +259,6 @@
             }
         }
 
-        /* Error State */
         .error-message {
             background: rgba(255, 56, 96, 0.2);
             border: 1px solid var(--error);
@@ -355,73 +267,6 @@
             margin-bottom: 15px;
             color: var(--error);
             text-align: center;
-        }
-
-        /* Scrollbar Styles */
-        ::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        ::-webkit-scrollbar-track {
-            background: rgba(0, 240, 255, 0.05);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb {
-            background: var(--neon-purple);
-            border-radius: 4px;
-        }
-
-        ::-webkit-scrollbar-thumb:hover {
-            background: var(--neon-blue);
-        }
-
-        /* Cyberpunk decorative elements */
-        .cyber-line {
-            height: 2px;
-            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
-            margin: 15px 0;
-            opacity: 0.5;
-        }
-
-        .corner-decoration {
-            position: fixed;
-            width: 100px;
-            height: 100px;
-            pointer-events: none;
-            z-index: -1;
-        }
-
-        .corner-decoration.top-left {
-            top: 0;
-            left: 0;
-            border-top: 2px solid var(--neon-blue);
-            border-left: 2px solid var(--neon-blue);
-            box-shadow: -5px -5px 20px var(--neon-blue);
-        }
-
-        .corner-decoration.top-right {
-            top: 0;
-            right: 0;
-            border-top: 2px solid var(--neon-pink);
-            border-right: 2px solid var(--neon-pink);
-            box-shadow: 5px -5px 20px var(--neon-pink);
-        }
-
-        .corner-decoration.bottom-left {
-            bottom: 0;
-            left: 0;
-            border-bottom: 2px solid var(--neon-purple);
-            border-left: 2px solid var(--neon-purple);
-            box-shadow: -5px 5px 20px var(--neon-purple);
-        }
-
-        .corner-decoration.bottom-right {
-            bottom: 0;
-            right: 0;
-            border-bottom: 2px solid var(--neon-blue);
-            border-right: 2px solid var(--neon-blue);
-            box-shadow: 5px 5px 20px var(--neon-blue);
         }
 
         /* Responsive Design */
@@ -459,21 +304,34 @@
                 padding: 0 15px;
             }
         }
+
+        .profile-pic {
+            width: 100px;
+            height: 100px;
+            object-fit: cover;
+            border-radius: 50%;
+        }
+
+        .user-avatar img {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        /* Style for profile image in chat */
+    
     </style>
 </head>
 
 <body>
-    <!-- Cyberpunk decorative corners -->
-    <div class="corner-decoration top-left"></div>
-    <div class="corner-decoration top-right"></div>
-    <div class="corner-decoration bottom-left"></div>
-    <div class="corner-decoration bottom-right"></div>
-
     <div class="container">
-        <!-- User Header -->
+        <!-- Your HTML structure -->
         <div class="user-header">
+            
             <div class="user-avatar" id="user-avatar">
-                <i class="fas fa-user" style="font-size: 24px; color: var(--neon-blue);"></i>
+                <!-- Profile picture or default -->
+                <img id="profile-pic" src="images/profile.jpg" alt="Profile Picture" class="profile-pic" />
             </div>
             <div class="user-info">
                 <div class="user-name" id="username">LOADING...</div>
@@ -484,7 +342,6 @@
             </div>
         </div>
 
-        <!-- Chat Window -->
         <div class="chat-window" id="chat-window">
             <div class="messages-container" id="messages-container">
                 <div class="loading">
@@ -494,23 +351,28 @@
             </div>
         </div>
 
-        <!-- Input Area -->
         <div class="input-area">
-            <input onclick="sendMessage()" type="text" class="message-input" id="message-input"
-                placeholder="Type your message..." autocomplete="off">
+            <input type="text" class="message-input" id="message-input" placeholder="Type your message..."
+                autocomplete="off">
             <button class="send-button" id="send-button">
                 <i class="fas fa-paper-plane"></i>
                 <span>SEND</span>
             </button>
         </div>
     </div>
-    <!-- <button onclick="sendMessage()">Send</button> -->
 
     <script>
         // Initialize Supabase
         const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
         const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
         const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // Default profile image path
+        const DEFAULT_PROFILE_IMAGE = 'profile.jpg'; // Your default profile image
+        const profilePicElement = document.getElementById('profile-pic'); // The profile picture element
+
+        // Set the default image if no user-specific image is provided
+        profilePicElement.src = DEFAULT_PROFILE_IMAGE;
 
         // DOM Elements
         const messagesContainer = document.getElementById('messages-container');
@@ -529,22 +391,12 @@
             sessionId: null
         };
 
-        // Last message timestamp for polling
-        let lastMessageTimestamp = new Date().toISOString();
-
         // Initialize the chat
         document.addEventListener('DOMContentLoaded', async () => {
             try {
-                // Get the current user
                 await getCurrentUser();
-
-                // Load initial messages
                 await loadMessages();
-
-                // Start polling for new messages
-                startMessagePolling();
-
-                // Focus the input field
+                setupRealtimeUpdates();
                 messageInput.focus();
             } catch (error) {
                 console.error('Initialization error:', error);
@@ -552,76 +404,75 @@
             }
         });
 
-        // Get current user
+        // Get current user with profile data
         async function getCurrentUser() {
             try {
-                const { data: { user }, error: authError } = await supabase.auth.getUser();
+                const { data: { user } } = await supabase.auth.getUser();
 
                 if (user) {
-                    // Get from useraccount table
                     const { data: profile, error } = await supabase
                         .from('useraccount')
                         .select('username, avatar_url')
                         .eq('id', user.id)
-                        .maybeSingle();
+                        .single();
 
                     currentUser = {
                         id: user.id,
                         username: profile?.username || user.email || 'User',
-                        avatar_url: profile?.avatar_url || null,
+                        avatar_url: profile?.avatar_url || DEFAULT_PROFILE_IMAGE,
                         isAnonymous: false
                     };
                 } else {
-                    // Anonymous fallback
                     setupAnonymousUser();
                 }
 
                 usernameElement.textContent = currentUser.username;
-                if (currentUser.avatar_url) {
-                    const { data: { publicUrl } } = await supabase
-                        .storage
-                        .from('avater-bucket')
-                        .getPublicUrl(currentUser.avatar_url);
-                    userAvatarElement.innerHTML = `<img src="${publicUrl}" alt="${currentUser.username}">`;
-                }
+                updateAvatarDisplay(userAvatarElement, currentUser.avatar_url, currentUser.username);
             } catch (err) {
                 console.warn("Not signed in, using anonymous mode.");
                 setupAnonymousUser();
             }
         }
 
+        // Update avatar display with default profile image
+        function updateAvatarDisplay(element, avatarPath, username) {
+            const { data: { publicUrl } } = supabase
+                .storage
+                .from('avater-bucket')
+                .getPublicUrl(avatarPath || DEFAULT_PROFILE_IMAGE);
+
+            element.innerHTML = `
+                <img src="${publicUrl}" alt="${username}" 
+                     onerror="this.onerror=null;this.src='${supabaseUrl}/storage/v1/object/public/avater-bucket/${DEFAULT_PROFILE_IMAGE}'">
+            `;
+        }
+
         // Setup anonymous user
         function setupAnonymousUser() {
             const storedUsername = localStorage.getItem('anonymous_username');
-            const storedSessionId = localStorage.getItem('anonymous_sessionId');
-
             currentUser = {
                 id: null,
                 username: storedUsername || 'Anonymous',
-                avatar_url: null,
+                avatar_url: DEFAULT_PROFILE_IMAGE,
                 isAnonymous: true,
-                sessionId: storedSessionId || generateAnonymousId()
+                sessionId: localStorage.getItem('anonymous_sessionId') || generateAnonymousId()
             };
 
             if (!storedUsername) {
-                promptForUsername();
+                const username = prompt("Please enter a display name:");
+                if (username) {
+                    currentUser.username = username.trim();
+                    localStorage.setItem('anonymous_username', currentUser.username);
+                    localStorage.setItem('anonymous_sessionId', currentUser.sessionId);
+                }
             }
+            usernameElement.textContent = currentUser.username;
+            updateAvatarDisplay(userAvatarElement, currentUser.avatar_url, currentUser.username);
         }
 
         // Generate anonymous ID
         function generateAnonymousId() {
             return 'anon_' + Math.random().toString(36).substr(2, 9);
-        }
-
-        // Prompt for username
-        function promptForUsername() {
-            const username = prompt("Please enter a display name for the chat:");
-            if (username && username.trim()) {
-                currentUser.username = username.trim();
-                localStorage.setItem('anonymous_username', currentUser.username);
-                localStorage.setItem('anonymous_sessionId', currentUser.sessionId);
-                usernameElement.textContent = currentUser.username;
-            }
         }
 
         // Load messages from Supabase
@@ -645,17 +496,30 @@
                 messagesContainer.innerHTML = '';
 
                 if (messages && messages.length > 0) {
-                    messages.forEach(message => {
+                    // Process messages to ensure proper user data
+                    const processedMessages = await Promise.all(
+                        messages.map(async message => {
+                            if (message.user_id && !message.useraccount) {
+                                const { data: user } = await supabase
+                                    .from('useraccount')
+                                    .select('username, avatar_url')
+                                    .eq('id', message.user_id)
+                                    .single();
+                                message.useraccount = user || {
+                                    username: 'User',
+                                    avatar_url: DEFAULT_PROFILE_IMAGE
+                                };
+                            }
+                            return message;
+                        })
+                    );
+
+                    processedMessages.forEach(message => {
                         addMessageToUI(message);
                     });
 
-                    // Update last message timestamp
                     lastMessageTimestamp = messages[messages.length - 1].created_at;
-
-                    // Scroll to bottom
-                    setTimeout(() => {
-                        chatWindow.scrollTop = chatWindow.scrollHeight;
-                    }, 100);
+                    setTimeout(() => chatWindow.scrollTop = chatWindow.scrollHeight, 100);
                 } else {
                     messagesContainer.innerHTML = `
                         <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
@@ -669,57 +533,14 @@
             }
         }
 
-        // Poll for new messages
-        function startMessagePolling() {
-            setInterval(async () => {
-                try {
-                    const { data: newMessages, error } = await supabase
-                        .from('chat_messages')
-                        .select(`
-                            id,
-                            content,
-                            created_at,
-                            user_id,
-                            username,
-                            anonymous_id,
-                            useraccount:user_id (username, avatar_url)
-                        `)
-                        .gt('created_at', lastMessageTimestamp)
-                        .order('created_at', { ascending: true });
-
-                    if (error) throw error;
-
-                    if (newMessages && newMessages.length > 0) {
-                        newMessages.forEach(message => {
-                            addMessageToUI(message);
-                        });
-
-                        // Update last message timestamp
-                        lastMessageTimestamp = newMessages[newMessages.length - 1].created_at;
-
-                        // Scroll to bottom if new messages are added
-                        setTimeout(() => {
-                            chatWindow.scrollTop = chatWindow.scrollHeight;
-                        }, 100);
-                    }
-                } catch (error) {
-                    console.error('Error polling for new messages:', error);
-                }
-            }, 2000); // Poll every 2 seconds
-        }
-
-        // Add a message to the UI
+        // Add a message to the UI with default profile image
         function addMessageToUI(message) {
-            // Check if message already exists in UI
-            if (document.getElementById(`message-${message.id}`)) {
-                return;
-            }
+            if (document.getElementById(`message-${message.id}`)) return;
 
             const messageElement = document.createElement('div');
             messageElement.className = 'message';
             messageElement.id = `message-${message.id}`;
 
-            // Format the timestamp
             const timestamp = new Date(message.created_at).toLocaleTimeString([], {
                 hour: '2-digit',
                 minute: '2-digit'
@@ -730,15 +551,17 @@
                 message.username ||
                 (message.user_id ? 'User' : 'Anonymous');
 
-            // Get avatar URL if available
-            let avatarContent = `<i class="fas fa-user" style="font-size: 18px; color: var(--neon-purple);"></i>`;
-            if (message.useraccount?.avatar_url) {
-                avatarContent = `<img src="${supabaseUrl}/storage/v1/object/public/avater-bucket/${message.useraccount.avatar_url}" alt="${senderName}">`;
-            }
+            // Get avatar URL - use default if none specified
+            const avatarUrl = message.useraccount?.avatar_url || DEFAULT_PROFILE_IMAGE;
+            const { data: { publicUrl } } = supabase
+                .storage
+                .from('avater-bucket')
+                .getPublicUrl(avatarUrl);
 
             messageElement.innerHTML = `
                 <div class="message-avatar">
-                    ${avatarContent}
+                    <img src="${publicUrl}" alt="${senderName}" 
+                         onerror="this.src='${supabaseUrl}/storage/v1/object/public/avater-bucket/${DEFAULT_PROFILE_IMAGE}'">
                 </div>
                 <div class="message-content">
                     <div class="message-header">
@@ -776,7 +599,7 @@
                 // Prepare message data
                 const messageData = {
                     content: content,
-                    created_at: new Date().toISOString() // Set timestamp immediately
+                    created_at: new Date().toISOString()
                 };
 
                 if (currentUser.isAnonymous) {
@@ -786,24 +609,24 @@
                     messageData.user_id = currentUser.id;
                 }
 
-                // OPTIMISTIC UPDATE: Add message to UI immediately
+                // Optimistic update
                 const optimisticMessage = {
                     id: 'optimistic-' + Date.now(),
                     content: content,
                     created_at: messageData.created_at,
                     user_id: currentUser.id,
                     username: currentUser.username,
-                    useraccount: currentUser.id ? {
+                    useraccount: {
                         username: currentUser.username,
                         avatar_url: currentUser.avatar_url
-                    } : null
+                    }
                 };
 
                 addMessageToUI(optimisticMessage);
                 chatWindow.scrollTop = chatWindow.scrollHeight;
 
-                // Insert message to database
-                const { data: insertedMessage, error } = await supabase
+                // Insert message
+                const { data: message, error } = await supabase
                     .from('chat_messages')
                     .insert([messageData])
                     .select(`
@@ -812,31 +635,17 @@
                         created_at,
                         user_id,
                         username,
-                        anonymous_id
+                        anonymous_id,
+                        useraccount:user_id (username, avatar_url)
                     `)
                     .single();
 
                 if (error) throw error;
 
-                // Replace optimistic message with real message from database
-                if (insertedMessage) {
-                    const optimisticElement = document.getElementById(`message-${optimisticMessage.id}`);
-                    if (optimisticElement) {
-                        optimisticElement.remove();
-                    }
-
-                    // Add the confirmed message from database
-                    const confirmedMessage = {
-                        ...insertedMessage,
-                        useraccount: insertedMessage.user_id ? {
-                            username: currentUser.username,
-                            avatar_url: currentUser.avatar_url
-                        } : null
-                    };
-
-                    addMessageToUI(confirmedMessage);
-                    lastMessageTimestamp = insertedMessage.created_at;
-                }
+                // Replace optimistic message
+                document.getElementById(`message-${optimisticMessage.id}`)?.remove();
+                addMessageToUI(message);
+                lastMessageTimestamp = message.created_at;
 
                 // Clear input
                 messageInput.value = '';
@@ -844,12 +653,7 @@
             } catch (error) {
                 console.error('Error sending message:', error);
                 showError('Failed to send message: ' + error.message);
-
-                // Remove optimistic message if there was an error
-                const optimisticElement = document.getElementById(`message-optimistic-${Date.now()}`);
-                if (optimisticElement) {
-                    optimisticElement.remove();
-                }
+                document.getElementById(`message-optimistic-${Date.now()}`)?.remove();
             } finally {
                 // Re-enable input
                 messageInput.disabled = false;
@@ -857,6 +661,49 @@
                 sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> SEND';
                 messageInput.focus();
             }
+        }
+
+        // Set up real-time updates for new messages
+        function setupRealtimeUpdates() {
+            // Remove any existing channel first to avoid duplicates
+            supabase.removeChannel('chat_messages_channel');
+
+            const channel = supabase
+                .channel('chat_messages_channel')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'chat_messages',
+                    },
+                    (payload) => {
+                        // Create message object from payload with default avatar
+                        const newMessage = {
+                            id: payload.new.id,
+                            content: payload.new.content,
+                            created_at: payload.new.created_at,
+                            user_id: payload.new.user_id,
+                            username: payload.new.username,
+                            anonymous_id: payload.new.anonymous_id,
+                            useraccount: payload.new.user_id ? {
+                                username: payload.new.useraccount?.username || 'User',
+                                avatar_url: payload.new.useraccount?.avatar_url || DEFAULT_PROFILE_IMAGE
+                            } : null
+                        };
+
+                        // Add to UI
+                        addMessageToUI(newMessage);
+                    }
+                )
+                .subscribe((status, err) => {
+                    if (status === 'SUBSCRIBED') {
+                        console.log('Successfully subscribed to real-time updates!');
+                    }
+                    if (err) {
+                        console.error('Subscription error:', err);
+                    }
+                });
         }
 
         // Helper function to escape HTML
@@ -880,6 +727,7 @@
             }, 5000);
         }
     </script>
+    
 </body>
 
 </html>
