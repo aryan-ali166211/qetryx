@@ -1,10 +1,13 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login | GameModHub</title>
-    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600&display=swap" rel="stylesheet">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500;700&family=Rajdhani:wght@400;500;600&display=swap"
+        rel="stylesheet">
     <script src="https://unpkg.com/@supabase/supabase-js@2"></script>
     <style>
         :root {
@@ -28,7 +31,7 @@
 
         body {
             background-color: var(--bg-darker);
-            background-image: 
+            background-image:
                 radial-gradient(circle at 25% 25%, rgba(109, 40, 217, 0.15) 0%, transparent 50%),
                 radial-gradient(circle at 75% 75%, rgba(0, 240, 255, 0.15) 0%, transparent 50%);
             font-family: 'Rajdhani', sans-serif;
@@ -158,11 +161,9 @@
             left: -50%;
             width: 200%;
             height: 200%;
-            background: linear-gradient(
-                to bottom right,
-                rgba(255, 255, 255, 0.3),
-                rgba(255, 255, 255, 0)
-            );
+            background: linear-gradient(to bottom right,
+                    rgba(255, 255, 255, 0.3),
+                    rgba(255, 255, 255, 0));
             transform: rotate(30deg);
             transition: all 0.5s ease;
         }
@@ -269,19 +270,92 @@
         }
 
         @keyframes float {
-            0%, 100% {
+
+            0%,
+            100% {
                 transform: translate(0, 0);
             }
+
             50% {
                 transform: translate(20px, 20px);
             }
         }
+
+        /* Add this new style for the username modal */
+        .modal-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.8);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 1000;
+            backdrop-filter: blur(5px);
+        }
+
+        .modal-content {
+            background: var(--panel-bg);
+            padding: 30px;
+            border-radius: 10px;
+            border: 1px solid var(--neon-blue);
+            box-shadow: 0 0 30px var(--neon-blue);
+            max-width: 400px;
+            width: 90%;
+            text-align: center;
+        }
+
+        .modal-title {
+            font-family: 'Orbitron', sans-serif;
+            color: var(--neon-blue);
+            margin-bottom: 20px;
+            font-size: 1.5rem;
+        }
+
+        .modal-input {
+            width: 100%;
+            padding: 12px;
+            margin-bottom: 20px;
+            background: rgba(10, 10, 20, 0.7);
+            border: 1px solid var(--neon-purple);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            outline: none;
+        }
+
+        .modal-input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .modal-button {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            color: black;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .modal-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 240, 255, 0.4);
+        }
     </style>
 </head>
+
 <body>
     <div class="bg-circle circle-1"></div>
     <div class="bg-circle circle-2"></div>
-    
+
     <div class="container">
         <div class="form-container">
             <div class="logo">GAMEMODHUB</div>
@@ -410,4 +484,5 @@
         });
     </script>
 </body>
+
 </html>

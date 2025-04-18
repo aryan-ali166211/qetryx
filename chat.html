@@ -1,0 +1,838 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GameModHub Chat</title>
+    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;500;700&family=Rajdhani:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <style>
+        :root {
+            --neon-blue: #00f0ff;
+            --neon-pink: #ff00ff;
+            --neon-purple: #9d00ff;
+            --dark-bg: #0a0a12;
+            --darker-bg: #050508;
+            --panel-bg: rgba(15, 15, 25, 0.8);
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: var(--neon-blue);
+            --error: #ff3860;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Rajdhani', sans-serif;
+            background-color: var(--dark-bg);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-image:
+                radial-gradient(circle at 10% 20%, rgba(157, 0, 255, 0.1) 0%, transparent 20%),
+                radial-gradient(circle at 90% 80%, rgba(0, 240, 255, 0.1) 0%, transparent 20%);
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            width: 100%;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header Styles */
+        .user-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            padding: 15px 20px;
+            background: var(--panel-bg);
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .user-avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+            background-color: #1a1a2e;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+
+        .user-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .user-info {
+            flex: 1;
+        }
+
+        .user-name {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 1.3rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 5px var(--neon-blue);
+            letter-spacing: 1px;
+        }
+
+        .user-status {
+            font-size: 0.8rem;
+            color: var(--neon-pink);
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .status-indicator {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+            background-color: var(--neon-pink);
+            box-shadow: 0 0 5px var(--neon-pink);
+            animation: pulse 1.5s infinite;
+        }
+
+        @keyframes pulse {
+            0% {
+                opacity: 0.5;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                opacity: 0.5;
+            }
+        }
+
+        /* Chat Window Styles */
+        .chat-window {
+            flex: 1;
+            background: var(--panel-bg);
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            display: flex;
+            flex-direction: column;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 20px rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(5px);
+            overflow-y: auto;
+            max-height: 60vh;
+        }
+
+        .messages-container {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .message {
+            display: flex;
+            gap: 12px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .message-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 1px solid var(--neon-purple);
+            box-shadow: 0 0 8px var(--neon-purple);
+            background-color: #1a1a2e;
+            flex-shrink: 0;
+        }
+
+        .message-content {
+            flex: 1;
+        }
+
+        .message-header {
+            display: flex;
+            align-items: baseline;
+            gap: 10px;
+            margin-bottom: 5px;
+        }
+
+        .message-sender {
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 500;
+            font-size: 0.9rem;
+            color: var(--neon-blue);
+            text-shadow: 0 0 3px var(--neon-blue);
+        }
+
+        .message-time {
+            font-size: 0.7rem;
+            color: var(--text-secondary);
+        }
+
+        .message-text {
+            background: rgba(0, 240, 255, 0.1);
+            padding: 10px 15px;
+            border-radius: 8px;
+            border-left: 3px solid var(--neon-blue);
+            font-size: 0.95rem;
+            line-height: 1.4;
+            word-break: break-word;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .message-text::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(0, 240, 255, 0.05), transparent);
+            animation: scanline 6s linear infinite;
+        }
+
+        @keyframes scanline {
+            0% {
+                transform: translateX(-100%);
+            }
+
+            100% {
+                transform: translateX(100%);
+            }
+        }
+
+        /* Input Area Styles */
+        .input-area {
+            display: flex;
+            gap: 10px;
+            background: var(--panel-bg);
+            padding: 15px;
+            border-radius: 10px;
+            border: 1px solid rgba(0, 240, 255, 0.2);
+            box-shadow: 0 0 15px rgba(0, 240, 255, 0.1);
+            backdrop-filter: blur(5px);
+        }
+
+        .message-input {
+            flex: 1;
+            padding: 12px 15px;
+            background: rgba(10, 10, 20, 0.7);
+            border: 1px solid var(--neon-purple);
+            border-radius: 8px;
+            color: var(--text-primary);
+            font-family: 'Rajdhani', sans-serif;
+            font-size: 1rem;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .message-input:focus {
+            border-color: var(--neon-blue);
+            box-shadow: 0 0 10px var(--neon-blue);
+        }
+
+        .send-button {
+            background: linear-gradient(135deg, var(--neon-purple), var(--neon-blue));
+            color: black;
+            border: none;
+            padding: 0 20px;
+            border-radius: 8px;
+            font-family: 'Orbitron', sans-serif;
+            font-weight: 700;
+            font-size: 0.9rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .send-button::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(to bottom right,
+                    transparent, transparent, transparent,
+                    rgba(255, 255, 255, 0.3), transparent, transparent);
+            transform: rotate(30deg);
+            animation: shine 3s infinite;
+        }
+
+        @keyframes shine {
+            0% {
+                transform: translateX(-100%) rotate(30deg);
+            }
+
+            100% {
+                transform: translateX(100%) rotate(30deg);
+            }
+        }
+
+        .send-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0, 240, 255, 0.4);
+        }
+
+        .send-button:active {
+            transform: translateY(0);
+        }
+
+        /* Loading State */
+        .loading {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            padding: 20px;
+            color: var(--neon-blue);
+        }
+
+        .spinner {
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(0, 240, 255, 0.3);
+            border-top-color: var(--neon-blue);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Error State */
+        .error-message {
+            background: rgba(255, 56, 96, 0.2);
+            border: 1px solid var(--error);
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 15px;
+            color: var(--error);
+            text-align: center;
+        }
+
+        /* Scrollbar Styles */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0, 240, 255, 0.05);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: var(--neon-purple);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--neon-blue);
+        }
+
+        /* Cyberpunk decorative elements */
+        .cyber-line {
+            height: 2px;
+            background: linear-gradient(90deg, transparent, var(--neon-blue), transparent);
+            margin: 15px 0;
+            opacity: 0.5;
+        }
+
+        .corner-decoration {
+            position: fixed;
+            width: 100px;
+            height: 100px;
+            pointer-events: none;
+            z-index: -1;
+        }
+
+        .corner-decoration.top-left {
+            top: 0;
+            left: 0;
+            border-top: 2px solid var(--neon-blue);
+            border-left: 2px solid var(--neon-blue);
+            box-shadow: -5px -5px 20px var(--neon-blue);
+        }
+
+        .corner-decoration.top-right {
+            top: 0;
+            right: 0;
+            border-top: 2px solid var(--neon-pink);
+            border-right: 2px solid var(--neon-pink);
+            box-shadow: 5px -5px 20px var(--neon-pink);
+        }
+
+        .corner-decoration.bottom-left {
+            bottom: 0;
+            left: 0;
+            border-bottom: 2px solid var(--neon-purple);
+            border-left: 2px solid var(--neon-purple);
+            box-shadow: -5px 5px 20px var(--neon-purple);
+        }
+
+        .corner-decoration.bottom-right {
+            bottom: 0;
+            right: 0;
+            border-bottom: 2px solid var(--neon-blue);
+            border-right: 2px solid var(--neon-blue);
+            box-shadow: 5px 5px 20px var(--neon-blue);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .container {
+                padding: 10px;
+            }
+
+            .user-header {
+                padding: 10px 15px;
+            }
+
+            .user-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .user-name {
+                font-size: 1.1rem;
+            }
+
+            .chat-window {
+                padding: 15px;
+            }
+
+            .input-area {
+                padding: 10px;
+            }
+
+            .message-input {
+                padding: 10px 12px;
+            }
+
+            .send-button {
+                padding: 0 15px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Cyberpunk decorative corners -->
+    <div class="corner-decoration top-left"></div>
+    <div class="corner-decoration top-right"></div>
+    <div class="corner-decoration bottom-left"></div>
+    <div class="corner-decoration bottom-right"></div>
+
+    <div class="container">
+        <!-- User Header -->
+        <div class="user-header">
+            <div class="user-avatar" id="user-avatar">
+                <i class="fas fa-user" style="font-size: 24px; color: var(--neon-blue);"></i>
+            </div>
+            <div class="user-info">
+                <div class="user-name" id="username">LOADING...</div>
+                <div class="user-status">
+                    <div class="status-indicator"></div>
+                    <span>Online</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Chat Window -->
+        <div class="chat-window" id="chat-window">
+            <div class="messages-container" id="messages-container">
+                <div class="loading">
+                    <div class="spinner"></div>
+                    <span>Loading messages...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Input Area -->
+        <div class="input-area">
+            <input onclick="sendMessage()" type="text" class="message-input" id="message-input"
+                placeholder="Type your message..." autocomplete="off">
+            <button class="send-button" id="send-button">
+                <i class="fas fa-paper-plane"></i>
+                <span>SEND</span>
+            </button>
+        </div>
+    </div>
+    <!-- <button onclick="sendMessage()">Send</button> -->
+
+    <script>
+        // Initialize Supabase
+        const supabaseUrl = 'https://ogwufpqcthruhgpqseff.supabase.co';
+        const supabaseKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Im9nd3VmcHFjdGhydWhncHFzZWZmIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NDQ3MTEzMDksImV4cCI6MjA2MDI4NzMwOX0.OrY_gSIIHmkylk76Jo6-89GIzRvTDhLHKzdPo6lgbSo';
+        const supabase = window.supabase.createClient(supabaseUrl, supabaseKey);
+
+        // DOM Elements
+        const messagesContainer = document.getElementById('messages-container');
+        const messageInput = document.getElementById('message-input');
+        const sendButton = document.getElementById('send-button');
+        const usernameElement = document.getElementById('username');
+        const userAvatarElement = document.getElementById('user-avatar');
+        const chatWindow = document.getElementById('chat-window');
+
+        // Current user data
+        let currentUser = {
+            id: null,
+            username: null,
+            avatar_url: null,
+            isAnonymous: true,
+            sessionId: null
+        };
+
+        // Generate a random ID for anonymous users
+        function generateAnonymousId() {
+            return 'anon_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Setup anonymous user
+        function setupAnonymousUser() {
+            const storedUsername = localStorage.getItem('anonymous_username');
+            const storedSessionId = localStorage.getItem('anonymous_sessionId');
+
+            currentUser = {
+                id: null,
+                username: storedUsername || 'Anonymous',
+                avatar_url: null,
+                isAnonymous: true,
+                sessionId: storedSessionId || generateAnonymousId()
+            };
+
+            if (!storedUsername) {
+                promptForUsername();
+            }
+        }
+
+        // Prompt for username if not set
+        function promptForUsername() {
+            const username = prompt("Please enter a display name for the chat:");
+            if (username && username.trim()) {
+                currentUser.username = username.trim();
+                localStorage.setItem('anonymous_username', currentUser.username);
+                localStorage.setItem('anonymous_sessionId', currentUser.sessionId);
+                usernameElement.textContent = currentUser.username;
+            } else {
+                currentUser.username = 'Anonymous';
+            }
+        }
+
+        // Load messages from Supabase
+        async function loadMessages() {
+            try {
+                const { data: messages, error } = await supabase
+                    .from('chat_messages')
+                    .select(`
+        id,
+        content,
+        created_at,
+        user_id,
+        anonymous_id,
+        useraccount:user_id (username, avatar_url)
+    `)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                messagesContainer.innerHTML = '';
+
+                if (messages && messages.length > 0) {
+                    messages.forEach(message => {
+                        addMessageToUI(message);
+                    });
+
+                    // Scroll to bottom
+                    setTimeout(() => {
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                    }, 100);
+                } else {
+                    messagesContainer.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                            No messages yet. Be the first to say something!
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                showError('Failed to load messages');
+            }
+        }
+
+        // Get current user with proper error handling
+        async function getCurrentUser() {
+            try {
+                const { data: { user }, error: authError } = await supabase.auth.getUser();
+
+                if (user) {
+                    // Get from useraccount table
+                    const { data: profile, error } = await supabase
+                        .from('useraccount')
+                        .select('username, avatar_url')
+                        .eq('id', user.id)
+                        .maybeSingle();
+
+                    currentUser = {
+                        id: user.id,
+                        username: profile?.username || user.email || 'User',
+                        avatar_url: profile?.avatar_url || null,
+                        isAnonymous: false
+                    };
+                } else {
+                    // Anonymous fallback
+                    setupAnonymousUser();
+                }
+
+                usernameElement.textContent = currentUser.username;
+                if (currentUser.avatar_url) {
+                    const { data: { publicUrl } } = await supabase
+                        .storage
+                        .from('avater-bucket')
+                        .getPublicUrl(currentUser.avatar_url);
+                    userAvatarElement.innerHTML = `<img src="${publicUrl}" alt="${currentUser.username}">`;
+                }
+            } catch (err) {
+                console.warn("Not signed in, using anonymous mode.");
+                setupAnonymousUser();
+            }
+        }
+
+        // Add a message to the UI
+        function addMessageToUI(message) {
+            const messageElement = document.createElement('div');
+            messageElement.className = 'message';
+
+            // Format the timestamp
+            const timestamp = new Date(message.created_at).toLocaleTimeString([], {
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Determine sender name
+            const senderName = message.useraccount?.username ||
+                message.username ||
+                (message.user_id ? 'User' : 'Anonymous');
+
+            // Get avatar URL if available
+            let avatarContent = `<i class="fas fa-user" style="font-size: 18px; color: var(--neon-purple);"></i>`;
+            if (message.useraccount?.avatar_url) {
+                avatarContent = `<img src="${supabaseUrl}/storage/v1/object/public/avater-bucket/${message.useraccount.avatar_url}" alt="${senderName}">`;
+            }
+
+            messageElement.innerHTML = `
+                <div class="message-avatar">
+                    ${avatarContent}
+                </div>
+                <div class="message-content">
+                    <div class="message-header">
+                        <div class="message-sender">${senderName}</div>
+                        <div class="message-time">${timestamp}</div>
+                    </div>
+                    <div class="message-text">${escapeHtml(message.content)}</div>
+                </div>
+            `;
+
+            messagesContainer.appendChild(messageElement);
+            chatWindow.scrollTop = chatWindow.scrollHeight;
+        }
+
+        // Send a new message
+        sendButton.addEventListener('click', sendMessage);
+        messageInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') sendMessage();
+        });
+
+        async function sendMessage() {
+            const content = messageInput.value.trim();
+            if (!content) return;
+
+            if (currentUser.isAnonymous && !currentUser.username) {
+                showError('Please set a display name first');
+                return;
+            }
+
+            try {
+                // Disable input while sending
+                messageInput.disabled = true;
+                sendButton.disabled = true;
+                sendButton.innerHTML = '<div class="spinner"></div> Sending...';
+
+                // Prepare message data
+                const messageData = {
+                    content: content
+                };
+
+                if (currentUser.isAnonymous) {
+                    messageData.username = currentUser.username;
+                    messageData.anonymous_id = currentUser.sessionId;
+                } else {
+                    messageData.user_id = currentUser.id;
+                }
+
+                // Insert message
+                const { error } = await supabase
+                    .from('chat_messages')
+                    .insert([messageData]);
+
+                if (error) throw error;
+
+                // Clear input
+                messageInput.value = '';
+
+            } catch (error) {
+                console.error('Error sending message:', error);
+                showError('Failed to send message: ' + error.message);
+            } finally {
+                // Re-enable input
+                messageInput.disabled = false;
+                sendButton.disabled = false;
+                sendButton.innerHTML = '<i class="fas fa-paper-plane"></i> SEND';
+                messageInput.focus();
+            }
+        }
+
+        // Set up real-time updates for new messages
+        // ✅ Declare the channel globally at the top of your script
+        let chatChannel;
+
+        function setupRealtimeUpdates() {
+            // If already subscribed, unsubscribe first
+            if (chatChannel) {
+                chatChannel.unsubscribe();
+            }
+
+            // ✅ Now initialize and subscribe to the channel
+            chatChannel = supabase
+                .channel('chat_messages_channel')
+                .on(
+                    'postgres_changes',
+                    {
+                        event: 'INSERT',
+                        schema: 'public',
+                        table: 'chat_messages',
+                    },
+                    async (payload) => {
+                        console.log('📥 New real-time message:', payload);
+
+                        let newMessage = payload.new;
+
+                        // Optional: Get user info from useraccount table
+                        if (newMessage.user_id) {
+                            const { data: userProfile, error } = await supabase
+                                .from('useraccount')
+                                .select('username, avatar_url')
+                                .eq('id', newMessage.user_id)
+                                .maybeSingle();
+
+                            if (error) {
+                                console.error('❌ Failed to get user:', error.message);
+                            } else {
+                                newMessage.useraccount = userProfile;
+                            }
+                        }
+
+                        // ✅ Add the message to the UI
+                        addMessageToUI(newMessage);
+                    }
+                )
+                .subscribe((status) => {
+                    if (status === 'SUBSCRIBED') {
+                        console.log('✅ Real-time chat subscription ready!');
+                    }
+                });
+        }
+
+
+
+        // Helper function to escape HTML
+        function escapeHtml(unsafe) {
+            return unsafe
+                .replace(/&/g, "&amp;")
+                .replace(/</g, "&lt;")
+                .replace(/>/g, "&gt;")
+                .replace(/"/g, "&quot;")
+                .replace(/'/g, "&#039;");
+        }
+
+        // Show error message
+        function showError(message) {
+            const errorElement = document.createElement('div');
+            errorElement.className = 'error-message';
+            errorElement.textContent = message;
+            messagesContainer.appendChild(errorElement);
+            setTimeout(() => {
+                errorElement.remove();
+            }, 5000);
+        }
+
+        // Initialize the chat
+        document.addEventListener('DOMContentLoaded', async () => {
+            try {
+                
+                // Get the current user
+                await getCurrentUser();
+
+                // Load messages
+                await loadMessages();
+
+                // Set up real-time updates
+                setupRealtimeUpdates();
+
+                // Focus the input field
+                messageInput.focus();
+            } catch (error) {
+                console.error('Initialization error:', error);
+                showError('Failed to initialize chat');
+            }
+        });
+    </script>
+</body>
+
+</html>
