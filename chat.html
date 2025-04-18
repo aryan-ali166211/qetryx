@@ -529,84 +529,30 @@
             sessionId: null
         };
 
-        // Generate a random ID for anonymous users
-        function generateAnonymousId() {
-            return 'anon_' + Math.random().toString(36).substr(2, 9);
-        }
+        // Last message timestamp for polling
+        let lastMessageTimestamp = new Date().toISOString();
 
-        // Setup anonymous user
-        function setupAnonymousUser() {
-            const storedUsername = localStorage.getItem('anonymous_username');
-            const storedSessionId = localStorage.getItem('anonymous_sessionId');
-
-            currentUser = {
-                id: null,
-                username: storedUsername || 'Anonymous',
-                avatar_url: null,
-                isAnonymous: true,
-                sessionId: storedSessionId || generateAnonymousId()
-            };
-
-            if (!storedUsername) {
-                promptForUsername();
-            }
-        }
-
-        // Prompt for username if not set
-        function promptForUsername() {
-            const username = prompt("Please enter a display name for the chat:");
-            if (username && username.trim()) {
-                currentUser.username = username.trim();
-                localStorage.setItem('anonymous_username', currentUser.username);
-                localStorage.setItem('anonymous_sessionId', currentUser.sessionId);
-                usernameElement.textContent = currentUser.username;
-            } else {
-                currentUser.username = 'Anonymous';
-            }
-        }
-
-        // Load messages from Supabase
-        async function loadMessages() {
+        // Initialize the chat
+        document.addEventListener('DOMContentLoaded', async () => {
             try {
-                const { data: messages, error } = await supabase
-                    .from('chat_messages')
-                    .select(`
-        id,
-        content,
-        created_at,
-        user_id,
-        anonymous_id,
-        useraccount:user_id (username, avatar_url)
-    `)
-                    .order('created_at', { ascending: true });
+                // Get the current user
+                await getCurrentUser();
 
-                if (error) throw error;
+                // Load initial messages
+                await loadMessages();
 
-                messagesContainer.innerHTML = '';
+                // Start polling for new messages
+                startMessagePolling();
 
-                if (messages && messages.length > 0) {
-                    messages.forEach(message => {
-                        addMessageToUI(message);
-                    });
-
-                    // Scroll to bottom
-                    setTimeout(() => {
-                        chatWindow.scrollTop = chatWindow.scrollHeight;
-                    }, 100);
-                } else {
-                    messagesContainer.innerHTML = `
-                        <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
-                            No messages yet. Be the first to say something!
-                        </div>
-                    `;
-                }
+                // Focus the input field
+                messageInput.focus();
             } catch (error) {
-                console.error('Error loading messages:', error);
-                showError('Failed to load messages');
+                console.error('Initialization error:', error);
+                showError('Failed to initialize chat');
             }
-        }
+        });
 
-        // Get current user with proper error handling
+        // Get current user
         async function getCurrentUser() {
             try {
                 const { data: { user }, error: authError } = await supabase.auth.getUser();
@@ -644,10 +590,134 @@
             }
         }
 
+        // Setup anonymous user
+        function setupAnonymousUser() {
+            const storedUsername = localStorage.getItem('anonymous_username');
+            const storedSessionId = localStorage.getItem('anonymous_sessionId');
+
+            currentUser = {
+                id: null,
+                username: storedUsername || 'Anonymous',
+                avatar_url: null,
+                isAnonymous: true,
+                sessionId: storedSessionId || generateAnonymousId()
+            };
+
+            if (!storedUsername) {
+                promptForUsername();
+            }
+        }
+
+        // Generate anonymous ID
+        function generateAnonymousId() {
+            return 'anon_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Prompt for username
+        function promptForUsername() {
+            const username = prompt("Please enter a display name for the chat:");
+            if (username && username.trim()) {
+                currentUser.username = username.trim();
+                localStorage.setItem('anonymous_username', currentUser.username);
+                localStorage.setItem('anonymous_sessionId', currentUser.sessionId);
+                usernameElement.textContent = currentUser.username;
+            }
+        }
+
+        // Load messages from Supabase
+        async function loadMessages() {
+            try {
+                const { data: messages, error } = await supabase
+                    .from('chat_messages')
+                    .select(`
+                        id,
+                        content,
+                        created_at,
+                        user_id,
+                        username,
+                        anonymous_id,
+                        useraccount:user_id (username, avatar_url)
+                    `)
+                    .order('created_at', { ascending: true });
+
+                if (error) throw error;
+
+                messagesContainer.innerHTML = '';
+
+                if (messages && messages.length > 0) {
+                    messages.forEach(message => {
+                        addMessageToUI(message);
+                    });
+
+                    // Update last message timestamp
+                    lastMessageTimestamp = messages[messages.length - 1].created_at;
+
+                    // Scroll to bottom
+                    setTimeout(() => {
+                        chatWindow.scrollTop = chatWindow.scrollHeight;
+                    }, 100);
+                } else {
+                    messagesContainer.innerHTML = `
+                        <div style="text-align: center; padding: 20px; color: var(--text-secondary);">
+                            No messages yet. Be the first to say something!
+                        </div>
+                    `;
+                }
+            } catch (error) {
+                console.error('Error loading messages:', error);
+                showError('Failed to load messages');
+            }
+        }
+
+        // Poll for new messages
+        function startMessagePolling() {
+            setInterval(async () => {
+                try {
+                    const { data: newMessages, error } = await supabase
+                        .from('chat_messages')
+                        .select(`
+                            id,
+                            content,
+                            created_at,
+                            user_id,
+                            username,
+                            anonymous_id,
+                            useraccount:user_id (username, avatar_url)
+                        `)
+                        .gt('created_at', lastMessageTimestamp)
+                        .order('created_at', { ascending: true });
+
+                    if (error) throw error;
+
+                    if (newMessages && newMessages.length > 0) {
+                        newMessages.forEach(message => {
+                            addMessageToUI(message);
+                        });
+
+                        // Update last message timestamp
+                        lastMessageTimestamp = newMessages[newMessages.length - 1].created_at;
+
+                        // Scroll to bottom if new messages are added
+                        setTimeout(() => {
+                            chatWindow.scrollTop = chatWindow.scrollHeight;
+                        }, 100);
+                    }
+                } catch (error) {
+                    console.error('Error polling for new messages:', error);
+                }
+            }, 2000); // Poll every 2 seconds
+        }
+
         // Add a message to the UI
         function addMessageToUI(message) {
+            // Check if message already exists in UI
+            if (document.getElementById(`message-${message.id}`)) {
+                return;
+            }
+
             const messageElement = document.createElement('div');
             messageElement.className = 'message';
+            messageElement.id = `message-${message.id}`;
 
             // Format the timestamp
             const timestamp = new Date(message.created_at).toLocaleTimeString([], {
@@ -680,7 +750,6 @@
             `;
 
             messagesContainer.appendChild(messageElement);
-            chatWindow.scrollTop = chatWindow.scrollHeight;
         }
 
         // Send a new message
@@ -706,7 +775,8 @@
 
                 // Prepare message data
                 const messageData = {
-                    content: content
+                    content: content,
+                    created_at: new Date().toISOString() // Set timestamp immediately
                 };
 
                 if (currentUser.isAnonymous) {
@@ -716,12 +786,57 @@
                     messageData.user_id = currentUser.id;
                 }
 
-                // Insert message
-                const { error } = await supabase
+                // OPTIMISTIC UPDATE: Add message to UI immediately
+                const optimisticMessage = {
+                    id: 'optimistic-' + Date.now(),
+                    content: content,
+                    created_at: messageData.created_at,
+                    user_id: currentUser.id,
+                    username: currentUser.username,
+                    useraccount: currentUser.id ? {
+                        username: currentUser.username,
+                        avatar_url: currentUser.avatar_url
+                    } : null
+                };
+
+                addMessageToUI(optimisticMessage);
+                chatWindow.scrollTop = chatWindow.scrollHeight;
+
+                // Insert message to database
+                const { data: insertedMessage, error } = await supabase
                     .from('chat_messages')
-                    .insert([messageData]);
+                    .insert([messageData])
+                    .select(`
+                        id,
+                        content,
+                        created_at,
+                        user_id,
+                        username,
+                        anonymous_id
+                    `)
+                    .single();
 
                 if (error) throw error;
+
+                // Replace optimistic message with real message from database
+                if (insertedMessage) {
+                    const optimisticElement = document.getElementById(`message-${optimisticMessage.id}`);
+                    if (optimisticElement) {
+                        optimisticElement.remove();
+                    }
+
+                    // Add the confirmed message from database
+                    const confirmedMessage = {
+                        ...insertedMessage,
+                        useraccount: insertedMessage.user_id ? {
+                            username: currentUser.username,
+                            avatar_url: currentUser.avatar_url
+                        } : null
+                    };
+
+                    addMessageToUI(confirmedMessage);
+                    lastMessageTimestamp = insertedMessage.created_at;
+                }
 
                 // Clear input
                 messageInput.value = '';
@@ -729,6 +844,12 @@
             } catch (error) {
                 console.error('Error sending message:', error);
                 showError('Failed to send message: ' + error.message);
+
+                // Remove optimistic message if there was an error
+                const optimisticElement = document.getElementById(`message-optimistic-${Date.now()}`);
+                if (optimisticElement) {
+                    optimisticElement.remove();
+                }
             } finally {
                 // Re-enable input
                 messageInput.disabled = false;
@@ -737,59 +858,6 @@
                 messageInput.focus();
             }
         }
-
-        // Set up real-time updates for new messages
-        // ✅ Declare the channel globally at the top of your script
-        let chatChannel;
-
-        function setupRealtimeUpdates() {
-            // If already subscribed, unsubscribe first
-            if (chatChannel) {
-                chatChannel.unsubscribe();
-            }
-
-            // ✅ Now initialize and subscribe to the channel
-            chatChannel = supabase
-                .channel('chat_messages_channel')
-                .on(
-                    'postgres_changes',
-                    {
-                        event: 'INSERT',
-                        schema: 'public',
-                        table: 'chat_messages',
-                    },
-                    async (payload) => {
-                        console.log('📥 New real-time message:', payload);
-
-                        let newMessage = payload.new;
-
-                        // Optional: Get user info from useraccount table
-                        if (newMessage.user_id) {
-                            const { data: userProfile, error } = await supabase
-                                .from('useraccount')
-                                .select('username, avatar_url')
-                                .eq('id', newMessage.user_id)
-                                .maybeSingle();
-
-                            if (error) {
-                                console.error('❌ Failed to get user:', error.message);
-                            } else {
-                                newMessage.useraccount = userProfile;
-                            }
-                        }
-
-                        // ✅ Add the message to the UI
-                        addMessageToUI(newMessage);
-                    }
-                )
-                .subscribe((status) => {
-                    if (status === 'SUBSCRIBED') {
-                        console.log('✅ Real-time chat subscription ready!');
-                    }
-                });
-        }
-
-
 
         // Helper function to escape HTML
         function escapeHtml(unsafe) {
@@ -811,27 +879,6 @@
                 errorElement.remove();
             }, 5000);
         }
-
-        // Initialize the chat
-        document.addEventListener('DOMContentLoaded', async () => {
-            try {
-                
-                // Get the current user
-                await getCurrentUser();
-
-                // Load messages
-                await loadMessages();
-
-                // Set up real-time updates
-                setupRealtimeUpdates();
-
-                // Focus the input field
-                messageInput.focus();
-            } catch (error) {
-                console.error('Initialization error:', error);
-                showError('Failed to initialize chat');
-            }
-        });
     </script>
 </body>
 
